@@ -11,7 +11,7 @@ public class SymbolTable extends HashMap<Object, Integer> {
     /**
      * The method checks whether the value of the symbol is already on the HashMap.
      * If so, the position (line number) is not updated as we only want to know
-     * where the token has sbeen encountered for the first time.
+     * where the token has been encountered for the first time.
      * @param symbol
      */
     public void put(Symbol symbol) {
