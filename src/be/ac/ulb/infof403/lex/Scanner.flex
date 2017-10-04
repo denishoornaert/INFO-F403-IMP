@@ -14,8 +14,11 @@ package be.ac.ulb.infof403;
 
 //Extended Regular Expressions
 
-EndOfLine        = "\r"?"\n"
-Line             = .*{EndOfLine}
+Variable        = [a-zA-Z][a-zA-Z0-9]*
+Number          = [0-9]+
+OpenComment     = "(*"
+CloseComment    = "*)"
+
 
 // Declare states
 
