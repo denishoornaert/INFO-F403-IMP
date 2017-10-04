@@ -39,7 +39,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>src/be/ac/ulb/infof403</outputDirectory>
+                            <outputDirectory>src</outputDirectory>
                             <lexDefinitions>
                                 <lexDefinition>src/be/ac/ulb/infof403/lex</lexDefinition>
                             </lexDefinitions>
