@@ -15,7 +15,7 @@ public class Main {
         
         FileReader file;
         try {
-            file = new FileReader(args[0]);
+            file = new FileReader("./test/Euclid.imp");
             final Scanner scanner = new Scanner(file);
             
             Symbol symbol = null;
