@@ -11,7 +11,11 @@ import java.util.logging.Logger;
  */
 public class Main {
     
+    private static TokenList _tokens;
+    
     public static void main(final String[] args) {
+        
+        _tokens = new TokenList();
         
         FileReader file;
         try {
@@ -21,10 +25,11 @@ public class Main {
             Symbol symbol = null;
             while(symbol == null || symbol.getType() != LexicalUnit.EOS) {
                 if(symbol != null) {
-                    System.out.println(symbol.toString());
+                    _tokens.add(symbol);
                 }
                 symbol = scanner.nextToken();
             }
+            System.out.println(_tokens);
             
         } catch (IOException | IMPSyntaxException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
