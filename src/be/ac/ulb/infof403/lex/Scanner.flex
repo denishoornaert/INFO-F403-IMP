@@ -1,12 +1,10 @@
 package be.ac.ulb.infof403;
 
-import java_cup.runtime.Symbol;
-
 %%
 
 %public
 %class Scanner
-
+%function nextToken
 %type Symbol
 %unicode
 
@@ -17,11 +15,11 @@ import java_cup.runtime.Symbol;
 
 //Extended Regular Expressions
 
-EndOfLine		= "\r"?"\n"
-Line				= .*{EndOfLine}
+EndOfLine        = "\r"?"\n"
+Line             = .*{EndOfLine}
 
 %% //Identification of tokens
 
-{Line}	{System.out.print(yyline+" "+yytext());}
+{Line}    {System.out.print(yyline+" "+yytext());}
 
 
