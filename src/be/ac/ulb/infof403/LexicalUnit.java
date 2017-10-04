@@ -1,3 +1,5 @@
+package be.ac.ulb.infof403;
+
 public enum LexicalUnit{
     VARNAME,
     NUMBER,
