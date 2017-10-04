@@ -1,10 +1,10 @@
 @startuml
 class Main {
+  - TokenList _tokens
+  - SymbolTable _table
 }
 
 class Scanner {
-  - TokenList _list
-  - SymbolTable _table
 }
 
 class Enum {
@@ -24,9 +24,10 @@ class SymbolTable {
   + toString()
 }
 
-Scanner .. Enum
-Scanner *-- TokenList
-Scanner *-- SymbolTable
+Main -- Enum
+Main *-- TokenList
+Main *-- SymbolTable
+Main -- Scanner
 TokenList *-- Symbol
 Symbol *-- Enum
 @enduml
