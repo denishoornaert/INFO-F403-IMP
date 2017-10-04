@@ -16,14 +16,17 @@ public class Main {
         FileReader file;
         try {
             file = new FileReader(args[0]);
-            Scanner scanner = new Scanner(file);
+            final Scanner scanner = new Scanner(file);
             
             Symbol symbol = null;
-            do {
+            while(symbol == null || symbol.getType() != LexicalUnit.EOS) {
+                if(symbol != null) {
+                    System.out.println(symbol.toString());
+                }
                 symbol = scanner.nextToken();
-            } while(symbol == null || symbol.getType() != LexicalUnit.END);
+            }
             
-        } catch (IOException ex) {
+        } catch (IOException | IMPSyntaxException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
