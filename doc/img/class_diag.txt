@@ -1,0 +1,32 @@
+@startuml
+class Main {
+}
+
+class Scanner {
+  - TokenList _list
+  - SymbolTable _table
+}
+
+class Enum {
+}
+
+class Symbol {
+  + toString()
+}
+
+class TokenList {
+  - ArrayList<Symbol> _list
+  + toString()
+}
+
+class SymbolTable {
+  - HashMap<String, int> _dic
+  + toString()
+}
+
+Scanner .. Enum
+Scanner *-- TokenList
+Scanner *-- SymbolTable
+TokenList *-- Symbol
+Symbol *-- Enum
+@enduml
