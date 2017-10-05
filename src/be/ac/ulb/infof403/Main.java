@@ -24,21 +24,25 @@ public class Main {
             file = new FileReader("./test/Euclid.imp");
             final Scanner scanner = new Scanner(file);
             
-            Symbol symbol = null;
-            while(symbol == null || symbol.getType() != LexicalUnit.EOS) {
-                if(symbol != null) {
-                    _tokens.add(symbol);
-                    if (symbol.getType() == LexicalUnit.VARNAME) {
-                        _table.put(symbol);
-                    }
-                }
-                symbol = scanner.nextToken();
-            }
+            readSymbol(scanner);
             System.out.println(_tokens);
-            System.err.println(_table);
+            System.out.println(_table);
             
         } catch (IOException | IMPSyntaxException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private static void readSymbol(final Scanner scanner) throws IOException, IMPSyntaxException {
+        Symbol symbol = null;
+        while(symbol == null || symbol.getType() != LexicalUnit.EOS) {
+            if(symbol != null) {
+                _tokens.add(symbol);
+                if (symbol.getType() == LexicalUnit.VARNAME) {
+                    _table.put(symbol);
+                }
+            }
+            symbol = scanner.nextToken();
         }
     }
     
