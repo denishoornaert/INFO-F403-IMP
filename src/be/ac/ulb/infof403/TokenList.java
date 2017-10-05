@@ -2,22 +2,16 @@ package be.ac.ulb.infof403;
 
 import java.util.ArrayList;
 
-public class TokenList {
-    
-    private ArrayList<Symbol> _list;
+public class TokenList extends ArrayList<Symbol> {
     
     public TokenList() {
-        _list = new ArrayList<>();
-    }
-    
-    public void add(Symbol symbol) {
-        _list.add(symbol);
+        super();
     }
     
     @Override
     public String toString() {
         String res = "";
-        for (Symbol symbol : _list) {
+        for (Symbol symbol : this) {
             // concatenation of \n here cause I don't know if I can modify the given Symbol class
             res += symbol.toString()+"\n"; 
         }
