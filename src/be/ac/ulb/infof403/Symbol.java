@@ -67,7 +67,7 @@ public class Symbol{
 	public String toString(){
 		if(this.isTerminal()){
 			final String value	= this.value != null? this.value.toString() : "null";
-			final String type		= this.type  != null? this.type.toString()  : "null";
+			final String type	= this.type  != null? this.type.toString()  : "null";
 			return "token: "+value+"\tlexical unit: "+type;
 		}
 		return "Non-terminal symbol";

@@ -18,7 +18,8 @@ public class TokenList {
     public String toString() {
         String res = "";
         for (Symbol symbol : _list) {
-            res += symbol.toString()+"\n"; // concatenation of \n here cause I don't know if I can modify the given Symbol class
+            // concatenation of \n here cause I don't know if I can modify the given Symbol class
+            res += symbol.toString()+"\n"; 
         }
         return res;
     }

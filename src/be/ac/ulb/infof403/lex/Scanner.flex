@@ -28,8 +28,6 @@ CloseComment    = "*)"
 %% //Identification of tokens
 
 <YYINITIAL> {
-    {Variable}     {return new Symbol(LexicalUnit.VARNAME,   yyline, yycolumn, new String(yytext()));}
-    {Number}       {return new Symbol(LexicalUnit.NUMBER,    yyline, yycolumn, new String(yytext()));}
     "begin"        {return new Symbol(LexicalUnit.BEGIN,     yyline, yycolumn, new String(yytext()));}
     "end"          {return new Symbol(LexicalUnit.END,       yyline, yycolumn, new String(yytext()));}
     ";"            {return new Symbol(LexicalUnit.SEMICOLON, yyline, yycolumn, new String(yytext()));}
@@ -63,6 +61,8 @@ CloseComment    = "*)"
     "to"           {return new Symbol(LexicalUnit.TO,        yyline, yycolumn, new String(yytext()));}
     "read"         {return new Symbol(LexicalUnit.READ,      yyline, yycolumn, new String(yytext()));}
     "print"        {return new Symbol(LexicalUnit.PRINT,     yyline, yycolumn, new String(yytext()));}
+    {Variable}     {return new Symbol(LexicalUnit.VARNAME,   yyline, yycolumn, new String(yytext()));}
+    {Number}       {return new Symbol(LexicalUnit.NUMBER,    yyline, yycolumn, new String(yytext()));}
     <<EOF>>        {return new Symbol(LexicalUnit.EOS,       yyline, yycolumn);}
     "\n"           {return null;}
     [^]            {return null;}
