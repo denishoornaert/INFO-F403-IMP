@@ -1,0 +1,13 @@
+begin
+    s = [45, 68, 23];
+    n = 3 ;
+    for i from 0 to n do
+        save = s[i] ;
+        j = i-1 ;
+        while j >= 0 and s[j] > save do
+            s[j+1] = s[j] ;
+            j = j-1 ;
+        done
+        s[j+1] = save ;
+    done
+end
