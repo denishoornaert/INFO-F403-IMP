@@ -14,10 +14,10 @@ import java.util.logging.Logger;
  * @author Detobel
  */
 public class Main {
-    
+
     private static TokenList _tokens;
     private static SymbolTable _table;
-    
+
     public static void main(final String[] args) {
         String fileName = "./test/Euclid.imp";
         if(args.length > 0) {
@@ -26,7 +26,7 @@ public class Main {
         _tokens = new TokenList();
         _table = new SymbolTable();
         scanImpFile(fileName);
-        
+
         if(args.length > 1 && args[1].equalsIgnoreCase("-test")) {
             final String fileNameWitoutExt = fileName.substring(0, fileName.lastIndexOf('.'));
             String testFile = fileNameWitoutExt + ".out";
@@ -35,26 +35,26 @@ public class Main {
             }
             testOutput(testFile);
         }
-        
+
     }
-    
+
     private static void scanImpFile(final String fileName) {
         final FileReader file;
         try {
             file = new FileReader(fileName);
             final Scanner scanner = new Scanner(file);
-            
+
             readSymbol(scanner);
             System.out.println(_tokens);
             System.out.println("\nIdentifiers");
             System.out.println(_table);
-            
+
         } catch (IOException | IMPSyntaxException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    
+
+
     private static void readSymbol(final Scanner scanner) throws IOException, IMPSyntaxException {
         Symbol symbol = null;
         while(symbol == null || symbol.getType() != LexicalUnit.EOS) {
@@ -67,7 +67,7 @@ public class Main {
             symbol = scanner.nextToken();
         }
     }
-    
+
     private static void testOutput(final String testFile) {
         final File file;
         try {
@@ -76,17 +76,17 @@ public class Main {
             if(checkSameOutput(allLines)) {
                 System.out.println("Les résultats sont équivalent au fichier " + testFile);
             }
-            
+
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     private static boolean checkSameOutput(final List<String> testLineStr) {
         boolean allOk = true;
         final String strToken = _tokens.toString();
         final String[] strSplitToken = strToken.split("\n");
-        
+
         int i = 0;
         for(final String tokenLine : strSplitToken) {
             final String goodResult = testLineStr.get(i++);
@@ -97,7 +97,7 @@ public class Main {
                 allOk = false;
             }
         }
-        
+
         i+=2; // Skip space and "Identifiers"
         final String strTable = _table.toString();
         final String[] strSplitTable = strTable.split("\n");
@@ -110,8 +110,8 @@ public class Main {
                 allOk = false;
             }
         }
-        
+
         return allOk;
     }
-    
+
 }
