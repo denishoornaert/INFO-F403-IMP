@@ -75,7 +75,14 @@
     \end{center}
   
   \subsection{Regular expressions}
-    pass
+
+  \subsection{Dealing with nested comments}
+    Nowadays, most of common programming languages can handle \textit{nested comments} However, state of the art regular languages cannot boast the same feature. For example, let us try to analyse the following nested comment~:
+    \begin{lstlisting}
+      (*I am a (*nested*) comment*)
+    \end{lstlisting}
+    A simple regular language will, once an opening statement (here : \verb|(*|) encountered, overlook the following characters until it encounters a closing statement (here : \verb|*)|). Unfortunately, if it does so on the example above, it will overlook the second opening statement (columns 9 \& 10) and will stop when it comes across the first closing statement (columns 17 \& 18) having for consequence that the third part of the \textit{nested comment} will remain. To overcome this problem, the analyser must know how many opening statement it has came across and how many closing statement it should expects in order to know whether it is still in a comment.\\
+    The most obvious and smartest way to implement it is to use a counter (i.e. a memory) that will be incremented for every opening encountered and decreased for every closing statement encountered. However, from a theoretical point of view, by using a memory the language cannot be considered as regular any more. In the present project, it is not a problem and \verb|jflex| allows us to implement such a language.
     
   \subsection{Tests}
     
