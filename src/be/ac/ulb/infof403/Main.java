@@ -91,10 +91,12 @@ public class Main {
         int i = 0;
         for(final String tokenLine : strSplitToken) {
             final String goodResult = testLineStr.get(i++);
-            if(!tokenLine.equals(goodResult)) {
-                System.err.println("Error with line: " + (i-1));
-                System.err.println("Expeted:   '" + goodResult + "'");
-                System.err.println("Recieving: '" + tokenLine + "'");
+            
+            final String noTabTokenLine = removeTabAndSpaces(tokenLine);
+            final String noTabGoodResult = removeTabAndSpaces(goodResult);
+            
+            if(!noTabTokenLine.equals(noTabGoodResult)) {
+                printError(noTabGoodResult, noTabTokenLine, (i-1));
                 allOk = false;
             }
         }
@@ -104,15 +106,24 @@ public class Main {
         final String[] strSplitTable = strTable.split("\n");
         for(final String tableLine : strSplitTable) {
             final String goodResult = testLineStr.get(i++);
-            if(!tableLine.equals(goodResult)) {
-                System.err.println("Error with line: " + (i-1));
-                System.err.println("Expeted:   '" + goodResult + "'");
-                System.err.println("Recieving: '" + tableLine + "'");
+            if(!removeTabAndSpaces(tableLine).equals(removeTabAndSpaces(goodResult))) {
+                printError(goodResult, tableLine, (i-1));
                 allOk = false;
             }
         }
 
         return allOk;
+    }
+    
+    private static void printError(final String goodResult, final String errorLine, 
+            final int indexErrorLine) {
+        System.err.println("Error with line: " + indexErrorLine);
+        System.err.println("Expeted:   '" + goodResult + "'");
+        System.err.println("Recieving: '" + errorLine + "'");
+    }
+    
+    private static String removeTabAndSpaces(final String strToTrim) {
+        return strToTrim.trim().replaceAll("\t", " ").replaceAll(" +", " ");
     }
 
 }

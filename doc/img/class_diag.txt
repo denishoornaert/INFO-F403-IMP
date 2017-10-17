@@ -21,7 +21,6 @@ skinparam stereotypeCBackgroundColor OldLace
 class Main {
   {static} - TokenList _tokens
   {static} - SymbolTable _table
-  - void scanImpFile(String)
 }
 
 class Scanner {
@@ -45,6 +44,7 @@ class SymbolTable {
 
 Main *-- TokenList
 Main *-- SymbolTable
+Main -- LexicalUnit
 Main -- Scanner
 TokenList *-- Symbol
 Symbol -- LexicalUnit
