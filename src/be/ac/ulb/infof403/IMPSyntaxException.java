@@ -1,23 +1,19 @@
 package be.ac.ulb.infof403;
 
-/**
- *
- * @author Detobel
- */
 public class IMPSyntaxException extends Exception {
     public IMPSyntaxException() { 
         super(); 
     }
     
-    public IMPSyntaxException(String message) { 
+    public IMPSyntaxException(final String message) { 
         super(message); 
     }
     
-    public IMPSyntaxException(String message, Throwable cause) { 
+    public IMPSyntaxException(final String message, final Throwable cause) { 
         super(message, cause); 
     }
     
-    public IMPSyntaxException(Throwable cause) { 
+    public IMPSyntaxException(final Throwable cause) { 
         super(cause); 
     }
 }

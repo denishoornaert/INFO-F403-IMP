@@ -1,21 +1,40 @@
 @startuml
+
+'accessibilité
+skinparam classAttributeIconSize 0
+
+'pas d'ombre
+skinparam shadowing false
+
+'taille de l'image
+skinparam dpi 300 
+
+'couleurs
+skinparam class {
+  BackgroundColor AliceBlue
+  ArrowColor CornflowerBlue
+  BorderColor CornflowerBlue
+}
+skinparam stereotypeCBackgroundColor OldLace
+
+
 class Main {
-  - TokenList _tokens
-  - SymbolTable _table
+  {static} - TokenList _tokens
+  {static} - SymbolTable _table
+  - void scanImpFile(String)
 }
 
 class Scanner {
 }
 
-class Enum {
+enum LexicalUnit {
 }
 
 class Symbol {
   + toString()
 }
 
-class TokenList {
-  - ArrayList<Symbol> _list
+class TokenList<extends ArrayList<Symbol>> {
   + toString()
 }
 
@@ -24,10 +43,9 @@ class SymbolTable {
   + toString()
 }
 
-Main -- Enum
 Main *-- TokenList
 Main *-- SymbolTable
 Main -- Scanner
 TokenList *-- Symbol
-Symbol *-- Enum
+Symbol -- LexicalUnit
 @enduml

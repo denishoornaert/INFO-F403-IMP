@@ -11,7 +11,7 @@ public class TokenList extends ArrayList<Symbol> {
     @Override
     public String toString() {
         String res = "";
-        for (Symbol symbol : this) {
+        for(final Symbol symbol : this) {
             // concatenation of \n here cause I don't know if I can modify the given Symbol class
             res += symbol.toString()+"\n"; 
         }

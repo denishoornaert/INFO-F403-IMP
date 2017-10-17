@@ -9,29 +9,30 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author Detobel
- */
-public class Main {
 
+public class Main {
+    
+    private static final String DEFAULT_IMP_FILE = "./test/Euclid.imp";
     private static TokenList _tokens;
     private static SymbolTable _table;
 
     public static void main(final String[] args) {
-        String fileName = "./test/Euclid.imp";
-        if(args.length > 0) {
+        String fileName = DEFAULT_IMP_FILE; // Default file name
+        if(args.length > 0) { // If file specified
             fileName = args[0];
         }
         _tokens = new TokenList();
         _table = new SymbolTable();
         scanImpFile(fileName);
-
+        
+        // Make test
         if(args.length > 1 && args[1].equalsIgnoreCase("-test")) {
-            final String fileNameWitoutExt = fileName.substring(0, fileName.lastIndexOf('.'));
-            String testFile = fileNameWitoutExt + ".out";
+            final String testFile;
             if(args.length > 2) {
                 testFile = args[2];
+            } else {
+                final String fileNameWitoutExt = fileName.substring(0, fileName.lastIndexOf('.'));
+                testFile = fileNameWitoutExt + ".out";
             }
             testOutput(testFile);
         }
@@ -72,7 +73,7 @@ public class Main {
         final File file;
         try {
             file = new File(testFile);
-            List<String> allLines = Files.readAllLines(file.toPath(), Charset.forName("UTF-8"));
+            final List<String> allLines = Files.readAllLines(file.toPath(), Charset.forName("UTF-8"));
             if(checkSameOutput(allLines)) {
                 System.out.println("Les résultats sont équivalent au fichier " + testFile);
             }
