@@ -94,5 +94,22 @@
     \lstinputlisting{../test/Sort.imp}
 
 \section{How to set up the project}
+  To simplify the compilation, including in particular the support of external librairies, we use Maven.  The file \verb|pom.xml| define the main, the source folder but also the JFlex library and the package wich must be compiled whith this library.
+  
+  \subsection{Compilation}
+    To compile with Maven you only must to execute: \verb|mvn clean compile|.  However you need to execute \verb|mvn install| the first time to install the library.\\
+    If you will not use Maven.  You must to execute different command (from the root project):\\
+    \verb|java -jar jflex-1.6.1.jar -d src/be/ac/ulb/infof403/ src/be/ac/ulb/infof403/lex/Scanner.flex|\\
+    Where \verb|jflex-1.6.1.jar| is the path to the ``jar'' executable library.  The parameter ``-d'' allows to define the output folder and the last parameter is the path to the ``flex`` file.\\
+    Now you must to compile java source and create ''class`` file.  Here is a command (for Bash user only) to compile all java file located in ''src`` folder:\\
+    \verb=javac -d target $(find ./src/* | grep .java)=\\
+    This command generate ''.class`` file and put them in the ''target`` folder (create it if it does not exist yet).  We need to create now the ''jar`` file with the command:\\
+    \verb|jar cvfe yourJarFile.jar be/ac/ulb/infof403/Main target/|\\
+    Where ''yourJarFile.jar`` is the name of the generate jar file, then it's the path to Main class and the last parameter is the folder where the class file are located.
+    
+    
+  \subsection{Execution}
+    
+
 
 \end{document}
