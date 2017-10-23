@@ -47,15 +47,14 @@
   \begin{itemize}
     \item a \textit{variable} is a sequence of alphanumeric characters that must start by a letter.
     \item a \textit{number} is a sequence of one or more digits.
-    % Remy: Ne faut-t-il pas mettre des guillemets pour les symboles des commentaires ?
-    \item a \textit{comment} must start by the combination \verb|(*| and ends by the reversed combination \verb|*)|. 
+    \item a \textit{comment} must start by the combination '\verb|(*|' and ends by the reversed combination '\verb|*)|'. 
   \end{itemize}
   The compilation scheme is generally divided in three main phases~: analysis, synthesis and optimization. The phases are themselves composed of different steps. For instance, the analysis phase is composed of \textit{lexical analysing} step (or \textit{scanning}), a \textit{syntax analysing} step (or \textit{parsing}) and a \textit{semantic analysing} step. In this assignment, the focus is set on the \textit{analysis phase}.
-  % Replace it by a proper figure.
-  \begin{center}
-    \includegraphics[scale=0.5]{./img/phase_of_compiler.jpg}\\
-    \textit{Figure 1~-~Compilation phases.}
-  \end{center}
+  \begin{figure}[h]
+      \includegraphics[scale=0.5]{./img/phase_of_compiler.jpg}
+      \centering
+      \caption{Compilation phases}
+    \end{figure}
   
 \section{Implementation of the lexical analyser}
 
@@ -69,11 +68,11 @@
     In order to ease the process of recognizing the lexemes defined in the given \verb|LexicalUnits.java| many \textit{lexical analysers} bave been develloped. Among them, the most well known generator is the flex program and all its derived versions. In the present project, \verb|jflex| is used as it has been decided to implement the project using the \verb|java| programming language. Using a \textit{lexical analyser generator} eases the analysis of any input because it enables the programmers to describe every \textit{regular expression} by using the \textit{Regex} writing convention and then to generate a \verb|.java| file that will recognise all of them. This generated \verb|.java| file can then be used as any other \verb|java| class. 
   
   \subsection{Lexical analyser structure}
-    % Replace it by a proper figure.
-    \begin{center}
-      \includegraphics[scale=0.35]{./img/class_diag.png}\\
-      \textit{Figure 2~-~Class model.}
-    \end{center}
+    \begin{figure}[h]
+      \includegraphics[scale=0.25]{./img/class_diag.png}
+      \centering
+      \caption{Model class}
+    \end{figure}
   
   \subsection{Regular expressions}
 
