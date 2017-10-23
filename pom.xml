@@ -26,7 +26,7 @@
                             <mainClass>be.ac.ulb.infof403.Main</mainClass>
                         </manifest>
                     </archive>
-                    <finalName>${project.name}</finalName>
+                    <finalName>../dist/${project.name}</finalName>
                 </configuration>
             </plugin>
             
