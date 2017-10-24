@@ -39,6 +39,7 @@
 \begin{document}
 
 \maketitle
+\tableofcontents
 
 \section{Introduction}
 
@@ -86,11 +87,11 @@
     The most obvious and smartest way to implement it is to use a counter (i.e. a memory) that will be incremented for every opening statement encountered and decreased for every closing statement encountered. However, from a theoretical point of view, by using a memory the language cannot be considered as regular any more. In the present project, it is not a problem and \verb|jflex| allows us to implement such a language.
     % Remy: peut-être rajouter un mot également sur le fait que un commentaire imbriqué n'a pas de sens réel vu qu'on ignore tout ce qui n'est pas une fermeture de commentaire dans un commentaire ;)
     
-  \subsection{Tests}
-    
-    \lstinputlisting{../test/Euclid.imp}
-    \lstinputlisting{../test/Search.imp}
-    \lstinputlisting{../test/Sort.imp}
+\section{Tests}
+  
+  \lstinputlisting{../../test/Euclid.imp}
+  \lstinputlisting{../../test/Search.imp}
+  \lstinputlisting{../../test/Sort.imp}
 
 \section{How to set up the project}
   In order to simplify the compilation and the support of external libraries, it has been decided to use a well known \textit{java} project manager named \textit{Maven}. Its configuration file (\verb|pom.xml|) defines the \verb|main| file, defines the source folder, the \textit{JFlex} library and the package that must be compiled with this library.
