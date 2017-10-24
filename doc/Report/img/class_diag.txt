@@ -48,5 +48,6 @@ ImpScanner -up- Scanner
 ImpScanner *-right- TokenList
 ImpScanner *-down- SymbolTable
 TokenList -- Symbol
+Symbol -- SymbolTable
 Symbol -- LexicalUnit
 @enduml
