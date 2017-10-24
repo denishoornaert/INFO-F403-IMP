@@ -114,16 +114,24 @@ public class ImpScanner {
     }
     
     /**
-     * Check that the current IMP file ... TODO 
+     * Check that the current IMP file have the good output
      * 
-     * @param testLineStr
-     * @return 
+     * @param testLineStr list of expected output
+     * @return True if all is ok
      */
     private boolean checkSameOutput(final List<String> testLineStr) {
+        return checkSameTokenOutput(testLineStr) && checkSameTableOutput(testLineStr);
+    }
+    
+    /**
+     * Check that the current IMP file have the same token that the expected output
+     * 
+     * @param testLineStr list of expected output
+     * @return True if all is ok
+     */
+    private boolean checkSameTokenOutput(final List<String> testLineStr) {
         boolean allOk = true;
-        final String strToken = _tokens.toString();
-        final String[] strSplitToken = strToken.split("\n");
-
+        final String[] strSplitToken = _tokens.toString().split("\n");
         int i = 0;
         for(final String tokenLine : strSplitToken) {
             final String goodResult = testLineStr.get(i++);
@@ -132,32 +140,57 @@ public class ImpScanner {
             final String noTabGoodResult = removeTabAndSpaces(goodResult);
             
             if(!noTabTokenLine.equals(noTabGoodResult)) {
-                printError(noTabGoodResult, noTabTokenLine, (i-1));
+                printTestError(noTabGoodResult, noTabTokenLine, (i-1));
                 allOk = false;
             }
         }
-
+        return allOk;
+    }
+    
+    /**
+     * Check that the current IMP file have the same table that the expected output
+     * 
+     * @param testLineStr list of expected output
+     * @return True if all is ok
+     */
+    private boolean checkSameTableOutput(final List<String> testLineStr) {
+        boolean allOk = true;
+        final String[] strSplitToken = _tokens.toString().split("\n");
+        int i = strSplitToken.length;
         i+=2; // Skip space and "Identifiers"
+        
         final String strTable = _table.toString();
         final String[] strSplitTable = strTable.split("\n");
         for(final String tableLine : strSplitTable) {
             final String goodResult = testLineStr.get(i++);
             if(!removeTabAndSpaces(tableLine).equals(removeTabAndSpaces(goodResult))) {
-                printError(goodResult, tableLine, (i-1));
+                printTestError(goodResult, tableLine, (i-1));
                 allOk = false;
             }
         }
-
         return allOk;
     }
     
-    private void printError(final String goodResult, final String errorLine, 
+    /**
+     * Print an error when the output is not the same that hoped
+     * 
+     * @param goodResult the expected output
+     * @param errorLine the current output
+     * @param indexErrorLine line number
+     */
+    private void printTestError(final String goodResult, final String errorLine, 
             final int indexErrorLine) {
         System.err.println("Error with line: " + indexErrorLine);
         System.err.println("Expeted:   '" + goodResult + "'");
         System.err.println("Recieving: '" + errorLine + "'");
     }
     
+    /**
+     * Remove tabulation and space (to ignore them)
+     * 
+     * @param strToTrim text where we must to remove space and tab
+     * @return the modified text
+     */
     private String removeTabAndSpaces(final String strToTrim) {
         return strToTrim.trim().replaceAll("\t", " ").replaceAll(" +", " ");
     }

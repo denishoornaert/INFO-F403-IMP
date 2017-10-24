@@ -2,8 +2,14 @@ package be.ac.ulb.infof403;
 
 import java.util.ArrayList;
 
+/**
+ * List of token
+ */
 public class TokenList extends ArrayList<Symbol> {
-    
+
+    /**
+     * Default constructor
+     */
     public TokenList() {
         super();
     }

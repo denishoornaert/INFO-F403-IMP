@@ -2,7 +2,17 @@ package be.ac.ulb.infof403;
 
 import java.util.HashMap;
 
+/**
+ * Table of symbol (where a symbol is associated with his line number)
+ */
 public class SymbolTable extends HashMap<Object, Integer> {
+    
+    /**
+     * Default constructor
+     */
+    public SymbolTable() {
+        super();
+    }
     
     /**
      * The method checks whether the value of the symbol is already on the HashMap.
