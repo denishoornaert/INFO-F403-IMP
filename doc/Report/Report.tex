@@ -141,15 +141,15 @@ token: [x]                lexical unit: VARNAME
     
 \section{Tests and results} % TODO reference and check his name spelling
   In this section, the results of the implementation are analysed and tested throught three \textit{IMP} source codes~: one given in the assignment statements and the two others inspired by algorithms from the Syllabus of Thierry Massart\footnote{Thierry Massart, 2014. \textit{Programmation.} Release 3.3.3~.}. The aim of testing the \textit{lexical analyser} on these three tests is to ensure that every \textit{keyword} and \textit{variable} is recognized because the set of keywords in the \verb|Euclid.imp| file does not cover every possibilities. This is why, even though the \textit{IMP} language does not handle lists, these two codes have been chosen. As explained above in the Hypothesis subsection \ref{hypothesis}, every unknown/undefined character is simply overlooked. Therefore, the \verb|[| and \verb|]| characters (which are generally used as operator on lists) does not trouble the lexical analysing.
-  \begin{figure}[h] % cacule réellement le gcd
+  \begin{figure}[h!] % cacule réellement le gcd
     \lstinputlisting{../../test/Euclid.imp}
     \caption{\textit{IMP} code to compute the gcd of two numbers}
   \end{figure}
-  \begin{figure}[h] % "binary search" =?= "reherche dicotomique"
+  \begin{figure}[h!] % "binary search" =?= "reherche dicotomique"
     \lstinputlisting{../../test/Search.imp}
     \caption{Implementation of a binary search using \textit{IMP}}
   \end{figure}
-  \begin{figure}[h]
+  \begin{figure}[h!]
     \lstinputlisting{../../test/Sort.imp}
     \caption{Implementation of a sorting algorithm using \textit{IMP}}
   \end{figure}  
