@@ -188,10 +188,11 @@ java -jar dist/INFO-F403-IMP.jar <sourceFile> -test <testFile>\end{verbatim}
     
     
   \subsection{Javadoc}
-    The javadoc is located in the \textit{doc} folder.  To generate the javadoc with Maven you must to execute \verb|mvn javadoc:javadoc|.  If you do not want to user Maven, you could execute the following command:
+    The javadoc is located in the \verb|doc/| folder.  To generate the javadoc with Maven you must to execute \verb|mvn javadoc:javadoc|.  If you do not want to user Maven, you could execute the following command:
     \begin{verbatim}
- javadoc -d doc/javadoc/ -keywords -sourcepath src -subpackages be \end{verbatim}
-    Where \verb|doc/javadoc| is the output folder. The option \verb|-keywords| enable HTML in the javadoc.
+javadoc -d doc/javadoc/ -keywords -sourcepath src -subpackages be
+    \end{verbatim}
+    Where \verb|doc/javadoc/| is the output folder. The option \verb|-keywords| enable HTML in the javadoc.
 
 
 \end{document}
