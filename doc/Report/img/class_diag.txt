@@ -1,5 +1,4 @@
 @startuml
-
 'accessibilité
 skinparam classAttributeIconSize 0
 
@@ -19,8 +18,11 @@ skinparam stereotypeCBackgroundColor OldLace
 
 
 class Main {
-  {static} - TokenList _tokens
-  {static} - SymbolTable _table
+}
+
+class ImpScanner {
+  - TokenList _tokens
+  - SymbolTable _table
 }
 
 class Scanner {
@@ -37,15 +39,15 @@ class TokenList<extends ArrayList<Symbol>> {
   + toString()
 }
 
-class SymbolTable {
-  - HashMap<String, int> _dic
+class SymbolTable<extends HashMap<String, int>> {
   + toString()
 }
 
-Main *-- TokenList
-Main *-- SymbolTable
-Main -- LexicalUnit
-Main -- Scanner
-TokenList *-- Symbol
+Main -right- ImpScanner
+ImpScanner -up- Scanner
+ImpScanner *-right- TokenList
+ImpScanner *-down- SymbolTable
+TokenList -- Symbol
+Symbol -- SymbolTable
 Symbol -- LexicalUnit
 @enduml

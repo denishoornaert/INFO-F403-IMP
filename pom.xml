@@ -54,6 +54,7 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.0.0-M1</version>
                 <configuration>
+                    <keywords>true</keywords>
                     <reportOutputDirectory>doc</reportOutputDirectory>
                     <destDir>javadoc</destDir>
                 </configuration>
