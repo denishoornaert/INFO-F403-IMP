@@ -58,7 +58,6 @@
     \end{figure}
   
 \section{Implementation of the lexical analyser}
-
   In the so called "Dragon book"\footnote{V. Aho, A., 2007. \textit{Compilers~: Principles, techniques, \& Tools.} 2nd ed. New York~: Pearson.} the \textit{lexical anlyser} is defined as follow~:
   \begin{center}
     <<The \textit{lexical analyser} reads the stream of characters making up the source program and groups the character into a meaningful sequence called \textit{lexemes}.>>
@@ -74,6 +73,13 @@
     \end{figure}
   
   \subsection{Regular expressions}
+    Based on the content of \verb|LexicalUnits.java|, we can easily divide the set of lexical units into two distinct groups~: the \textit{keywords} and the variable/constant group.\\
+    The implementation of the \textit{keywords} group using regular expressions is pretty straightforward as simply writing the \textit{keyword} is sufficient. For instance, the regular expression of the \textit{keyword} \verb|if| is simply \verb|if|.\\
+    On the other hand, the implementation of the variable/constant group requires slightly more work. This small group is composed of two elements the variables and the numbers. The structure for variables given in the assignment directives is "a sequence of alphanumeric characters that must start by a letter". Thus, the equivalent regular expression is~:
+    \begin{verbatim}
+[a-zA-Z][a-zA-Z0-9]*
+    \end{verbatim}
+    % end with numbers
   
   \subsection{Hypothesis on regular expressions}
 
