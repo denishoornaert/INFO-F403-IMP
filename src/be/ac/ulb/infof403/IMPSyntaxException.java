@@ -1,6 +1,14 @@
 package be.ac.ulb.infof403;
 
+/**
+ * Exception when there is an error in IMP code
+ * 
+ */
 public class IMPSyntaxException extends Exception {
+    
+    /**
+     * Default constructor
+     */
     public IMPSyntaxException() { 
         super(); 
     }
