@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Scan an IMP file and (option) check if the output is valid
@@ -120,7 +118,7 @@ public class ImpScanner {
             }
 
         } catch (IOException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("Erreur with test file: " + ex.getMessage());
         }
     }
     
