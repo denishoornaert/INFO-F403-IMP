@@ -1,8 +1,11 @@
+(*
+    Algorithme to calcul Fibonacci
+*)
 begin
     read(n) ;
     a := 0 ;
     b := 0 ;
-    for n from 0 to n do
+    for n from 0 to n do (* loop from 0 to n *)
         tmp := b ;
         b := a + b ;
         a := tmp ;
