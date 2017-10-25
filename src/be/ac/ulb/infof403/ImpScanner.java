@@ -59,8 +59,8 @@ public class ImpScanner {
 
             readSymbol(scanner);
 
-        } catch (IOException ex) {
-            System.err.println("Error with file IMP: " + ex.getMessage());
+        } catch (IOException exception) {
+            System.err.println("Error with file IMP: " + exception.getMessage());
             allOk = false;
         } catch(ImpSyntaxException exception) {
             System.err.println("Error with a token: " + exception.getMessage());
@@ -117,8 +117,8 @@ public class ImpScanner {
                 System.out.println("The output is equivalent to the test file: " + testFile);
             }
 
-        } catch (IOException ex) {
-            System.err.println("Erreur with test file: " + ex.getMessage());
+        } catch (IOException exception) {
+            System.err.println("Error with test file: " + exception.getMessage());
         }
     }
     
