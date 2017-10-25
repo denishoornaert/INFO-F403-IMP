@@ -6,7 +6,7 @@ package be.ac.ulb.infof403;
 %class Scanner
 %function nextToken
 %type Symbol
-%yylexthrow IMPSyntaxException
+%yylexthrow ImpSyntaxException
 %unicode
 
 %column
@@ -65,8 +65,9 @@ CloseComment    = "*)"
     {Number}       {return new Symbol(LexicalUnit.NUMBER,    yyline, yycolumn, new String(yytext()));}
     <<EOF>>        {return new Symbol(LexicalUnit.EOS,       yyline, yycolumn);}
     "\n"           {return null;}
-    [^]            {return null;}
+    " "            {return null;}
     {OpenComment}  {yybegin(COMMENT);}
+    [^]            {throw new ImpSyntaxException("Unknow symbol '" + yytext() + "'");}
 }
 
 <COMMENT> {

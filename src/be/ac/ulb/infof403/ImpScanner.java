@@ -35,11 +35,12 @@ public class ImpScanner {
     public ImpScanner(final String fileName, final String testFileName) {
         _tokens = new TokenList();
         _table = new SymbolTable();
-        openAndInitScannerImpFile(fileName);
-        printResult();
-        
-        if(!testFileName.isEmpty()) {
-            testOutput(testFileName);
+        if(openAndInitScannerImpFile(fileName)) {
+            printResult();
+
+            if(!testFileName.isEmpty()) {
+                testOutput(testFileName);
+            }
         }
     }
     
@@ -48,8 +49,11 @@ public class ImpScanner {
      * Open and initialise the scanner of the IMP file
      * 
      * @param fileName the IMP filename
+     * @return True if all is ok, false if there are an error when file is opening
+     * or when a symbol is not good read
      */
-    private void openAndInitScannerImpFile(final String fileName) {
+    private boolean openAndInitScannerImpFile(final String fileName) {
+        Boolean allOk = true;
         final FileReader file;
         try {
             file = new FileReader(fileName);
@@ -57,9 +61,15 @@ public class ImpScanner {
 
             readSymbol(scanner);
 
-        } catch (IOException | IMPSyntaxException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            System.err.println("Error with file IMP: " + ex.getMessage());
+            allOk = false;
+        } catch(ImpSyntaxException exception) {
+            System.err.println("Error with a token: " + exception.getMessage());
+            allOk = false;
         }
+        
+        return allOk;
     }
     
     
@@ -78,9 +88,9 @@ public class ImpScanner {
      * 
      * @param scanner the scanner which will read the file
      * @throws IOException if there is file problem
-     * @throws IMPSyntaxException if there is an IMP syntax error
+     * @throws ImpSyntaxException if there is an IMP syntax error
      */
-    private void readSymbol(final Scanner scanner) throws IOException, IMPSyntaxException {
+    private void readSymbol(final Scanner scanner) throws IOException, ImpSyntaxException {
         Symbol symbol = null;
         while(symbol == null || symbol.getType() != LexicalUnit.EOS) {
             if(symbol != null) {
@@ -89,6 +99,7 @@ public class ImpScanner {
                     _table.put(symbol);
                 }
             }
+            
             symbol = scanner.nextToken();
         }
     }

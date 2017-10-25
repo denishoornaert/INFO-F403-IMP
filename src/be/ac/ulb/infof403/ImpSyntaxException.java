@@ -4,24 +4,24 @@ package be.ac.ulb.infof403;
  * Exception when there is an error in IMP code
  * 
  */
-public class IMPSyntaxException extends Exception {
+public class ImpSyntaxException extends Exception {
     
     /**
      * Default constructor
      */
-    public IMPSyntaxException() { 
+    public ImpSyntaxException() { 
         super(); 
     }
     
-    public IMPSyntaxException(final String message) { 
+    public ImpSyntaxException(final String message) { 
         super(message); 
     }
     
-    public IMPSyntaxException(final String message, final Throwable cause) { 
+    public ImpSyntaxException(final String message, final Throwable cause) { 
         super(message, cause); 
     }
     
-    public IMPSyntaxException(final Throwable cause) { 
+    public ImpSyntaxException(final Throwable cause) { 
         super(cause); 
     }
 }
