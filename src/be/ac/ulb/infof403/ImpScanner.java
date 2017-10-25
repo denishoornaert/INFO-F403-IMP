@@ -116,7 +116,7 @@ public class ImpScanner {
             file = new File(testFile);
             final List<String> allLines = Files.readAllLines(file.toPath(), Charset.forName("UTF-8"));
             if(checkSameOutput(allLines)) {
-                System.out.println("Les résultats sont équivalent au fichier " + testFile);
+                System.out.println("The output is equivalent to the test file: " + testFile);
             }
 
         } catch (IOException ex) {
