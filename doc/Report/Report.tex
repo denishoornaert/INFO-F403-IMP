@@ -96,7 +96,7 @@
     In order words, the question is~: What does the \textit{lexical analyser} do for the following line~:
     \begin{lstlisting}
 index_of_loop := list[x]\end{lstlisting}
-    Three ideas have been considered~:
+    Four ideas have been considered~:
     \begin{itemize}
       \item Considering these characters as a new lexical unit identified by the following regular expression (not exhaustive)~:
         \begin{verbatim}
@@ -127,7 +127,8 @@ token: :=                 lexical unit: EQUAL
 token: [x]                lexical unit: VARNAME
         \end{verbatim}
         Even though, using characters like \verb|_| in variable name is common in many programming languages, the other characters are generally not used for this purpose. Given this fact and the fact that the assignment statement does not explicitly mention such a possibility, this idea has been overlooked. Moreover, this implies that variable such as \verb|{{!^^§'#| would be considered as valid even though having such \textit{variables} is not handy.
-      \item Not considering them. In this possibility, we just overlook them like if they were equivalent to a space character. This solution is the one who fits the best the assignment statements. Therefore, this solution has been preferred over the two others.
+      \item Not considering them. In this possibility, we just overlook them like if they were equivalent to a space character. Implementing this idea is quick but does not really make sense because theses characters would then cause many problems in the following steps.
+      \item Throwing an error. This idea consists simply on printing a warning when an unexpected character is encountered and on stopping the program as resuming does not make any sense. Moreover, this behaviour is pretty common in many programming languages. This solution is the one who fits the best the assignment statements. Therefore, this solution has been preferred over the two others.
     \end{itemize}
 
   \subsection{Dealing with nested comments}
@@ -139,18 +140,20 @@ token: [x]                lexical unit: VARNAME
     The most obvious and smartest way to implement it is to use a counter (i.e. a memory) that will be incremented for every opening statement encountered and decreased for every closing statement encountered. However, from a theoretical point of view, by using a memory the language cannot be considered as regular any more. In the present project, it is not a problem and \verb|jflex| allows us to implement such a language.
     
 \section{Tests and results}
-  In this section, the results of the implementation are analysed and tested throught three \textit{IMP} source codes~: one given in the assignment statements and the two others inspired by algorithms from the Syllabus of Thierry Massart\footnote{Thierry Massart, 2014. \textit{Programmation.} Release 3.3.3~.}. The aim of testing the \textit{lexical analyser} on these three tests is to ensure that every \textit{keyword} and \textit{variable} is recognized because the set of keywords in the \verb|Euclid.imp| file does not cover every possibilities. This is why, even though the \textit{IMP} language does not handle lists, these two codes have been chosen. As explained above in the Hypothesis subsection \ref{hypothesis}, every unknown/undefined character is simply overlooked. Therefore, the \verb|[| and \verb|]| characters (which are generally used as operator on lists) does not trouble the lexical analysing.
+  In this section, the results of the implementation are analysed and tested throught three \textit{IMP} source codes~: one given in the assignment statements and the two others inspired by algorithms from the Syllabus of Thierry Massart\footnote{Thierry Massart, 2014. \textit{Programmation.} Release 3.3.3~.}. The aim of testing the \textit{lexical analyser} on these three tests is to ensure that a maximum of the \textit{keywords} and the \textit{variables} are recognized because the set of keywords in the \verb|Euclid.imp| (fig.\ref{code:euclid}) file does not cover every possibilities. This is why these two codes have been chosen. As explained above in the Hypothesis subsection \ref{hypothesis}, the program in fig.\ref{code:sort} simply stops its execution as it encounters an undefined character at line 2 ('\verb|[|'). Unfortunately, it is difficult to cover all the different statements as finding interesting samples of code that do not use list(s) is hard.
   \begin{figure}[h!] % cacule réellement le gcd
     \lstinputlisting{../../test/Euclid.imp}
     \caption{\textit{IMP} code to compute the gcd of two numbers}
+    \label{code:euclid}
   \end{figure}
-  \begin{figure}[h!] % "binary search" =?= "reherche dicotomique"
-    \lstinputlisting{../../test/Search.imp}
-    \caption{Implementation of a binary search using \textit{IMP}}
+  \begin{figure}[h!]
+    \lstinputlisting{../../test/Fibonacci.imp}
+    \caption{Implementation of the Fibonacci \textit{"algorithm"} using \textit{IMP}}
   \end{figure}
   \begin{figure}[h!]
     \lstinputlisting{../../test/Sort.imp}
     \caption{Implementation of a sorting algorithm using \textit{IMP}}
+    \label{code:sort}
   \end{figure}  
 
 \section{How to set up the project}
