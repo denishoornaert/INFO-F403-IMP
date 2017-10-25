@@ -67,7 +67,8 @@ CloseComment    = "*)"
     "\n"           {return null;}
     " "            {return null;}
     {OpenComment}  {yybegin(COMMENT);}
-    [^]            {throw new ImpSyntaxException("Unknow symbol '" + yytext() + "'");}
+    [^]            {throw new ImpSyntaxException("Unknown symbol '" + yytext() + "' " +
+                    "(" + yycolumn + " character at line " + yyline + ")");}
 }
 
 <COMMENT> {
