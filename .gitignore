@@ -1,4 +1,5 @@
 /target/
+/dist/INFO-F403-IMP.jar
 nb-configuration.xml
 /src/be/ac/ulb/infof403/scanner/Scanner.java
 /doc/Report/Report.aux
