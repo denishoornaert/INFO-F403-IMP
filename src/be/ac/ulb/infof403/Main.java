@@ -1,6 +1,7 @@
 package be.ac.ulb.infof403;
 
 import be.ac.ulb.infof403.scanner.ImpScanner;
+import java.util.Arrays;
 
 /**
  * Main class
@@ -15,6 +16,24 @@ public class Main {
      * @param args parameters given when the program is executed
      */
     public static void main(final String[] args) {
+        if(args.length == 0) {
+            System.err.println("Missing argument");
+            printHelp();
+            return;
+        }
+        
+        final String[] newArgs = Arrays.copyOfRange(args, 1, args.length);
+        switch(args[0]) {
+            case "scan":
+                scan(newArgs);
+                break;
+            
+            case "grammar":
+                break;
+        }
+    }
+    
+    private static void scan(final String[] args) {
         String fileName = DEFAULT_IMP_FILE; // Default file name
         if(args.length > 0) { // If file specified
             fileName = args[0];
@@ -37,8 +56,19 @@ public class Main {
         } else {
             new ImpScanner(fileName);
         }
-
     }
     
+    private static void printHelp() {
+        System.out.println("Command: java -jar INFO-F403-IMP.jar <scan/grammar> [options]");
+        System.out.println("");
+        System.out.println("--- Options Scan ---");
+        System.out.println("  > java -jar INFO-F403-IMP.jar scan [inputFile] [outputFile] [-test]");
+        System.out.println("  \tinputFile\tThe file with the IMP code (default: './test/Euclid.imp')");
+        System.out.println("  \toutputFile\tExpected output of IMP scan");
+        System.out.println("  \t-test\t\tAutomaticaly test that output is equals to the output system");
+        System.out.println("--- Options Grammar ---");
+        System.out.println("  > java -jar INFO-F403-IMP.jar grammar [-test]");
+        System.out.println("  \t-test\t\tTemporary test grammar"); // TODO change when code is finish
+    }
 
 }
