@@ -74,13 +74,20 @@ public class Main {
     private static void grammar(final String[] args) {
         // Currently only test structure:
         
-        /*
-        <init> -> <A>
+        testGrammar1();
+        testGrammar2();
+    }
+    
+    //////////// DEBUG ////////////
+    
+    private static void testGrammar1() {
+        /* -=- Grammar 1 -=-
+        <init>    -> <A>
         <A>       -> b<init>
                   -> b
         */
         
-        final Grammar grammar = new Grammar();
+        final Grammar grammar1 = new Grammar();
         
         // Define variable
         final GrammarVariable initial = new GrammarVariable("init");
@@ -89,13 +96,58 @@ public class Main {
         // Define terminal
         final Symbol b = new Symbol(LexicalUnit.VARNAME, "b");
         
-        grammar.addRule(initial, A);
-        grammar.addRule(A, b, initial);
-        grammar.addRule(A, b);
+        grammar1.addRule(initial, A);
+        grammar1.addRule(A, b, initial);
+        grammar1.addRule(A, b);
         
-        System.out.println("Grammar: ");
-        System.out.println(grammar);
+        System.out.println("Grammar1: ");
+        System.out.println(grammar1);
+        System.out.println("");
     }
+    
+    private static void testGrammar2() {
+        /* -=- Grammar 2 -=-
+        <init>    -> <A>
+                  -> <B>
+        <A>       -> a<B>
+                  -> b<init>
+                  -> b
+        <B>       -> <A><B>
+                  -> <B>a
+        <C>       -> <A><init>
+                  -> b
+        */
+        
+        final Grammar grammar2 = new Grammar();
+        
+        // Define variable
+        final GrammarVariable initial = new GrammarVariable("init");
+        final GrammarVariable A = new GrammarVariable("A");
+        final GrammarVariable B = new GrammarVariable("B");
+        final GrammarVariable C = new GrammarVariable("C");
+        
+        // Define terminal
+        final Symbol a = new Symbol(LexicalUnit.VARNAME, "a");
+        final Symbol b = new Symbol(LexicalUnit.VARNAME, "b");
+        
+        // <init>
+        grammar2.addRule(initial, A);
+        grammar2.addRule(initial, B);
+        // <A>
+        grammar2.addRule(A, a, B);
+        grammar2.addRule(A, b, initial);
+        grammar2.addRule(A, b);
+        // <B>
+        grammar2.addRule(B, A, B);
+        grammar2.addRule(B, B, a);
+        // <C>
+        grammar2.addRule(C, A, initial);
+        grammar2.addRule(C, b);
+        
+        System.out.println("Grammar2: ");
+        System.out.println(grammar2);
+    }
+    
     
     
     /**
