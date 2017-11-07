@@ -1,5 +1,7 @@
 package be.ac.ulb.infof403;
 
+import be.ac.ulb.infof403.scanner.ImpScanner;
+
 /**
  * Main class
  */

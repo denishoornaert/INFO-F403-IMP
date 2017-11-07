@@ -1,4 +1,4 @@
-package be.ac.ulb.infof403;
+package be.ac.ulb.infof403.scanner;
 
 /**
  * Exception when there is an error in IMP code

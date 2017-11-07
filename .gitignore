@@ -1,6 +1,6 @@
 /target/
 nb-configuration.xml
-/src/be/ac/ulb/infof403/Scanner.java
+/src/be/ac/ulb/infof403/scanner/Scanner.java
 /doc/Report/Report.aux
 /doc/Report/Report.fdb_latexmk
 /doc/Report/Report.fls
