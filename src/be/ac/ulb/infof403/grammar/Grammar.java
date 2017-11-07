@@ -12,9 +12,11 @@ import java.util.HashSet;
 public class Grammar {
     
     private final HashMap<GrammarVariable, ArrayList<Rule>> _listRule;
+    private final GrammarVariable _initialState;
     
-    public Grammar() {
+    public Grammar(final GrammarVariable initialState) {
         _listRule = new HashMap<>();
+        _initialState = initialState;
     }
     
     public ArrayList getRuleForVariable(final GrammarVariable variable) {
@@ -44,19 +46,24 @@ public class Grammar {
 		return result;
 	}
     
-    public void removeUnproductive() {
+    public void removeUseless() {
+        removeUnproductive();
+        removeInaccessible();
+    }
+    
+    private void removeUnproductive() {
         final HashSet<GrammarVariable> newGrammarVariable = new HashSet<>();
         boolean addVariable = true;
         
         while(addVariable) {
             addVariable = false;
-            for(GrammarVariable sym : _listRule.keySet()) {
+            for(final GrammarVariable sym : _listRule.keySet()) {
                 if(_listRule.get(sym).isEmpty()) {
                     if(newGrammarVariable.add(sym)) {
                         addVariable = true;
                     }
                 } else {
-                    for(Rule rule : _listRule.get(sym)) {
+                    for(final Rule rule : _listRule.get(sym)) {
                         if(rule.allComposantTerminal(newGrammarVariable)) {
                             if(newGrammarVariable.add(sym)) {
                                 addVariable = true;
@@ -84,6 +91,32 @@ public class Grammar {
                         _listRule.get(sym).remove(rule);
                     }
                 }
+            }
+        }
+    }
+    
+    private void removeInaccessible() {
+        final HashSet<GrammarVariable> accessibleVariable = new HashSet<>();
+        accessibleVariable.add(_initialState);
+        
+        boolean addVariable = true;
+        while(addVariable) {
+            addVariable = false;
+            
+            for(final GrammarVariable var : accessibleVariable) {
+                for(final Rule rule : _listRule.get(var)) {
+                    if(accessibleVariable.addAll(rule.getAllGrammarVariable())) {
+                        addVariable = true;
+                    }
+                }
+            }
+        }
+        
+        final HashMap<GrammarVariable, ArrayList<Rule>> cloneListRule =
+                (HashMap<GrammarVariable, ArrayList<Rule>>) _listRule.clone();
+        for(final GrammarVariable var : cloneListRule.keySet()) {
+            if(!accessibleVariable.contains(var)) {
+                _listRule.remove(var);
             }
         }
     }

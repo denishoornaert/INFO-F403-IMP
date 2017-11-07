@@ -33,4 +33,14 @@ public class Rule {
         return true;
     }
     
+    public HashSet<GrammarVariable> getAllGrammarVariable() {
+        final HashSet<GrammarVariable> allGrammarVar = new HashSet();
+        for(Elem elem : _allComposant) {
+            if(elem instanceof GrammarVariable) {
+                allGrammarVar.add((GrammarVariable) elem);
+            }
+        }
+        return allGrammarVar;
+    }
+    
 }
