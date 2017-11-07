@@ -43,4 +43,9 @@ public class Grammar {
 		return result;
 	}
     
+    public void removeUnproductive() {
+        final ArrayList<GrammarVariable> newGrammarVariable = new ArrayList<>();
+        
+    }
+    
 }
