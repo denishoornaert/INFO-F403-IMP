@@ -1,5 +1,7 @@
 package be.ac.ulb.infof403;
 
+import be.ac.ulb.infof403.grammar.Grammar;
+import be.ac.ulb.infof403.grammar.GrammarVariable;
 import be.ac.ulb.infof403.scanner.ImpScanner;
 import java.util.Arrays;
 
@@ -29,10 +31,16 @@ public class Main {
                 break;
             
             case "grammar":
+                grammar(newArgs);
                 break;
         }
     }
     
+    /**
+     * Scan a IMP file
+     * 
+     * @param args informations to scan
+     */
     private static void scan(final String[] args) {
         String fileName = DEFAULT_IMP_FILE; // Default file name
         if(args.length > 0) { // If file specified
@@ -58,6 +66,42 @@ public class Main {
         }
     }
     
+    /**
+     * Optimise grammar and scan it
+     * 
+     * @param args 
+     */
+    private static void grammar(final String[] args) {
+        // Currently only test structure:
+        
+        /*
+        <initial> -> <A>
+        <A>       -> b<initial>
+                  -> b
+        */
+        
+        final Grammar grammar = new Grammar();
+        
+        // Define variable
+        final GrammarVariable initial = new GrammarVariable();
+        final GrammarVariable A = new GrammarVariable();
+        
+        // Define terminal
+        final Symbol a = new Symbol(LexicalUnit.VARNAME, "a");
+        final Symbol b = new Symbol(LexicalUnit.VARNAME, "b");
+        
+        grammar.addRule(initial, A);
+        grammar.addRule(A, b, initial);
+        grammar.addRule(A, b);
+        
+        System.out.println("Grammar: ");
+        System.out.println(grammar);
+    }
+    
+    
+    /**
+     * Print help message and informations to launch jar
+     */
     private static void printHelp() {
         System.out.println("Command: java -jar INFO-F403-IMP.jar <scan/grammar> [options]");
         System.out.println("");

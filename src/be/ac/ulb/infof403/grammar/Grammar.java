@@ -2,6 +2,7 @@ package be.ac.ulb.infof403.grammar;
 
 import be.ac.ulb.infof403.Elem;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -15,11 +16,15 @@ public class Grammar {
         _listRule = new HashMap<>();
     }
     
-    public ArrayList getRuleForVariable(GrammarVariable variable) {
+    public ArrayList getRuleForVariable(final GrammarVariable variable) {
         return _listRule.get(variable);
     }
     
-    public void addRule(GrammarVariable sym, ArrayList<Elem> listElem) {
+    public void addRule(final GrammarVariable sym, final Elem... listElem) {
+        addRule(sym, new ArrayList<>(Arrays.asList(listElem)));
+    }
+    
+    public void addRule(final GrammarVariable sym, final ArrayList<Elem> listElem) {
         if(!_listRule.containsKey(sym)) {
             _listRule.put(sym, new ArrayList<Rule>());
         }

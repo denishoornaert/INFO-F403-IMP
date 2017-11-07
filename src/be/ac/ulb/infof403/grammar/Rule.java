@@ -18,7 +18,7 @@ public class Rule {
 	public String toString() {
         String result = "";
         for(Elem elem : _allComposant) {
-            result += elem.toString() + " ";
+            result += elem.getValue()+ " ";
         }
         return result;
     }

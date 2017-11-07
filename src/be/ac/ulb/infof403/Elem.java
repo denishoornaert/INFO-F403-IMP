@@ -8,4 +8,6 @@ public abstract class Elem {
     @Override
     public abstract String toString();
     
+    public abstract Object getValue();
+    
 }

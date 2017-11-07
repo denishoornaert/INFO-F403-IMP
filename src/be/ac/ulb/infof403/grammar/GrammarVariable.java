@@ -17,7 +17,12 @@ public class GrammarVariable extends Elem {
 
     @Override
     public String toString() {
-        return "" + _counter;
+        return getValue();
+    }
+
+    @Override
+    public String getValue() {
+        return "<" + _counter + ">";
     }
     
 }

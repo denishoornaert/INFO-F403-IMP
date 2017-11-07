@@ -44,6 +44,7 @@ public class Symbol extends Elem {
 		return this.type;
 	}
 	
+    @Override
 	public Object getValue(){
 		return this.value;
 	}
