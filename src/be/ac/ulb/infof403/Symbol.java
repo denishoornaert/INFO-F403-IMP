@@ -1,6 +1,6 @@
 package be.ac.ulb.infof403;
 
-public class Symbol{
+public class Symbol extends Elem {
     
 	public static final int UNDEFINED_POSITION = -1;
 	public static final Object NO_VALUE = null;
@@ -44,6 +44,7 @@ public class Symbol{
 		return this.type;
 	}
 	
+    @Override
 	public Object getValue(){
 		return this.value;
 	}
