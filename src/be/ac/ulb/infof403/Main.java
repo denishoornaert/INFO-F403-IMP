@@ -146,6 +146,10 @@ public class Main {
         
         System.out.println("Grammar2: ");
         System.out.println(grammar2);
+        
+        grammar2.removeUnproductive();
+        System.out.println("Grammar2 Clean: ");
+        System.out.println(grammar2);
     }
     
     
