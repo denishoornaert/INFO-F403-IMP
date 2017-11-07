@@ -75,19 +75,18 @@ public class Main {
         // Currently only test structure:
         
         /*
-        <initial> -> <A>
-        <A>       -> b<initial>
+        <init> -> <A>
+        <A>       -> b<init>
                   -> b
         */
         
         final Grammar grammar = new Grammar();
         
         // Define variable
-        final GrammarVariable initial = new GrammarVariable();
-        final GrammarVariable A = new GrammarVariable();
+        final GrammarVariable initial = new GrammarVariable("init");
+        final GrammarVariable A = new GrammarVariable("A");
         
         // Define terminal
-        final Symbol a = new Symbol(LexicalUnit.VARNAME, "a");
         final Symbol b = new Symbol(LexicalUnit.VARNAME, "b");
         
         grammar.addRule(initial, A);

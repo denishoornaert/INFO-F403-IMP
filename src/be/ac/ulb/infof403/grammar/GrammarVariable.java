@@ -10,8 +10,14 @@ public class GrammarVariable extends Elem {
     private static int globalCounter = 0;
     
     private final int _counter;
+    private final String _varName;
     
     public GrammarVariable() {
+        this("");
+    }
+    
+    public GrammarVariable(final String varName) {
+        _varName = varName;
         _counter = globalCounter++;
     }
 
@@ -22,7 +28,15 @@ public class GrammarVariable extends Elem {
 
     @Override
     public String getValue() {
-        return "<" + _counter + ">";
+        String result = "<";
+        if(_varName.isEmpty()) {
+            result += _counter;
+        } else {
+            result += _varName;
+        }
+        result += ">";
+        
+        return result;
     }
     
 }
