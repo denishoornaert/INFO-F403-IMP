@@ -83,6 +83,7 @@ public class Main {
         
         testGrammar1();
         testGrammar2();
+        testGrammar3(); // left recursion removale
     }
     
     //////////// DEBUG ////////////
@@ -157,6 +158,44 @@ public class Main {
         grammar2.removeUseless();
         System.out.println("Grammar2 Clean: ");
         System.out.println(grammar2);
+    }
+    
+    private static void testGrammar3() {
+        /* -=- Grammar 2 -=-
+        <E>       -> <E>+<T>
+                  -> <T>
+        <T>       -> <T>*<P>
+                  -> <P>
+        <P>       -> ID
+        */
+        
+        // Define variable
+        final GrammarVariable E = new GrammarVariable("E");
+        final GrammarVariable T = new GrammarVariable("T");
+        final GrammarVariable P = new GrammarVariable("P");
+        
+        // Define terminal
+        final Symbol ml = new Symbol(LexicalUnit.TIMES, "*");
+        final Symbol pl = new Symbol(LexicalUnit.PLUS, "+");
+        final Symbol id = new Symbol(LexicalUnit.VARNAME, "ID");
+        
+        final Grammar grammar3 = new Grammar(E);
+        
+        // <E>
+        grammar3.addRule(E, E, pl, T);
+        grammar3.addRule(E, T);
+        // <T>
+        grammar3.addRule(T, T, ml, P);
+        grammar3.addRule(T, P);
+        // <P>
+        grammar3.addRule(P, id);
+        
+        System.out.println("Grammar3: ");
+        System.out.println(grammar3);
+        
+        grammar3.removeLeftRecursion();
+        System.out.println("Grammar3 Clean: ");
+        System.out.println(grammar3);
     }
     
     private static void stree_test_with_factorisation() {
