@@ -2,7 +2,6 @@ package be.ac.ulb.infof403.grammar;
 
 import be.ac.ulb.infof403.Elem;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Class used by the stree.

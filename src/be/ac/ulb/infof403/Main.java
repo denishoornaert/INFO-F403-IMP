@@ -38,6 +38,7 @@ public class Main {
                 
             case "stree":
                 stree();
+                stree_test_with_no_factorisation();
                 break;
         }
     }
@@ -177,6 +178,26 @@ public class Main {
         list2.add(new Symbol(LexicalUnit.ELSE, "else"));
         list2.add(code);
         list2.add(new Symbol(LexicalUnit.ENDIF, "endif"));
+        
+        Stree s = new Stree(new GrammarVariable("If"));
+        s.add(list1);
+        s.add(list2);
+        s.generateRules();
+        Grammar g = s.getSubGrammar();
+        System.out.println(g);
+    }
+    
+    private static void stree_test_with_no_factorisation() {
+        GrammarVariable expr = new GrammarVariable("ExprArith");
+        
+        ArrayList<Elem> list1 = new ArrayList<>();
+        list1.add(new Symbol(LexicalUnit.LPAREN, "("));
+        list1.add(expr);
+        list1.add(new Symbol(LexicalUnit.RPAREN, ")"));
+        
+        ArrayList<Elem> list2 = new ArrayList<>();
+        list2.add(new Symbol(LexicalUnit.MINUS, "-"));
+        list2.add(expr);
         
         Stree s = new Stree(new GrammarVariable("If"));
         s.add(list1);
