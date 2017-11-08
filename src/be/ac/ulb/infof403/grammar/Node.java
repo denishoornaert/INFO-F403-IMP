@@ -72,24 +72,6 @@ public class Node {
                 }
             }
         }
-        /*
-        if(_children.size() > 1) {
-            GrammarVariable var = new GrammarVariable(currentVar.getVarName()+"'");
-            list.add(var);
-            grammar.addRule(currentVar, list);
-            for (Node node : _children) {
-                node.generateRules(new Rule(), var, grammar);
-            }
-        }
-        else {
-            if(_children.size() == 1) {
-                _children.get(0).generateRules(list, currentVar, grammar);
-            }
-            else { // currentNode.getChildrenNumber() == 0
-                
-                grammar.addRule(currentVar, list);
-            }
-        }*/
     }
     
 }

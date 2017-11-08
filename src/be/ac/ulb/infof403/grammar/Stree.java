@@ -10,7 +10,7 @@ public class Stree {
     private Grammar _grammar;
     
     public Stree (GrammarVariable var) {
-        _grammar = new Grammar();
+        _grammar = new Grammar(var);
         _variable = var;
     }
     
