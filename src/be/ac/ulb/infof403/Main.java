@@ -1,9 +1,12 @@
 package be.ac.ulb.infof403;
 
 import be.ac.ulb.infof403.grammar.Grammar;
+import be.ac.ulb.infof403.grammar.GrammarScanner;
 import be.ac.ulb.infof403.grammar.GrammarVariable;
 import be.ac.ulb.infof403.grammar.Stree;
 import be.ac.ulb.infof403.scanner.ImpScanner;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -34,6 +37,10 @@ public class Main {
             
             case "grammar":
                 grammar(newArgs);
+                break;
+                
+            case "testgrammar":
+                testScanGrammar();
                 break;
                 
             case "stree":
@@ -71,6 +78,39 @@ public class Main {
         } else {
             new ImpScanner(fileName);
         }
+    }
+    
+    private static void testScanGrammar() {
+        Boolean allOk = true;
+        GrammarScanner scanner = null;
+        final FileReader file;
+        try {
+            file = new FileReader("./test/gram1.gram");
+            scanner = new GrammarScanner(file);
+
+        } catch (IOException exception) {
+            System.err.println("Error with file IMP: " + exception.getMessage());
+            allOk = false;
+        }
+        
+        if(allOk) {
+            Symbol symbol = null;
+            int i = 0;
+            try {
+                while(scanner != null && (symbol == null || symbol.getType() != LexicalUnit.EOS) && i < 500) {
+                    symbol = scanner.nextToken();
+                    ++i;
+                }
+            } catch (IOException ex) {
+                System.err.println("Bug with token Grammar flex: " + ex.getMessage());
+            }
+
+            final Grammar newGrammar = GrammarScanner.getGrammar();
+            if(newGrammar != null) {
+                System.out.println("Grammaire: \n" + newGrammar.toString());
+            }
+        }
+        
     }
     
     /**
