@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 /**
  * List of rule of a grammar
@@ -121,7 +122,7 @@ public class Grammar {
         }
     }
     
-    public void facorisation() {
+    public void facorisation() { // TODO has to be tested
         for (GrammarVariable var : _listRule.keySet()) {
             // Setup of the stree and generation of the factorised rules.
             Stree s = new Stree(var);
@@ -132,6 +133,26 @@ public class Grammar {
             // Replacement of the former rule by the (new) one(s).
             _listRule.remove(var);
             _listRule.put(var, g.getRuleForVariable(var));
+        }
+    }
+    
+    public void removeLeftRecursion() {
+        for (Map.Entry<GrammarVariable, ArrayList<Rule>> entry : _listRule.entrySet()) {
+            GrammarVariable key = entry.getKey();
+            ArrayList<Rule> value = entry.getValue();
+            Boolean again = true;
+            int counter = 0;
+            while(counter < value.size() && again) {
+                again = true;
+                if(key.equals(value.get(0))) {
+                    again = false;
+                    GrammarVariable u = new GrammarVariable(key.getVarName()+"U");
+                    GrammarVariable v = new GrammarVariable(key.getVarName()+"V");
+                    _listRule.remove(key);
+                    ArrayList<Rule> list = _listRule.get(key);
+                    list.add(new Rule(u, v));
+                }
+            }
         }
     }
     

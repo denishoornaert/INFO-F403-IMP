@@ -2,6 +2,7 @@ package be.ac.ulb.infof403.grammar;
 
 import be.ac.ulb.infof403.Elem;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 
 /**
@@ -9,8 +10,8 @@ import java.util.HashSet;
  */
 public class Rule extends ArrayList<Elem> {
     
-    public Rule() {
-        super();
+    public Rule(Elem... elems) {
+        super(new ArrayList<Elem>(Arrays.asList(elems)));
     }
     
     public Rule(final ArrayList<Elem> composant) {
