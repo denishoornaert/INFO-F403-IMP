@@ -40,6 +40,7 @@ public class Symbol extends Elem {
 		return this.type == null;
 	}
 	
+        @Override
 	public LexicalUnit getType(){
 		return this.type;
 	}
@@ -73,4 +74,9 @@ public class Symbol extends Elem {
 		}
 		return "Non-terminal symbol";
 	}
+        
+        @Override
+        public boolean equals(Object symb) {
+            return symb instanceof Symbol && this.type == ((Symbol)symb).type;
+        }
 }

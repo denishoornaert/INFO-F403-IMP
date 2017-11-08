@@ -20,6 +20,10 @@ public class GrammarVariable extends Elem {
         _varName = varName;
         _counter = globalCounter++;
     }
+    
+    public String getVarName() {
+        return _varName;
+    }
 
     @Override
     public String toString() {
@@ -37,6 +41,16 @@ public class GrammarVariable extends Elem {
         result += ">";
         
         return result;
+    }
+
+    @Override
+    public Object getType() {
+        return "Var";
+    }
+    
+    @Override
+    public boolean equals(Object var) {
+        return true; // TODO correct comparison.
     }
     
 }

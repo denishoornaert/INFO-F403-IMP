@@ -6,18 +6,20 @@ import java.util.ArrayList;
 /**
  * 
  */
-public class Rule {
+public class Rule extends ArrayList<Elem> {
     
-    private final ArrayList<Elem> _allComposant;
+    public Rule() {
+        super();
+    }
     
     public Rule(final ArrayList<Elem> composant) {
-        _allComposant = composant;
+        super(composant);
     }
     
     @Override
 	public String toString() {
         String result = "";
-        for(Elem elem : _allComposant) {
+        for(Elem elem : this) {
             result += elem.getValue()+ " ";
         }
         return result;

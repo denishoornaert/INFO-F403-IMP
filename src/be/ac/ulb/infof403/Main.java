@@ -2,7 +2,9 @@ package be.ac.ulb.infof403;
 
 import be.ac.ulb.infof403.grammar.Grammar;
 import be.ac.ulb.infof403.grammar.GrammarVariable;
+import be.ac.ulb.infof403.grammar.Stree;
 import be.ac.ulb.infof403.scanner.ImpScanner;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -32,6 +34,10 @@ public class Main {
             
             case "grammar":
                 grammar(newArgs);
+                break;
+                
+            case "stree":
+                stree();
                 break;
         }
     }
@@ -148,6 +154,25 @@ public class Main {
         System.out.println(grammar2);
     }
     
+    private static void stree() {
+        ArrayList<Elem> list1 = new ArrayList<>();
+        list1.add(new Symbol(LexicalUnit.IF, "if"));
+        list1.add(new Symbol(LexicalUnit.THEN, "then"));
+        list1.add(new Symbol(LexicalUnit.ENDIF, "endif"));
+        
+        ArrayList<Elem> list2 = new ArrayList<>();
+        list2.add(new Symbol(LexicalUnit.IF, "if"));
+        list2.add(new Symbol(LexicalUnit.THEN, "then"));
+        list2.add(new Symbol(LexicalUnit.ELSE, "else"));
+        list2.add(new Symbol(LexicalUnit.ENDIF, "endif"));
+        
+        Stree s = new Stree(new GrammarVariable("If"));
+        s.add(list1);
+        s.add(list2);
+        s.generateRules();
+        Grammar g = s.getSubGrammar();
+        System.out.println(g);
+    }
     
     
     /**
