@@ -48,9 +48,4 @@ public class GrammarVariable extends Elem {
         return "Var";
     }
     
-    @Override
-    public boolean equals(Object var) {
-        return true; // TODO correct comparison.
-    }
-    
 }

@@ -159,15 +159,23 @@ public class Main {
     }
     
     private static void stree() {
+        GrammarVariable cond = new GrammarVariable("Cond");
+        GrammarVariable code = new GrammarVariable("Code");
+        
         ArrayList<Elem> list1 = new ArrayList<>();
         list1.add(new Symbol(LexicalUnit.IF, "if"));
+        list1.add(cond);
         list1.add(new Symbol(LexicalUnit.THEN, "then"));
+        list1.add(code);
         list1.add(new Symbol(LexicalUnit.ENDIF, "endif"));
         
         ArrayList<Elem> list2 = new ArrayList<>();
         list2.add(new Symbol(LexicalUnit.IF, "if"));
+        list2.add(cond);
         list2.add(new Symbol(LexicalUnit.THEN, "then"));
+        list2.add(code);
         list2.add(new Symbol(LexicalUnit.ELSE, "else"));
+        list2.add(code);
         list2.add(new Symbol(LexicalUnit.ENDIF, "endif"));
         
         Stree s = new Stree(new GrammarVariable("If"));
