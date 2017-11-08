@@ -93,14 +93,14 @@ public class Main {
                   -> b
         */
         
-        final Grammar grammar1 = new Grammar();
-        
         // Define variable
         final GrammarVariable initial = new GrammarVariable("init");
         final GrammarVariable A = new GrammarVariable("A");
         
         // Define terminal
         final Symbol b = new Symbol(LexicalUnit.VARNAME, "b");
+        
+        final Grammar grammar1 = new Grammar(initial);
         
         grammar1.addRule(initial, A);
         grammar1.addRule(A, b, initial);
@@ -124,8 +124,6 @@ public class Main {
                   -> b
         */
         
-        final Grammar grammar2 = new Grammar();
-        
         // Define variable
         final GrammarVariable initial = new GrammarVariable("init");
         final GrammarVariable A = new GrammarVariable("A");
@@ -135,6 +133,8 @@ public class Main {
         // Define terminal
         final Symbol a = new Symbol(LexicalUnit.VARNAME, "a");
         final Symbol b = new Symbol(LexicalUnit.VARNAME, "b");
+        
+        final Grammar grammar2 = new Grammar(initial);
         
         // <init>
         grammar2.addRule(initial, A);
@@ -151,6 +151,10 @@ public class Main {
         grammar2.addRule(C, b);
         
         System.out.println("Grammar2: ");
+        System.out.println(grammar2);
+        
+        grammar2.removeUseless();
+        System.out.println("Grammar2 Clean: ");
         System.out.println(grammar2);
     }
     
