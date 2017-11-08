@@ -121,4 +121,18 @@ public class Grammar {
         }
     }
     
+    public void facorisation() {
+        for (GrammarVariable var : _listRule.keySet()) {
+            // Setup of the stree and generation of the factorised rules.
+            Stree s = new Stree(var);
+            for (Rule rule : _listRule.get(var)) {
+                s.add(rule);
+            }
+            Grammar g = s.generateRules();
+            // Replacement of the former rule by the (new) one(s).
+            _listRule.remove(var);
+            _listRule.put(var, g.getRuleForVariable(var));
+        }
+    }
+    
 }

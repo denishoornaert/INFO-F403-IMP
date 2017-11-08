@@ -37,7 +37,7 @@ public class Main {
                 break;
                 
             case "stree":
-                stree();
+                stree_test_with_factorisation();
                 stree_test_with_no_factorisation();
                 break;
         }
@@ -159,7 +159,7 @@ public class Main {
         System.out.println(grammar2);
     }
     
-    private static void stree() {
+    private static void stree_test_with_factorisation() {
         GrammarVariable cond = new GrammarVariable("Cond");
         GrammarVariable code = new GrammarVariable("Code");
         
@@ -182,8 +182,7 @@ public class Main {
         Stree s = new Stree(new GrammarVariable("If"));
         s.add(list1);
         s.add(list2);
-        s.generateRules();
-        Grammar g = s.getSubGrammar();
+        Grammar g = s.generateRules();
         System.out.println(g);
     }
     
@@ -202,8 +201,7 @@ public class Main {
         Stree s = new Stree(new GrammarVariable("If"));
         s.add(list1);
         s.add(list2);
-        s.generateRules();
-        Grammar g = s.getSubGrammar();
+        Grammar g = s.generateRules();
         System.out.println(g);
     }
     

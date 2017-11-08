@@ -36,14 +36,11 @@ public class Stree {
         }
     }
     
-    public void generateRules() {
+    public Grammar generateRules() {
         for (Node node : _head) {
             Rule list = new Rule();
             node.generateRules(list, _variable, _grammar);
         }
-    }
-
-    public Grammar getSubGrammar() {
         return _grammar;
     }
     
