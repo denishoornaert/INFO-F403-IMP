@@ -40,7 +40,6 @@ public class Symbol extends Elem {
 		return this.type == null;
 	}
 	
-        @Override
 	public LexicalUnit getType(){
 		return this.type;
 	}

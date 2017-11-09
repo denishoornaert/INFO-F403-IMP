@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 /**
- * 
+ * Rule of the grammar
  */
 public class Rule extends ArrayList<Elem> {
     

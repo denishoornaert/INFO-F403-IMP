@@ -39,10 +39,6 @@ public class Main {
                 grammar(newArgs);
                 break;
                 
-            case "testgrammar":
-                testScanGrammar();
-                break;
-                
             case "stree":
                 stree_test_with_factorisation();
                 stree_test_with_no_factorisation();
@@ -80,125 +76,86 @@ public class Main {
         }
     }
     
-    private static void testScanGrammar() {
-        Boolean allOk = true;
-        GrammarScanner scanner = null;
+    /**
+     * Open and scan grammar file
+     * 
+     * @param gramFilePath the path to the grammar
+     * @return The grammar object of null if not correct
+     */
+    private static Grammar openAndScanGrammar(final String gramFilePath) {
+        Grammar result = null;
+        
+        boolean allOk = true;
+        GrammarScanner gramScanner = null;
         final FileReader file;
         try {
-            file = new FileReader("./test/gram1.gram");
-            scanner = new GrammarScanner(file);
+            file = new FileReader(gramFilePath);
+            gramScanner = new GrammarScanner(file);
 
         } catch (IOException exception) {
-            System.err.println("Error with file IMP: " + exception.getMessage());
+            System.err.println("Error with grammar file: " + exception.getMessage());
             allOk = false;
         }
         
-        if(allOk) {
-            Symbol symbol = null;
-            int i = 0;
-            try {
-                while(scanner != null && (symbol == null || symbol.getType() != LexicalUnit.EOS) && i < 500) {
-                    symbol = scanner.nextToken();
-                    ++i;
-                }
-            } catch (IOException ex) {
-                System.err.println("Bug with token Grammar flex: " + ex.getMessage());
-            }
-
-            final Grammar newGrammar = GrammarScanner.getGrammar();
-            if(newGrammar != null) {
-                System.out.println("Grammaire: \n" + newGrammar.toString());
-            }
+        if(allOk && gramScanner != null) {
+            result = readGrammar(gramScanner);
         }
         
+        return result;
+    }
+    
+    private static Grammar readGrammar(final GrammarScanner gramScanner) {
+        Symbol symbol = null;
+        try {
+            while(symbol == null || symbol.getType() != LexicalUnit.EOS) {
+                symbol = gramScanner.nextToken();
+            }
+        } catch (IOException ex) {
+            System.err.println("Bug with token Grammar flex: " + ex.getMessage());
+        }
+        
+        return GrammarScanner.getGrammar();
     }
     
     /**
      * Optimise grammar and scan it
      * 
-     * @param args 
+     * @param args arguments
      */
     private static void grammar(final String[] args) {
-        // Currently only test structure:
+        String gramFileName = "./test/Gram.gram";
+        if(args.length >= 1) {
+            gramFileName = args[0]; 
+        }
         
-        testGrammar1();
-        testGrammar2();
-        testGrammar3(); // left recursion removale
+        final Grammar grammar = openAndScanGrammar(gramFileName);
+        
+        boolean removeUseless = false;
+        boolean factorisation = false;
+        for (int i = 1; i < args.length; ++i) {
+            switch(args[i]) {
+                case "-ru":
+                case "-removeuseless":
+                    removeUseless = true;
+                    break;
+                    
+                case "-fact":
+                case "-factorisation":
+                    factorisation = true;
+                    break;
+            }
+        }
+        
+        if(removeUseless) {
+            grammar.removeUseless();
+        }
+        
+        if(factorisation) {
+            grammar.facorisation();
+        }
     }
     
     //////////// DEBUG ////////////
-    
-    private static void testGrammar1() {
-        /* -=- Grammar 1 -=-
-        <init>    -> <A>
-        <A>       -> b<init>
-                  -> b
-        */
-        
-        // Define variable
-        final GrammarVariable initial = new GrammarVariable("init");
-        final GrammarVariable A = new GrammarVariable("A");
-        
-        // Define terminal
-        final Symbol b = new Symbol(LexicalUnit.VARNAME, "b");
-        
-        final Grammar grammar1 = new Grammar(initial);
-        
-        grammar1.addRule(initial, A);
-        grammar1.addRule(A, b, initial);
-        grammar1.addRule(A, b);
-        
-        System.out.println("Grammar1: ");
-        System.out.println(grammar1);
-        System.out.println("");
-    }
-    
-    private static void testGrammar2() {
-        /* -=- Grammar 2 -=-
-        <init>    -> <A>
-                  -> <B>
-        <A>       -> a<B>
-                  -> b<init>
-                  -> b
-        <B>       -> <A><B>
-                  -> <B>a
-        <C>       -> <A><init>
-                  -> b
-        */
-        
-        // Define variable
-        final GrammarVariable initial = new GrammarVariable("init");
-        final GrammarVariable A = new GrammarVariable("A");
-        final GrammarVariable B = new GrammarVariable("B");
-        final GrammarVariable C = new GrammarVariable("C");
-        
-        // Define terminal
-        final Symbol a = new Symbol(LexicalUnit.VARNAME, "a");
-        final Symbol b = new Symbol(LexicalUnit.VARNAME, "b");
-        
-        final Grammar grammar2 = new Grammar(initial);
-        
-        // <init>
-        grammar2.addRule(initial, A);
-        grammar2.addRule(initial, B);
-        // <A>
-        grammar2.addRule(A, a, B);
-        grammar2.addRule(A, b, initial);
-        grammar2.addRule(A, b);
-        // <B>
-        grammar2.addRule(B, A, B);
-        grammar2.addRule(B, B, a);
-        // <C>
-        grammar2.addRule(C, A, initial);
-        grammar2.addRule(C, b);
-        
-        System.out.println("Grammar2: ");
-        System.out.println(grammar2);
-        
-        grammar2.removeUseless();
-        System.out.println("Grammar2 Clean: ");
-        System.out.println(grammar2);
-    }
     
     private static void testGrammar3() {
         /* -=- Grammar 2 -=-
@@ -297,7 +254,10 @@ public class Main {
         System.out.println("  \toutputFile\tExpected output of IMP scan");
         System.out.println("  \t-test\t\tAutomaticaly test that output is equals to the output system");
         System.out.println("--- Options Grammar ---");
-        System.out.println("  > java -jar INFO-F403-IMP.jar grammar [-test]");
+        System.out.println("  > java -jar INFO-F403-IMP.jar grammar <grammarFile> [options]");
+        System.out.println("  \tgrammarFile\tThe file that contains the Grammar (default: './test/Gram.gram')");
+        System.out.println("  \t-removeuseless\tRemove useless variable");
+        System.out.println("  \t-factorisation\tFactorise the grammar");
         System.out.println("  \t-test\t\tTemporary test grammar"); // TODO change when code is finish
     }
 

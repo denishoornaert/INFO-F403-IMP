@@ -9,19 +9,19 @@ import java.util.ArrayList;
  */
 public class Node {
     
-    private Elem _value;
-    private ArrayList<Node> _children;
+    private final Elem _value;
+    private final ArrayList<Node> _children;
     
-    public Node(Elem value) {
+    public Node(final Elem value) {
         _value = value;
         _children = new ArrayList<>();
     }
     
-    public void add(ArrayList<Elem> list) {
+    public void add(final ArrayList<Elem> list) {
         this.add(0, list);
     }
     
-    public void add(int index, ArrayList<Elem> list) {
+    public void add(final int index, final ArrayList<Elem> list) {
         if(index < list.size()) {
             int counter = 0;
             boolean find = false;
@@ -53,7 +53,7 @@ public class Node {
         return _children.size();
     }
     
-    public void generateRules(Rule list, GrammarVariable currentVar, Grammar grammar) {
+    public void generateRules(final Rule list, final GrammarVariable currentVar, final Grammar grammar) {
         list.add(_value);
         if(_children.isEmpty()) {
             grammar.addRule(currentVar, list);
@@ -63,10 +63,10 @@ public class Node {
                 _children.get(0).generateRules(list, currentVar, grammar);
             }
             else {
-                GrammarVariable var = new GrammarVariable(currentVar.getVarName()+"'");
+                final GrammarVariable var = new GrammarVariable(currentVar.getVarName()+"'");
                 list.add(var);
                 grammar.addRule(currentVar, list);
-                for (Node node : _children) {
+                for (final Node node : _children) {
                     node.generateRules(new Rule(), var, grammar);
                 }
             }

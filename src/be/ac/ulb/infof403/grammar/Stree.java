@@ -5,18 +5,18 @@ import java.util.ArrayList;
 
 public class Stree {
     
-    private ArrayList<Node> _head;
-    private GrammarVariable _variable;
-    private Grammar _grammar;
+    private final ArrayList<Node> _head;
+    private final GrammarVariable _variable;
+    private final Grammar _grammar;
     
-    public Stree (GrammarVariable var) {
+    public Stree (final GrammarVariable var) {
         _head = new ArrayList<>();
         _grammar = new Grammar(var);
         _variable = var;
     }
     
-    public void add(ArrayList<Elem> list) {
-        int index = 0;
+    public void add(final ArrayList<Elem> list) {
+        int index = 0; // TODO neve change ? Why ?
         if(index < list.size()) {
             int counter = 0;
             boolean find = false;
@@ -37,9 +37,8 @@ public class Stree {
     }
     
     public Grammar generateRules() {
-        for (Node node : _head) {
-            Rule list = new Rule();
-            node.generateRules(list, _variable, _grammar);
+        for (final Node node : _head) {
+            node.generateRules(new Rule(), _variable, _grammar);
         }
         return _grammar;
     }

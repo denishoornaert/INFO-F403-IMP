@@ -10,6 +10,5 @@ public abstract class Elem {
     
     public abstract Object getValue();
     
-    public abstract Object getType();
     
 }

@@ -42,10 +42,5 @@ public class GrammarVariable extends Elem {
         
         return result;
     }
-
-    @Override
-    public Object getType() {
-        return "Var";
-    }
     
 }
