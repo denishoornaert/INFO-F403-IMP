@@ -7,6 +7,8 @@
 \usepackage{graphicx}
 \usepackage{listings}
 \usepackage{color}
+\usepackage{amsmath}
+\usepackage{tikz}
 
 \title{Implementation of a compiler for an imperative language\\IMP}
 \author{Remy Detobel \& Denis Hoornaert}
@@ -139,22 +141,55 @@ token: [x]                lexical unit: VARNAME
     To overcome this problem, the analyser must know how many opening statements it came across and how many closing statements it should expect to encounter in order to know whether it is still in a comment.\\
     The most obvious and smartest way to implement it is to use a counter (i.e. a memory) that will be incremented for every opening statement encountered and decreased for every closing statement encountered. However, from a theoretical point of view, by using a memory the language cannot be considered as regular any more. In the present project, it is not a problem and \verb|jflex| allows us to implement such a language.
     
-\section{Tests and results}
-  In this section, the results of the implementation are analysed and tested throught three \textit{IMP} source codes~: one given in the assignment statements and the two others inspired by algorithms from the Syllabus of Thierry Massart\footnote{Thierry Massart, 2014. \textit{Programmation.} Release 3.3.3~.}. The aim of testing the \textit{lexical analyser} on these three tests is to ensure that a maximum of the \textit{keywords} and the \textit{variables} are recognized because the set of keywords in the \verb|Euclid.imp| (fig.\ref{code:euclid}) file does not cover every possibilities. This is why these two codes have been chosen. As explained above in the hypothesis subsection \ref{hypothesis}, the program in fig.\ref{code:sort} simply stops its execution as it encounters an undefined character at line 2 ('\verb|[|'). Unfortunately, it is difficult to cover all the different statements as finding interesting samples of code that do not use list(s) is hard.
-  \begin{figure}[h!] % cacule réellement le gcd
-    \lstinputlisting{../../test/Euclid.imp}
-    \caption{\textit{IMP} code to compute the gcd of two numbers}
-    \label{code:euclid}
-  \end{figure}
+  \subsection{Tests and results}
+    In this section, the results of the implementation are analysed and tested throught three \textit{IMP} source codes~: one given in the assignment statements and the two others inspired by algorithms from the Syllabus of Thierry Massart\footnote{Thierry Massart, 2014. \textit{Programmation.} Release 3.3.3~.}. The aim of testing the \textit{lexical analyser} on these three tests is to ensure that a maximum of the \textit{keywords} and the \textit{variables} are recognized because the set of keywords in the \verb|Euclid.imp| (fig.\ref{code:euclid}) file does not cover every possibilities. This is why these two codes have been chosen. As explained above in the hypothesis subsection \ref{hypothesis}, the program in fig.\ref{code:sort} simply stops its execution as it encounters an undefined character at line 2 ('\verb|[|'). Unfortunately, it is difficult to cover all the different statements as finding interesting samples of code that do not use list(s) is hard.
+    \begin{figure}[h!] % cacule réellement le gcd
+      \lstinputlisting{../../test/Euclid.imp}
+      \caption{\textit{IMP} code to compute the gcd of two numbers}
+      \label{code:euclid}
+    \end{figure}
+    \begin{figure}[h!]
+      \lstinputlisting{../../test/Fibonacci.imp}
+      \caption{Implementation of the Fibonacci \textit{"algorithm"} using \textit{IMP}}
+    \end{figure}
+    \begin{figure}[h!]
+      \lstinputlisting{../../test/Sort.imp}
+      \caption{Implementation of a sorting algorithm using \textit{IMP}}
+      \label{code:sort}
+    \end{figure}
+    
+\section{Implementation of the syntax analyser}
+  The \textit{syntax analysis} (or \textit{parsing}) is the step of the \textit{analysis} phases that aims to verify the structure \textit{syntax} of the source code and then reporting the potential errors using both the list of tokens generated previously by the \textit{scanner} and a grammar (see definition later) given by the language designer. In addition, \textit{parsers} might have many other features or aims such as type checking, information collecting and so on. Nevertheless, some designer may decide to complete these tasks during other steps.\\
+  The outcome of the parser is a \textit{syntax tree} that will be used by the following phase (as shown in the fig.X). We distinguish two types of \textit{parsers} : the \textit{top-down} and the \textit{bottom-up}. As their name indicates it, the former is constructed from the \textit{root} to the bottom whereas the latter is constructed from the bottom to the \textit{root}. In practice, \textit{top-down} parsers are easier to implement than their counter part but shows less performances according to [X].\\
+  As previously mentioned, \textit{parsers} uses a specific structure called \textit{grammar} which , similarly to spoken languages, aims to describe the allowed structures that a language can display.% TODO is display used correctly ???
+  The \textit{grammar} is composed of a set of variable to which are associated one or more rule(s). Typically, a programming language \textit{grammar} is written following a fixed convention (see fig.\ref{example:grammar}). Generally, in the case of a programming language, \textit{context-free grammar} are used because of its user-friendly aspect and the fact that it allows the use of an iterative development.
   \begin{figure}[h!]
-    \lstinputlisting{../../test/Fibonacci.imp}
-    \caption{Implementation of the Fibonacci \textit{"algorithm"} using \textit{IMP}}
+    \begin{align*}
+      list  &\rightarrow list + digit \\
+            &\rightarrow list - digit \\
+            &\rightarrow digit \\
+      digit &\rightarrow 0|1|2|3|4|5|6|7|8|9
+    \end{align*}
+    \caption{Example of a simple grammar}
+    \label{example:grammar}
   \end{figure}
-  \begin{figure}[h!]
-    \lstinputlisting{../../test/Sort.imp}
-    \caption{Implementation of a sorting algorithm using \textit{IMP}}
-    \label{code:sort}
-  \end{figure}  
+  Using the \textit{grammar} in fig.\ref{example:grammar} and the following instruction \verb|9-5+2| (that is yet to be translate into a list of token) the outcome of the parser will be the following \textit{syntax tree}~:
+  % TODO please Remy write a nice tree !!! :D
+  %           list
+  %        /   |   \
+  %      list  +   digit
+  %    /  |  \
+  % list  -  digit
+  %   |        |
+  % digit      5
+  %   |
+  %   9
+  
+  \subsection{Transforming the grammar to LL(1) grammar}
+    % quick description of each step : factoring, left recursion removal, useless symbol removal and unambiguity
+    % subsubsection about our automation of those step and references to our annexe where relevant.
+  
+  \subsection{Results of simplifications on the IMP grammar}
 
 \section{How to set up the project}
   In order to simplify the compilation and the support of external libraries, it has been decided to use a well known \textit{java} project manager named \textit{Maven}. Its configuration file (\verb|pom.xml|) defines the \verb|main| file, defines the source folder, manages the \textit{JFlex} library and the package that must be compiled with this library.
@@ -196,5 +231,77 @@ javadoc -d doc/javadoc/ -keywords -sourcepath src -subpackages be
     \end{verbatim}
     Where \verb|doc/javadoc/| is the output folder. The option \verb|-keywords| enable HTML in the javadoc.
 
+\section{Annexe}
+
+  \subsection{Left factorisation using strees}
+    Implying \textit{left-factorisation} is a good practice in order to optimise a given grammar. During the practicals, the following algorithm has been given~:
+    % insert algorithm
+    Even though this algorithm is pretty handy for humans, automatising it is harder because of the third(?) line. In fact, finding common prefixed sequences for a human is "easy" whereas it is harder for a computer and requires further structures to be implemented. In order to implement a simple-to-use algorithm that finds common prefixes, it has been decided to use a Stree and then to analyse its structures to find the common prefixes.\\
+    A stree is a memory structure that first aims to memorised a given set of strings in a compact way using trees (the names comes from the mix of \textbf{st}ring and tr\textbf{ee}). Typically, a stree consists in a tree in which each node is associated with both a value (generally a character) and a set of other nodes called \textit{children}. When inserting a string in the \textit{stree}, each node will check whether one of its children is associated with the same value has the character of the string it is given. If yes, the algorithm repeats the same mechanism with the following character of the string, otherwise, it creates a new node (to which it associates the character) and repeats the mechanism.\\
+    Generally, strees are used to retrieve stocked string but in our case, strees are used differently. Indeed, the way strees behave is perfect for left prefixes detection as each time to strings differ, the previous character (so the last common character) is the parent node of them. For instance, in fig.\ref{Fig:stree2}, the node \textbf{B} is the last common node of the two inserted strings and because the two strings then differ, the node \textbf{B} has two children.\\
+    This behaviour is something interesting to exploit in the case of left factoring however, two adaptations are required. Firstly, we do not consider string but sequence of tokens thus every node has an associated token and secondly, we do not want to retrieve sequences but to find nodes with more than one child so that we can replace them by new variable which has for rule(s) the following sequence of tokens.
+    
+    \begin{figure}[!h]
+       \begin{minipage}{0.48\textwidth}
+         \centering
+         \begin{tikzpicture}[scale=0.175]
+          \draw [black] (22,-23.4) circle (3);
+          \draw (22,-23.4) node {$A$};
+          \draw [black] (31.8,-23.4) circle (3);
+          \draw (31.8,-23.4) node {$B$};
+          \draw [black] (41.8,-23.4) circle (3);
+          \draw (41.8,-23.4) node {$C$};
+          \draw [black] (51.7,-23.4) circle (3);
+          \draw (51.7,-23.4) node {$D$};
+          \draw [black] (12.2,-23.4) circle (3);
+          \draw (12.2,-23.4) node {$head$};
+          \draw [black] (25,-23.4) -- (28.8,-23.4);
+          \fill [black] (28.8,-23.4) -- (28,-22.9) -- (28,-23.9);
+          \draw [black] (34.8,-23.4) -- (38.8,-23.4);
+          \fill [black] (38.8,-23.4) -- (38,-22.9) -- (38,-23.9);
+          \draw [black] (44.8,-23.4) -- (48.7,-23.4);
+          \fill [black] (48.7,-23.4) -- (47.9,-22.9) -- (47.9,-23.9);
+          \draw [black] (15.2,-23.4) -- (19,-23.4);
+          \fill [black] (19,-23.4) -- (18.2,-22.9) -- (18.2,-23.9);
+         \end{tikzpicture}
+         \caption{Insertion of 'ABCD'}
+         \label{Fig:stree1}
+       \end{minipage}\hfill
+       \begin {minipage}{0.48\textwidth}
+         \centering
+         \begin{tikzpicture}[scale=0.175]
+          \tikzstyle{every node}+=[inner sep=0pt]
+          \draw [black] (22,-23.4) circle (3);
+          \draw (22,-23.4) node {$A$};
+          \draw [black] (31.8,-23.4) circle (3);
+          \draw (31.8,-23.4) node {$B$};
+          \draw [black] (41.8,-23.4) circle (3);
+          \draw (41.8,-23.4) node {$C$};
+          \draw [black] (51.7,-23.4) circle (3);
+          \draw (51.7,-23.4) node {$D$};
+          \draw [black] (41.8,-33.1) circle (3);
+          \draw (41.8,-33.1) node {$E$};
+          \draw [black] (51.7,-33.1) circle (3);
+          \draw (51.7,-33.1) node {$F$};
+          \draw [black] (12.2,-23.4) circle (3);
+          \draw (12.2,-23.4) node {$head$};
+          \draw [black] (25,-23.4) -- (28.8,-23.4);
+          \fill [black] (28.8,-23.4) -- (28,-22.9) -- (28,-23.9);
+          \draw [black] (34.8,-23.4) -- (38.8,-23.4);
+          \fill [black] (38.8,-23.4) -- (38,-22.9) -- (38,-23.9);
+          \draw [black] (44.8,-23.4) -- (48.7,-23.4);
+          \fill [black] (48.7,-23.4) -- (47.9,-22.9) -- (47.9,-23.9);
+          \draw [black] (44.8,-33.1) -- (48.7,-33.1);
+          \fill [black] (48.7,-33.1) -- (47.9,-32.6) -- (47.9,-33.6);
+          \draw [black] (33.95,-25.49) -- (39.65,-31.01);
+          \fill [black] (39.65,-31.01) -- (39.42,-30.1) -- (38.72,-30.81);
+          \draw [black] (15.2,-23.4) -- (19,-23.4);
+          \fill [black] (19,-23.4) -- (18.2,-22.9) -- (18.2,-23.9);
+         \end{tikzpicture}
+         \caption{Insertion of 'ABEF'}
+         \label{Fig:stree2}
+       \end{minipage}
+    \end{figure}
+    
 
 \end{document}
