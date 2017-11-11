@@ -161,7 +161,7 @@ token: [x]                lexical unit: VARNAME
 \section{Implementation of the syntax analyser}
   The \textit{syntax analysis} (or \textit{parsing}) is the step of the \textit{analysis} phases that aims to verify the structure \textit{syntax} of the source code and then reporting the potential errors using both the list of tokens generated previously by the \textit{scanner} and a grammar (see definition later) given by the language designer. In addition, \textit{parsers} might have many other features or aims such as type checking, information collecting and so on. Nevertheless, some designer may decide to complete these tasks during other steps.\\
   The outcome of the parser is a \textit{syntax tree} that will be used by the following phase (as shown in the fig.X). We distinguish two types of \textit{parsers} : the \textit{top-down} and the \textit{bottom-up}. As their name indicates it, the former is constructed from the \textit{root} to the bottom whereas the latter is constructed from the bottom to the \textit{root}. In practice, \textit{top-down} parsers are easier to implement than their counter part but shows less performances according to [X].\\
-  As previously mentioned, \textit{parsers} uses a specific structure called \textit{grammar} which , similarly to spoken languages, aims to describe the allowed structures that a language can display.% TODO is display used correctly ???
+  As previously mentioned, \textit{parsers} uses a specific structure called \textit{grammar} which, similarly to spoken languages, aims to describe the allowed structures that a language can display.% TODO is display used correctly ???
   The \textit{grammar} is composed of a set of variable to which are associated one or more rule(s). Typically, a programming language \textit{grammar} is written following a fixed convention (see fig.\ref{example:grammar}). Generally, in the case of a programming language, \textit{context-free grammar} are used because of its user-friendly aspect and the fact that it allows the use of an iterative development.
   \begin{figure}[h!]
     \begin{align*}
@@ -173,17 +173,30 @@ token: [x]                lexical unit: VARNAME
     \caption{Example of a simple grammar}
     \label{example:grammar}
   \end{figure}
-  Using the \textit{grammar} in fig.\ref{example:grammar} and the following instruction \verb|9-5+2| (that is yet to be translate into a list of token) the outcome of the parser will be the following \textit{syntax tree}~:
-  % TODO please Remy write a nice tree !!! :D
-  %           list
-  %        /   |   \
-  %      list  +   digit
-  %    /  |  \
-  % list  -  digit
-  %   |        |
-  % digit      5
-  %   |
-  %   9
+  Using the \textit{grammar} in fig.\ref{example:grammar} and the following instruction \verb|9-5+2| (that is yet to be translate into a list of token) the outcome of the parser will be the following \textit{syntax tree}~:\\
+  \begin{center}
+    \begin{tikzpicture}[sibling distance=5em,
+      every node/.style = {shape=rectangle, rounded corners,
+	draw, align=center,
+	top color=white, bottom color=blue!20}]]
+      \node {list}
+	  child {
+	    node {list}
+	      child { node {list} 
+		child { node {digit} 
+		  child { node {9} }
+		}
+	      }
+	    child { node {-} }
+	    child { 
+	      node {digit}
+	      child { node {5} }
+	    }
+	  }
+	  child { node {+} }
+	  child { node {digit} };
+    \end{tikzpicture}
+  \end{center}
   
   \subsection{Transforming the grammar to LL(1) grammar}
     % quick description of each step : factoring, left recursion removal, useless symbol removal and unambiguity
