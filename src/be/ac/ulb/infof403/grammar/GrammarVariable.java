@@ -1,7 +1,6 @@
 package be.ac.ulb.infof403.grammar;
 
 import be.ac.ulb.infof403.Elem;
-import be.ac.ulb.infof403.Symbol;
 import be.ac.ulb.infof403.Terminal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,13 +52,52 @@ public class GrammarVariable extends Elem {
     @Override
     public HashSet<Terminal> first() {
         HashSet<Terminal> res = new HashSet<>();
-        for (Rule rule : _listRule) {
+        for (final Rule rule : _listRule) {
             res.addAll(rule.get(0).first());
         }
         return res;
     }
     
-    public ArrayList<Rule> getRules() {
+    protected boolean allRuleComposantTerminal(final HashSet<GrammarVariable> ignoreVar) {
+        for(final Rule rule : _listRule) {
+            if(rule.allComposantTerminal(ignoreVar)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    protected boolean haveNoRule() {
+        return _listRule.isEmpty();
+    }
+    
+    protected String getStrRules() {
+        String result = "";
+        for(final Rule rule : _listRule) {
+            result += this.toString() + "\t -> \t " + rule.toString() + "\n";
+        }
+        return result;
+    }
+    
+    protected void removeRuleWithUnproductiveVariable(final 
+            HashSet<GrammarVariable> productiveVariable) {
+        final ArrayList<Rule> cloneSymListRule = (ArrayList<Rule>) _listRule.clone();
+        for(final Rule rule : cloneSymListRule) {
+            if(!rule.allComposantTerminal(productiveVariable)) {
+                _listRule.remove(rule);
+            }
+        }
+    }
+    
+    protected HashSet<GrammarVariable> getAllGrammarVariable() {
+        final HashSet<GrammarVariable> result = new HashSet<>();
+        for(final Rule rule : _listRule) {
+            result.addAll(rule.getAllGrammarVariable());
+        }
+        return result;
+    }
+    
+    protected final ArrayList<Rule> getRules() {
         return _listRule;
     }
     
@@ -72,6 +110,6 @@ public class GrammarVariable extends Elem {
     }
     
     public void cleanRules() {
-        _listRule = new ArrayList<Rule>();
+        _listRule.clear();
     }
 }

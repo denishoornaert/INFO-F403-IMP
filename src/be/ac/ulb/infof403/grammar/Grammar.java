@@ -35,9 +35,7 @@ public class Grammar {
 	public String toString() {
         String result = "";
         for(final GrammarVariable sym : _variables) {
-            for(final Rule rule : sym.getRules()) {
-                result += sym.toString() + "\t -> \t " + rule.toString() + "\n";
-            }
+            result += sym.getStrRules();
         }
         return result;
     }
@@ -54,17 +52,14 @@ public class Grammar {
         while(addVariable) {
             addVariable = false;
             for(final GrammarVariable sym : _variables) {
-                if(sym.getRules().isEmpty()) {
+                if(sym.haveNoRule()) {
                     if(newGrammarVariable.add(sym)) {
                         addVariable = true;
                     }
                 } else {
-                    for(final Rule rule : sym.getRules()) {
-                        if(rule.allComposantTerminal(newGrammarVariable)) {
-                            if(newGrammarVariable.add(sym)) {
-                                addVariable = true;
-                            }
-                            break;
+                    if(sym.allRuleComposantTerminal(newGrammarVariable)) {
+                        if(newGrammarVariable.add(sym)) {
+                            addVariable = true;
                         }
                     }
                 }
@@ -81,12 +76,7 @@ public class Grammar {
             if(!productiveVariable.contains(sym)) {
                 _variables.remove(sym);
             } else {
-                final ArrayList<Rule> cloneSymListRule = (ArrayList<Rule>) sym.getRules().clone();
-                for(final Rule rule : cloneSymListRule) {
-                    if(!rule.allComposantTerminal(productiveVariable)) {
-                        sym.getRules().remove(rule);
-                    }
-                }
+                sym.removeRuleWithUnproductiveVariable(productiveVariable);
             }
         }
     }
@@ -100,10 +90,8 @@ public class Grammar {
             addVariable = false;
             
             for(final GrammarVariable var : accessibleVariable) {
-                for(final Rule rule : var.getRules()) {
-                    if(accessibleVariable.addAll(rule.getAllGrammarVariable())) {
-                        addVariable = true;
-                    }
+                if(accessibleVariable.addAll(var.getAllGrammarVariable())) {
+                    addVariable = true;
                 }
             }
         }
@@ -182,6 +170,13 @@ public class Grammar {
         workingRule.add(v);
         workingList.add(v);
         v.addRule(workingRule);
+    }
+    
+    public void printFollow(final GrammarVariable gramVar) {
+        for(final GrammarVariable currentGramVar : this._variables) {
+            // TODO !!
+        }
+        
     }
     
 }

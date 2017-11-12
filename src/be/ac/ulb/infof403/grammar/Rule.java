@@ -27,7 +27,7 @@ public class Rule extends ArrayList<Elem> {
         return result;
     }
     
-    public boolean allComposantTerminal(final HashSet<GrammarVariable> ignoreVar) {
+    protected boolean allComposantTerminal(final HashSet<GrammarVariable> ignoreVar) {
         for(Elem elem : this) {
             if(elem instanceof GrammarVariable && !ignoreVar.contains((GrammarVariable) elem)) {
                 return false;
@@ -36,7 +36,7 @@ public class Rule extends ArrayList<Elem> {
         return true;
     }
     
-    public HashSet<GrammarVariable> getAllGrammarVariable() {
+    protected HashSet<GrammarVariable> getAllGrammarVariable() {
         final HashSet<GrammarVariable> allGrammarVar = new HashSet();
         for(Elem elem : this) {
             if(elem instanceof GrammarVariable) {
