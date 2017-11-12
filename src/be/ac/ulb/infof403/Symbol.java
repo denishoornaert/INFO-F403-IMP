@@ -1,5 +1,7 @@
 package be.ac.ulb.infof403;
 
+import java.util.HashSet;
+
 public class Symbol extends Elem {
     
 	public static final int UNDEFINED_POSITION = -1;
@@ -44,7 +46,7 @@ public class Symbol extends Elem {
 		return this.type;
 	}
 	
-    @Override
+        @Override
 	public Object getValue(){
 		return this.value;
 	}
@@ -77,5 +79,12 @@ public class Symbol extends Elem {
         @Override
         public boolean equals(Object symb) {
             return symb instanceof Symbol && this.type == ((Symbol)symb).type;
+        }
+        
+        @Override
+        public HashSet<Symbol> first() {
+            HashSet<Symbol> res = new HashSet<>();
+            res.add(this);
+            return res;
         }
 }

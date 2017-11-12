@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 
 /**
  * Main class
@@ -42,6 +43,10 @@ public class Main {
             case "stree":
                 stree_test_with_factorisation();
                 stree_test_with_no_factorisation();
+                break;
+                
+            case "first":
+                first_test();
                 break;
         }
     }
@@ -131,10 +136,10 @@ public class Main {
         final Grammar grammar = openAndScanGrammar(gramFileName);
         
         // temporary TODO remove for final version
-        testGrammar2();
-        testGrammar3();
-        stree_test_with_factorisation();
-        stree_test_with_no_factorisation();
+        // testGrammar2();
+        // testGrammar3();
+        // stree_test_with_factorisation();
+        // stree_test_with_no_factorisation();
         //
         
         boolean removeUseless = false;
@@ -299,6 +304,83 @@ public class Main {
         s.add(list2);
         Grammar g = s.generateRules();
         System.out.println(g);
+    }
+    
+    private static void first_test() {
+        /* -=- Grammar -=-
+        <S>       -> <Exp>$
+        <Exp>     -> <Prod><Exp'>
+        <Exp'>    -> +<Prod><Exp'>
+                  -> -<Prod><Exp'>
+                  -> epsilon(?)
+        <Prod>    -> <Atom><prod'>
+        <Prod'>   -> *<Atom><Prod'>
+                  -> /<Atom><Prod'>
+                  -> epsilon(?)
+        <Atom>    -> -<Atom>
+                  -> Cst
+                  -> Id
+                  -> (<Exp>)
+        */
+        
+        // Define variable
+        final GrammarVariable S = new GrammarVariable("S");
+        final GrammarVariable Exp = new GrammarVariable("Exp");
+        final GrammarVariable ExpB = new GrammarVariable("Exp'");
+        final GrammarVariable Prod = new GrammarVariable("Prod");
+        final GrammarVariable ProdB = new GrammarVariable("Prod'");
+        final GrammarVariable Atom = new GrammarVariable("Atom");
+        
+        // Define terminal
+        final Symbol dl = new Symbol(LexicalUnit.VARNAME, "$");
+        final Symbol ml = new Symbol(LexicalUnit.TIMES, "*");
+        final Symbol pl = new Symbol(LexicalUnit.PLUS, "+");
+        final Symbol sb = new Symbol(LexicalUnit.MINUS, "-");
+        final Symbol dv = new Symbol(LexicalUnit.DIVIDE, "/");
+        final Symbol lp = new Symbol(LexicalUnit.LPAREN, "(");
+        final Symbol rp = new Symbol(LexicalUnit.RPAREN, ")");
+        final Symbol id = new Symbol(LexicalUnit.VARNAME, "Id");
+        final Symbol ct = new Symbol(LexicalUnit.VARNAME, "Cst");
+        
+        final Grammar grammar = new Grammar(S);
+        
+        // <S>
+        S.addRule(Exp, dl);
+        // <Exp>
+        Exp.addRule(Prod, ExpB);
+        // <ExpB>
+        ExpB.addRule(pl, Prod, ExpB);
+        ExpB.addRule(sb, Prod, ExpB);
+        // <Prod>
+        Prod.addRule(Atom, ProdB);
+        // <ProdB>
+        ProdB.addRule(ml, Atom, ProdB);
+        ProdB.addRule(dv, Atom, ProdB);
+        // <Atom>
+        Atom.addRule(sb, Atom);
+        Atom.addRule(ct);
+        Atom.addRule(id);
+        Atom.addRule(lp, Exp, rp);
+        
+        grammar.addVariables(Exp, ExpB, Prod, ProdB, Atom); // S already added above
+        
+        System.out.println("First Set retrieving");
+        System.out.println("Grammar : ");
+        System.out.println(grammar);
+        
+        HashSet<Symbol> res = Atom.first();
+        System.out.println("First(Atom) result : ");
+        for (Symbol re : res) {
+            System.out.print(re.getValue()+", ");
+        }
+        System.out.println("");
+        
+        res = ProdB.first();
+        System.out.println("First(Prod') result : ");
+        for (Symbol re : res) {
+            System.out.print(re.getValue()+", ");
+        }
+        System.out.println("");
     }
     
     
