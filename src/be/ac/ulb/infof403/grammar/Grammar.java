@@ -125,6 +125,14 @@ public class Grammar {
             // Replacement of the former rule by the (new) one(s).
             //_variables.remove(var);
             //_listRule.put(var, g.getRulesForVariable(var));
+            for (GrammarVariable variable : g.getVariables()) {
+                System.out.println(variable.getVarName());
+                if(!_variables.contains(variable)) {
+                    System.out.println("no match");
+                    // implicitly add the rules associated to this variable.
+                    _variables.add(variable);
+                }
+            }
         }
     }
     

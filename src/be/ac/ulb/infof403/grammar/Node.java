@@ -66,6 +66,7 @@ public class Node {
                 final GrammarVariable var = new GrammarVariable(currentVar.getVarName()+"'");
                 list.add(var);
                 currentVar.addRule(list);
+                grammar.addVariables(var);
                 for (final Node node : _children) {
                     node.generateRules(new Rule(), var, grammar);
                 }

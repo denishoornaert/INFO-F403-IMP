@@ -16,8 +16,8 @@ public class Stree {
     }
     
     public void add(final ArrayList<Elem> list) {
-        int index = 0; // TODO neve change ? Why ?
-        if(index < list.size()) {
+        int index = 0; // TODO neve change ? Why ? -- to avoid magic numbers baby !
+        if(index < list.size()) { // Nop seriously, this condition is useless :p
             int counter = 0;
             boolean find = false;
             while(counter < _head.size() && !find) {

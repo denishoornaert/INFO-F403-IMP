@@ -133,6 +133,9 @@ public class Main {
         // temporary
         testGrammar2();
         testGrammar3();
+        stree_test_with_factorisation();
+        stree_test_with_no_factorisation();
+        //
         
         boolean removeUseless = false;
         boolean factorisation = false;
