@@ -82,8 +82,10 @@ import java.util.ArrayList;
 BeginVar        = "<"
 EndVar          = ">"
 Separation      = "->"
-VarName         = [a-zA-Z\;\-\_\'][a-zA-Z\;\-\_\ \']*
-Litteral        = [a-zA-Z\;\$\(\)\-\_\']+
+AllChar         = [a-zA-Z\;\$\(\)\-\_\'\+\*\/]
+AllCharSpace    = [a-zA-Z\;\$\(\)\-\_\'\+\*\/\ ]
+VarName         = {AllChar}{AllCharSpace}*
+Litteral        = {AllChar}+
 Epsilon         = "epsilon"|"eps"
 
 

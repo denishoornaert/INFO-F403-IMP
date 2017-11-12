@@ -51,9 +51,11 @@ public class GrammarVariable extends Elem {
     
     @Override
     public HashSet<Terminal> first() {
-        HashSet<Terminal> res = new HashSet<>();
+        final HashSet<Terminal> res = new HashSet<>();
         for (final Rule rule : _listRule) {
-            res.addAll(rule.get(0).first());
+            Elem firstElem = rule.get(0);
+            HashSet<Terminal> listTerminal = firstElem.first();
+            res.addAll(listTerminal);
         }
         return res;
     }
@@ -93,6 +95,42 @@ public class GrammarVariable extends Elem {
         final HashSet<GrammarVariable> result = new HashSet<>();
         for(final Rule rule : _listRule) {
             result.addAll(rule.getAllGrammarVariable());
+        }
+        return result;
+    }
+    
+    protected boolean ruleContainsGramVar(final GrammarVariable gramVar) {
+        for(final Rule rule : _listRule) {
+            if(rule.contains(gramVar)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    protected boolean isGramVarEndOfAtLeastOneRule(GrammarVariable gramVar) {
+        for(final Rule rule : _listRule) {
+            final int index = rule.indexOf(gramVar);
+            if(index >= 0 && index == (rule.size()-1)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    
+    protected HashSet<Elem> getDirectFollowed(final GrammarVariable gramVar) {
+        final HashSet<Elem> result = new HashSet<>();
+        for(final Rule rule : _listRule) {
+            final int index = rule.indexOf(gramVar);
+            if(index >= 0) {
+                if(index < rule.size()-1) {
+                    final Elem followedElement = rule.get(index+1);
+                    if(followedElement != gramVar) {
+                        result.add(followedElement);
+                    }
+                }
+            }
         }
         return result;
     }

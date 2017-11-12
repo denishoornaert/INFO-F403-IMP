@@ -1,5 +1,8 @@
 package be.ac.ulb.infof403.grammar;
 
+import be.ac.ulb.infof403.Elem;
+import be.ac.ulb.infof403.Epsilon;
+import be.ac.ulb.infof403.Terminal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -172,11 +175,45 @@ public class Grammar {
         v.addRule(workingRule);
     }
     
-    public void printFollow(final GrammarVariable gramVar) {
-        for(final GrammarVariable currentGramVar : this._variables) {
-            // TODO !!
+    public void printFollow() {
+        for(final GrammarVariable gramVar : _variables) {
+            System.out.println("\n\n--------------");
+            System.out.print("Follow of " + gramVar + ": ");
+            for(final Terminal follow : getFollow(gramVar)) {
+                System.out.print(follow.getValue() + ", ");
+            }
+            System.out.println("");
         }
+    }
+    
+    public HashSet<Terminal> getFollow(final GrammarVariable gramVar) {
+        final HashSet<Terminal> result = new HashSet<>();
         
+        for(final GrammarVariable gramVarContained : _variables) {
+            final HashSet<Elem> allFollowedElem = gramVarContained.getDirectFollowed(gramVar);
+            
+            for(final Elem followedElem : allFollowedElem) {
+                if(followedElem instanceof GrammarVariable) {
+                    
+                    for(final Terminal term : followedElem.first()) {
+                        if(term instanceof Epsilon) {
+                            result.addAll(getFollow((GrammarVariable) followedElem));
+                        } else {
+                            result.add(term);
+                        }
+                    }
+                    
+                } else if(followedElem instanceof Terminal) {
+                    result.add((Terminal) followedElem);
+                }
+            }
+            
+            if(gramVarContained.isGramVarEndOfAtLeastOneRule(gramVar) && gramVarContained != gramVar) {
+                result.addAll(getFollow(gramVarContained));
+            }
+            
+        }
+        return result;
     }
     
 }

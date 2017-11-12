@@ -167,6 +167,7 @@ public class Main {
         }
         
         System.out.println("Result:\n" + grammar);
+        grammar.printFollow();
     }
     
     //////////// DEBUG ////////////
