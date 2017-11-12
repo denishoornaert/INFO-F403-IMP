@@ -2,6 +2,7 @@ package be.ac.ulb.infof403.grammar;
 
 import java.util.HashMap;
 import be.ac.ulb.infof403.Elem;
+import be.ac.ulb.infof403.Epsilon;
 import be.ac.ulb.infof403.LexicalUnit;
 import be.ac.ulb.infof403.Symbol;
 import java.util.ArrayList;
@@ -52,8 +53,12 @@ import java.util.ArrayList;
         _allRightElem.add(new Symbol(LexicalUnit.VARNAME, new String(yytext())));
     }
 
+    private void addEpsilon() {
+        _allRightElem.add(new Epsilon());
+    }
+
     private void endRule() {
-        if(_newGrammar != null && !_allRightElem.isEmpty()) {
+        if(_currentGrammarVar != null && !_allRightElem.isEmpty()) {
             _currentGrammarVar.addRule(_allRightElem);
             _allRightElem.clear();
         }
@@ -61,6 +66,7 @@ import java.util.ArrayList;
 
     private Symbol endOfFile() {
         endRule();
+        _newGrammar.addVariables(_allGrammarVar.values());
         return new Symbol(LexicalUnit.EOS);
     }
 
@@ -76,8 +82,9 @@ import java.util.ArrayList;
 BeginVar        = "<"
 EndVar          = ">"
 Separation      = "->"
-VarName         = [a-zA-Z\;\-\_][a-zA-Z\;\-\_ ]*
-Litteral        = [a-zA-Z\;]+
+VarName         = [a-zA-Z\;\-\_\'][a-zA-Z\;\-\_\ \']*
+Litteral        = [a-zA-Z\;\$\(\)\-\_\']+
+Epsilon         = "epsilon"|"eps"
 
 
 // Declare states
@@ -96,6 +103,7 @@ Litteral        = [a-zA-Z\;]+
 }
 
 <RIGHT> {
+    {Epsilon}      {addEpsilon();return null;}
     {BeginVar}     {yybegin(RIGHT_VARIABLE);return null;}
     {Litteral}     {addTerminal(yytext());return null;}
     " "            {return null;}
