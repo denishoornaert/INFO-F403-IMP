@@ -157,56 +157,18 @@ public class Main {
     
     //////////// DEBUG ////////////
     
-    private static void testGrammar3() {
-        /* -=- Grammar 2 -=-
-        <E>       -> <E>+<T>
-                  -> <T>
-        <T>       -> <T>*<P>
-                  -> <P>
-        <P>       -> ID
-        */
-        
-        // Define variable
-        final GrammarVariable E = new GrammarVariable("E");
-        final GrammarVariable T = new GrammarVariable("T");
-        final GrammarVariable P = new GrammarVariable("P");
-        
-        // Define terminal
-        final Symbol ml = new Symbol(LexicalUnit.TIMES, "*");
-        final Symbol pl = new Symbol(LexicalUnit.PLUS, "+");
-        final Symbol id = new Symbol(LexicalUnit.VARNAME, "ID");
-        
-        final Grammar grammar3 = new Grammar(E);
-        
-        // <E>
-        grammar3.addRule(E, E, pl, T);
-        grammar3.addRule(E, T);
-        // <T>
-        grammar3.addRule(T, T, ml, P);
-        grammar3.addRule(T, P);
-        // <P>
-        grammar3.addRule(P, id);
-        
-        System.out.println("Grammar3: ");
-        System.out.println(grammar3);
-        
-        grammar3.removeLeftRecursion();
-        System.out.println("Grammar3 Clean: ");
-        System.out.println(grammar3);
-    }
-    
     private static void stree_test_with_factorisation() {
-        GrammarVariable cond = new GrammarVariable("Cond");
-        GrammarVariable code = new GrammarVariable("Code");
+        final GrammarVariable cond = new GrammarVariable("Cond");
+        final GrammarVariable code = new GrammarVariable("Code");
         
-        ArrayList<Elem> list1 = new ArrayList<>();
+        final ArrayList<Elem> list1 = new ArrayList<>();
         list1.add(new Symbol(LexicalUnit.IF, "if"));
         list1.add(cond);
         list1.add(new Symbol(LexicalUnit.THEN, "then"));
         list1.add(code);
         list1.add(new Symbol(LexicalUnit.ENDIF, "endif"));
         
-        ArrayList<Elem> list2 = new ArrayList<>();
+        final ArrayList<Elem> list2 = new ArrayList<>();
         list2.add(new Symbol(LexicalUnit.IF, "if"));
         list2.add(cond);
         list2.add(new Symbol(LexicalUnit.THEN, "then"));
@@ -215,29 +177,29 @@ public class Main {
         list2.add(code);
         list2.add(new Symbol(LexicalUnit.ENDIF, "endif"));
         
-        Stree s = new Stree(new GrammarVariable("If"));
+        final Stree s = new Stree(new GrammarVariable("If"));
         s.add(list1);
         s.add(list2);
-        Grammar g = s.generateRules();
+        final Grammar g = s.generateRules();
         System.out.println(g);
     }
     
     private static void stree_test_with_no_factorisation() {
-        GrammarVariable expr = new GrammarVariable("ExprArith");
+        final GrammarVariable expr = new GrammarVariable("ExprArith");
         
-        ArrayList<Elem> list1 = new ArrayList<>();
+        final ArrayList<Elem> list1 = new ArrayList<>();
         list1.add(new Symbol(LexicalUnit.LPAREN, "("));
         list1.add(expr);
         list1.add(new Symbol(LexicalUnit.RPAREN, ")"));
         
-        ArrayList<Elem> list2 = new ArrayList<>();
+        final ArrayList<Elem> list2 = new ArrayList<>();
         list2.add(new Symbol(LexicalUnit.MINUS, "-"));
         list2.add(expr);
         
-        Stree s = new Stree(new GrammarVariable("If"));
+        final Stree s = new Stree(new GrammarVariable("If"));
         s.add(list1);
         s.add(list2);
-        Grammar g = s.generateRules();
+        final Grammar g = s.generateRules();
         System.out.println(g);
     }
     
