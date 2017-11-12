@@ -1,9 +1,8 @@
 package be.ac.ulb.infof403.grammar;
 
-import be.ac.ulb.infof403.Elem;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.HashSet;
 
 /**
@@ -11,28 +10,32 @@ import java.util.HashSet;
  */
 public class Grammar {
     
-    private ArrayList<GrammarVariable> _variables;
+    private HashSet<GrammarVariable> _variables;
     private final GrammarVariable _initialState;
     
     public Grammar(final GrammarVariable initialState) {
-        _variables = new ArrayList<>();
+        _variables = new HashSet<>();
         _variables.add(initialState);
         _initialState = initialState;
     }
     
-    public void addVariables(GrammarVariable... variables) {
-        _variables.addAll(Arrays.asList(variables));
+    public void addVariables(final GrammarVariable... variables) {
+        addVariables(new ArrayList<>(Arrays.asList(variables)));
     }
     
-    public ArrayList<GrammarVariable> getVariables() {
+    public void addVariables(final Collection<GrammarVariable> allVariables) {
+        _variables.addAll(allVariables);
+    }
+    
+    public HashSet<GrammarVariable> getVariables() {
         return _variables;
     }
     
     @Override
 	public String toString() {
         String result = "";
-        for(GrammarVariable sym : _variables) {
-            for(Rule rule : sym.getRules()) {
+        for(final GrammarVariable sym : _variables) {
+            for(final Rule rule : sym.getRules()) {
                 result += sym.toString() + "\t -> \t " + rule.toString() + "\n";
             }
         }
@@ -137,7 +140,7 @@ public class Grammar {
     }
     
     public void removeLeftRecursion() {
-        final ArrayList<GrammarVariable> workingList = (ArrayList<GrammarVariable>)_variables.clone();
+        final HashSet<GrammarVariable> workingList = (HashSet<GrammarVariable>)_variables.clone();
         for (final GrammarVariable key : _variables) {
             final ArrayList<Rule> value = key.getRules();
             Boolean again = true;
@@ -164,7 +167,7 @@ public class Grammar {
         key.addRule(new Rule(u, v));
     }
     
-    private void createURule(final ArrayList<GrammarVariable> workingList, 
+    private void createURule(final HashSet<GrammarVariable> workingList, 
             final ArrayList<Rule> list, final GrammarVariable u) {
         workingList.add(u);
         for (int i = 1; i < list.size(); i++) {
@@ -172,7 +175,7 @@ public class Grammar {
         }
     }
     
-    private void createVRule(final ArrayList<GrammarVariable> workingList, 
+    private void createVRule(final HashSet<GrammarVariable> workingList, 
             final ArrayList<Rule> list, final GrammarVariable v) {
         final Rule workingRule = list.get(0);
         workingRule.remove(0);
