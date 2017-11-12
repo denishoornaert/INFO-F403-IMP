@@ -130,7 +130,7 @@ public class Main {
         
         final Grammar grammar = openAndScanGrammar(gramFileName);
         
-        // temporary
+        // temporary TODO remove for final version
         testGrammar2();
         testGrammar3();
         stree_test_with_factorisation();
