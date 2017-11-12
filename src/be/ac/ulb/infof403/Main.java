@@ -165,6 +165,8 @@ public class Main {
         if(factorisation) {
             grammar.facorisation();
         }
+        
+        System.out.println("Result:\n" + grammar);
     }
     
     //////////// DEBUG ////////////
@@ -398,6 +400,7 @@ public class Main {
         System.out.println("  \tinputFile\tThe file with the IMP code (default: './test/Euclid.imp')");
         System.out.println("  \toutputFile\tExpected output of IMP scan");
         System.out.println("  \t-test\t\tAutomaticaly test that output is equals to the output system");
+        System.out.println("");
         System.out.println("--- Options Grammar ---");
         System.out.println("  > java -jar INFO-F403-IMP.jar grammar <grammarFile> [options]");
         System.out.println("  \tgrammarFile\tThe file that contains the Grammar (default: './test/Gram.gram')");
