@@ -312,11 +312,11 @@ public class Main {
         <Exp>     -> <Prod><Exp'>
         <Exp'>    -> +<Prod><Exp'>
                   -> -<Prod><Exp'>
-                  -> epsilon(?)
+                  -> epsilon
         <Prod>    -> <Atom><prod'>
         <Prod'>   -> *<Atom><Prod'>
                   -> /<Atom><Prod'>
-                  -> epsilon(?)
+                  -> epsilon
         <Atom>    -> -<Atom>
                   -> Cst
                   -> Id
@@ -341,6 +341,7 @@ public class Main {
         final Symbol rp = new Symbol(LexicalUnit.RPAREN, ")");
         final Symbol id = new Symbol(LexicalUnit.VARNAME, "Id");
         final Symbol ct = new Symbol(LexicalUnit.VARNAME, "Cst");
+        final Epsilon e = new Epsilon();
         
         final Grammar grammar = new Grammar(S);
         
@@ -351,11 +352,13 @@ public class Main {
         // <ExpB>
         ExpB.addRule(pl, Prod, ExpB);
         ExpB.addRule(sb, Prod, ExpB);
+        ExpB.addRule(e);
         // <Prod>
         Prod.addRule(Atom, ProdB);
         // <ProdB>
         ProdB.addRule(ml, Atom, ProdB);
         ProdB.addRule(dv, Atom, ProdB);
+        ProdB.addRule(e);
         // <Atom>
         Atom.addRule(sb, Atom);
         Atom.addRule(ct);
@@ -368,16 +371,16 @@ public class Main {
         System.out.println("Grammar : ");
         System.out.println(grammar);
         
-        HashSet<Symbol> res = Atom.first();
+        HashSet<Terminal> res = Atom.first();
         System.out.println("First(Atom) result : ");
-        for (Symbol re : res) {
+        for (Terminal re : res) {
             System.out.print(re.getValue()+", ");
         }
         System.out.println("");
         
         res = ProdB.first();
         System.out.println("First(Prod') result : ");
-        for (Symbol re : res) {
+        for (Terminal re : res) {
             System.out.print(re.getValue()+", ");
         }
         System.out.println("");

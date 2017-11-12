@@ -2,6 +2,7 @@ package be.ac.ulb.infof403.grammar;
 
 import be.ac.ulb.infof403.Elem;
 import be.ac.ulb.infof403.Symbol;
+import be.ac.ulb.infof403.Terminal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -50,8 +51,8 @@ public class GrammarVariable extends Elem {
     }
     
     @Override
-    public HashSet<Symbol> first() {
-        HashSet<Symbol> res = new HashSet<>();
+    public HashSet<Terminal> first() {
+        HashSet<Terminal> res = new HashSet<>();
         for (Rule rule : _listRule) {
             res.addAll(rule.get(0).first());
         }

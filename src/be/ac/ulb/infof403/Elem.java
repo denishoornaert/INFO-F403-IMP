@@ -12,5 +12,5 @@ public abstract class Elem {
     
     public abstract Object getValue();
     
-    public abstract HashSet<Symbol> first();
+    public abstract HashSet<Terminal> first();
 }

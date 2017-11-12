@@ -2,7 +2,7 @@ package be.ac.ulb.infof403;
 
 import java.util.HashSet;
 
-public class Symbol extends Elem {
+public class Symbol extends Terminal {
     
 	public static final int UNDEFINED_POSITION = -1;
 	public static final Object NO_VALUE = null;
@@ -82,8 +82,8 @@ public class Symbol extends Elem {
         }
         
         @Override
-        public HashSet<Symbol> first() {
-            HashSet<Symbol> res = new HashSet<>();
+        public HashSet<Terminal> first() {
+            HashSet<Terminal> res = new HashSet<>();
             res.add(this);
             return res;
         }
