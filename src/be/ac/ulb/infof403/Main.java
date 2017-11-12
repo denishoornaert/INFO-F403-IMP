@@ -130,6 +130,10 @@ public class Main {
         
         final Grammar grammar = openAndScanGrammar(gramFileName);
         
+        // temporary
+        testGrammar2();
+        testGrammar3();
+        
         boolean removeUseless = false;
         boolean factorisation = false;
         for (int i = 1; i < args.length; ++i) {
@@ -156,6 +160,56 @@ public class Main {
     }
     
     //////////// DEBUG ////////////
+    private static void testGrammar2() {
+        /* -=- Grammar 2 -=-
+        <init>    -> <A>
+                  -> <B>
+        <A>       -> a<B>
+                  -> b<init>
+                  -> b
+        <B>       -> <A><B>
+                  -> <B>a
+        <C>       -> <A><init>
+                  -> b
+        */
+        
+        // Define variable
+        final GrammarVariable initial = new GrammarVariable("init");
+        final GrammarVariable A = new GrammarVariable("A");
+        final GrammarVariable B = new GrammarVariable("B");
+        final GrammarVariable C = new GrammarVariable("C");
+        
+        // Define terminal
+        final Symbol a = new Symbol(LexicalUnit.VARNAME, "a");
+        final Symbol b = new Symbol(LexicalUnit.VARNAME, "b");
+        final Grammar grammar2 = new Grammar(initial);
+        
+        // <init>
+        initial.addRule(A);
+        initial.addRule(B);
+        
+        // <A>
+        A.addRule(a, B);
+        A.addRule(b, initial);
+        A.addRule(b);
+        
+        // <B>
+        B.addRule(A, B);
+        B.addRule(B, a);
+        
+        // <C>
+        C.addRule(A, initial);
+        C.addRule(b);
+        
+        grammar2.addVariables(A, B, C);
+        
+        System.out.println("Remove useless");
+        System.out.println("Grammar2: ");
+        System.out.println(grammar2);
+        grammar2.removeUseless();
+        System.out.println("Grammar2 Clean: ");
+        System.out.println(grammar2);
+    }
     
     private static void testGrammar3() {
         /* -=- Grammar 2 -=-
@@ -179,14 +233,17 @@ public class Main {
         final Grammar grammar3 = new Grammar(E);
         
         // <E>
-        grammar3.addRule(E, E, pl, T);
-        grammar3.addRule(E, T);
+        E.addRule(E, pl, T);
+        E.addRule(T);
         // <T>
-        grammar3.addRule(T, T, ml, P);
-        grammar3.addRule(T, P);
+        T.addRule(T, ml, P);
+        T.addRule(P);
         // <P>
-        grammar3.addRule(P, id);
+        P.addRule(id);
         
+        grammar3.addVariables(T, P);
+        
+        System.out.println("remove left recursion");
         System.out.println("Grammar3: ");
         System.out.println(grammar3);
         

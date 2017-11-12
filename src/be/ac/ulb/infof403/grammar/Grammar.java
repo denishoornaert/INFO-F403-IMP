@@ -11,40 +11,33 @@ import java.util.HashSet;
  */
 public class Grammar {
     
-    private HashMap<GrammarVariable, ArrayList<Rule>> _listRule;
+    private ArrayList<GrammarVariable> _variables;
     private final GrammarVariable _initialState;
     
     public Grammar(final GrammarVariable initialState) {
-        _listRule = new HashMap<>();
+        _variables = new ArrayList<>();
+        _variables.add(initialState);
         _initialState = initialState;
     }
     
-    public ArrayList getRuleForVariable(final GrammarVariable variable) {
-        return _listRule.get(variable);
+    public void addVariables(GrammarVariable... variables) {
+        _variables.addAll(Arrays.asList(variables));
     }
     
-    public void addRule(final GrammarVariable sym, final Elem... listElem) {
-        addRule(sym, new ArrayList<>(Arrays.asList(listElem)));
-    }
-    
-    public void addRule(final GrammarVariable sym, final ArrayList<Elem> listElem) {
-        if(!_listRule.containsKey(sym)) {
-            _listRule.put(sym, new ArrayList<Rule>());
-        }
-        _listRule.get(sym).add(new Rule(listElem));
+    public ArrayList<GrammarVariable> getVariables() {
+        return _variables;
     }
     
     @Override
 	public String toString() {
         String result = "";
-        for(GrammarVariable sym : _listRule.keySet()) {
-            for(Rule rule : _listRule.get(sym)) {
+        for(GrammarVariable sym : _variables) {
+            for(Rule rule : sym.getRules()) {
                 result += sym.toString() + "\t -> \t " + rule.toString() + "\n";
             }
         }
-        
-		return result;
-	}
+        return result;
+    }
     
     public void removeUseless() {
         removeUnproductive();
@@ -57,13 +50,13 @@ public class Grammar {
         
         while(addVariable) {
             addVariable = false;
-            for(final GrammarVariable sym : _listRule.keySet()) {
-                if(_listRule.get(sym).isEmpty()) {
+            for(final GrammarVariable sym : _variables) {
+                if(sym.getRules().isEmpty()) {
                     if(newGrammarVariable.add(sym)) {
                         addVariable = true;
                     }
                 } else {
-                    for(final Rule rule : _listRule.get(sym)) {
+                    for(final Rule rule : sym.getRules()) {
                         if(rule.allComposantTerminal(newGrammarVariable)) {
                             if(newGrammarVariable.add(sym)) {
                                 addVariable = true;
@@ -79,16 +72,16 @@ public class Grammar {
     }
     
     private void removeRuleWithUnproductiveVariable(final HashSet<GrammarVariable> productiveVariable) {
-        final HashMap<GrammarVariable, ArrayList<Rule>> cloneListRule =
-                (HashMap<GrammarVariable, ArrayList<Rule>>) _listRule.clone();
-        for(final GrammarVariable sym : cloneListRule.keySet()) {
+        final ArrayList<GrammarVariable> cloneListRule =
+                (ArrayList<GrammarVariable>) _variables.clone();
+        for(final GrammarVariable sym : cloneListRule) {
             if(!productiveVariable.contains(sym)) {
-                _listRule.remove(sym);
+                _variables.remove(sym);
             } else {
-                final ArrayList<Rule> cloneSymListRule = (ArrayList<Rule>) _listRule.get(sym).clone();
+                final ArrayList<Rule> cloneSymListRule = (ArrayList<Rule>) sym.getRules().clone();
                 for(final Rule rule : cloneSymListRule) {
                     if(!rule.allComposantTerminal(productiveVariable)) {
-                        _listRule.get(sym).remove(rule);
+                        sym.getRules().remove(rule);
                     }
                 }
             }
@@ -104,7 +97,7 @@ public class Grammar {
             addVariable = false;
             
             for(final GrammarVariable var : accessibleVariable) {
-                for(final Rule rule : _listRule.get(var)) {
+                for(final Rule rule : var.getRules()) {
                     if(accessibleVariable.addAll(rule.getAllGrammarVariable())) {
                         addVariable = true;
                     }
@@ -112,33 +105,33 @@ public class Grammar {
             }
         }
         
-        final HashMap<GrammarVariable, ArrayList<Rule>> cloneListRule =
-                (HashMap<GrammarVariable, ArrayList<Rule>>) _listRule.clone();
-        for(final GrammarVariable var : cloneListRule.keySet()) {
+        final ArrayList<GrammarVariable> cloneListRule =
+                (ArrayList<GrammarVariable>) _variables.clone();
+        for(final GrammarVariable var : cloneListRule) {
             if(!accessibleVariable.contains(var)) {
-                _listRule.remove(var);
+                _variables.remove(var);
             }
         }
     }
     
     public void facorisation() { // TODO has to be tested
-        for (final GrammarVariable var : _listRule.keySet()) {
+        for (final GrammarVariable var : _variables) {
             // Setup of the stree and generation of the factorised rules.
             final Stree s = new Stree(var);
-            for (final Rule rule : _listRule.get(var)) {
+            for (final Rule rule : var.getRules()) {
                 s.add(rule);
             }
             final Grammar g = s.generateRules();
             // Replacement of the former rule by the (new) one(s).
-            _listRule.remove(var);
-            _listRule.put(var, g.getRuleForVariable(var));
+            //_variables.remove(var);
+            //_listRule.put(var, g.getRulesForVariable(var));
         }
     }
     
     public void removeLeftRecursion() {
-        final HashMap<GrammarVariable, ArrayList<Rule>> workingList = (HashMap<GrammarVariable, ArrayList<Rule>>)_listRule.clone();
-        for (final GrammarVariable key : _listRule.keySet()) {
-            final ArrayList<Rule> value = _listRule.get(key);
+        final ArrayList<GrammarVariable> workingList = (ArrayList<GrammarVariable>)_variables.clone();
+        for (final GrammarVariable key : _variables) {
+            final ArrayList<Rule> value = key.getRules();
             Boolean again = true;
             int counter = 0;
             while(counter < value.size() && again) {
@@ -147,39 +140,37 @@ public class Grammar {
                     again = false;
                     final GrammarVariable u = new GrammarVariable(key.getVarName()+"U");
                     final GrammarVariable v = new GrammarVariable(key.getVarName()+"V");
-                    final ArrayList<Rule> list = workingList.get(key);
-                    createUVRule(workingList, key, u, v);
+                    final ArrayList<Rule> list = key.getRules();
+                    createUVRule(key, u, v);
                     createURule(workingList, list, u);
                     createVRule(workingList, list, v);
                 }
                 counter++;
             }
         }
-        _listRule = workingList;
+        _variables = workingList;
     }
     
-    private void createUVRule(final HashMap<GrammarVariable, ArrayList<Rule>> workingList, 
-            final GrammarVariable key, final GrammarVariable u, final GrammarVariable v) {
-        workingList.remove(key);
-        workingList.put(key, new ArrayList<Rule>());
-        workingList.get(key).add(new Rule(u, v));
+    private void createUVRule(final GrammarVariable key, final GrammarVariable u, final GrammarVariable v) {
+        key.cleanRules();
+        key.addRule(new Rule(u, v));
     }
     
-    private void createURule(final HashMap<GrammarVariable, ArrayList<Rule>> workingList, 
+    private void createURule(final ArrayList<GrammarVariable> workingList, 
             final ArrayList<Rule> list, final GrammarVariable u) {
-        workingList.put(u, new ArrayList<Rule>());
+        workingList.add(u);
         for (int i = 1; i < list.size(); i++) {
-            workingList.get(u).add(list.get(i));
+            u.addRule(list.get(i));
         }
     }
     
-    private void createVRule(final HashMap<GrammarVariable, ArrayList<Rule>> workingList, 
+    private void createVRule(final ArrayList<GrammarVariable> workingList, 
             final ArrayList<Rule> list, final GrammarVariable v) {
         final Rule workingRule = list.get(0);
         workingRule.remove(0);
         workingRule.add(v);
-        workingList.put(v, new ArrayList<Rule>());
-        workingList.get(v).add(workingRule);
+        workingList.add(v);
+        v.addRule(workingRule);
     }
     
 }

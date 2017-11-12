@@ -56,7 +56,7 @@ public class Node {
     public void generateRules(final Rule list, final GrammarVariable currentVar, final Grammar grammar) {
         list.add(_value);
         if(_children.isEmpty()) {
-            grammar.addRule(currentVar, list);
+            currentVar.addRule(list);
         }
         else {
             if(_children.size() == 1) {
@@ -65,7 +65,7 @@ public class Node {
             else {
                 final GrammarVariable var = new GrammarVariable(currentVar.getVarName()+"'");
                 list.add(var);
-                grammar.addRule(currentVar, list);
+                currentVar.addRule(list);
                 for (final Node node : _children) {
                     node.generateRules(new Rule(), var, grammar);
                 }

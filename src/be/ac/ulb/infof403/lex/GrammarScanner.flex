@@ -54,7 +54,7 @@ import java.util.ArrayList;
 
     private void endRule() {
         if(_newGrammar != null && !_allRightElem.isEmpty()) {
-            _newGrammar.addRule(_currentGrammarVar, _allRightElem);
+            _currentGrammarVar.addRule(_allRightElem);
             _allRightElem.clear();
         }
     }
