@@ -1,6 +1,7 @@
 package be.ac.ulb.infof403.grammar;
 
 import be.ac.ulb.infof403.Elem;
+import be.ac.ulb.infof403.Symbol;
 import be.ac.ulb.infof403.Terminal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,6 +57,22 @@ public class GrammarVariable extends Elem {
             Elem firstElem = rule.get(0);
             HashSet<Terminal> listTerminal = firstElem.first();
             res.addAll(listTerminal);
+        }
+        return res;
+    }
+    
+    public Rule getRuleThatLeadsToSymbol(Symbol sym) {
+        Rule res = null;
+        int counter = 0;
+        boolean found = false;
+        while (counter < _listRule.size() && !found) {
+            Rule rule = _listRule.get(counter);
+            // if sym in the set returned by first, save it and exit the loop
+            if(rule.get(0).first().contains(sym)) {
+                res = rule;
+                found = true;
+            }
+            counter++;
         }
         return res;
     }

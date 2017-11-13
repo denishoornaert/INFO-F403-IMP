@@ -2,6 +2,7 @@ package be.ac.ulb.infof403.grammar;
 
 import be.ac.ulb.infof403.Elem;
 import be.ac.ulb.infof403.Epsilon;
+import be.ac.ulb.infof403.Symbol;
 import be.ac.ulb.infof403.Terminal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,7 +36,7 @@ public class Grammar {
     }
     
     @Override
-	public String toString() {
+    public String toString() {
         String result = "";
         for(final GrammarVariable sym : _variables) {
             result += sym.getStrRules();
@@ -214,6 +215,27 @@ public class Grammar {
             
         }
         return result;
+    }
+    
+    public void printActionTable(Symbol... syms) {
+        // Header
+        System.out.print("\t");
+        for (Symbol sym : syms) {
+            System.out.print(sym.getValue()+"\t");
+        }
+        System.out.println("");
+        // Table
+        for (GrammarVariable var : _variables) {
+            System.out.print(var.getVarName()+" |\t");
+            for (Symbol sym : syms) {
+                Rule res = var.getRuleThatLeadsToSymbol(sym);
+                if(res != null) {
+                    System.out.print("|");
+                }
+                System.out.print("\t");
+            }
+            System.out.println("");
+        }
     }
     
 }

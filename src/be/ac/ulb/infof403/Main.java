@@ -140,7 +140,7 @@ public class Main {
         // testGrammar3();
         // stree_test_with_factorisation();
         // stree_test_with_no_factorisation();
-        //
+        testActionTable();
         
         boolean removeUseless = false;
         boolean factorisation = false;
@@ -166,7 +166,7 @@ public class Main {
             grammar.facorisation();
         }
         
-        System.out.println("Result:\n" + grammar);
+        System.out.println("Follow results:\n" + grammar);
         grammar.printFollow();
     }
     
@@ -389,6 +389,45 @@ public class Main {
         System.out.println("");
     }
     
+    private static void testActionTable() {
+        /* -=- Grammar -=-
+        <A>       -> aaa
+                  -> <B>bb
+                  -> <C>dd
+        <B>       -> b
+        <C>       -> c
+                  -> epsilon
+        */
+        
+        // Define variable
+        final GrammarVariable A = new GrammarVariable("A");
+        final GrammarVariable B = new GrammarVariable("B");
+        final GrammarVariable C = new GrammarVariable("C");
+        
+        // Define terminal
+        final Symbol a = new Symbol(LexicalUnit.VARNAME, "a");
+        final Symbol b = new Symbol(LexicalUnit.VARNAME, "b");
+        final Symbol c = new Symbol(LexicalUnit.VARNAME, "c");
+        final Symbol d = new Symbol(LexicalUnit.VARNAME, "d");
+        final Epsilon e = new Epsilon();
+        
+        final Grammar grammar = new Grammar(A);
+        
+        // <A>
+        A.addRule(a, a, a);
+        A.addRule(B, b, b);
+        A.addRule(C, d, d);
+        // <B>
+        B.addRule(b);
+        // <C>
+        C.addRule(c);
+        C.addRule(e);
+        
+        grammar.addVariables(B, C);
+        
+        System.out.println("Action table: ");
+        grammar.printActionTable(a, b, c, d);
+    }
     
     /**
      * Print help message and informations to launch jar
