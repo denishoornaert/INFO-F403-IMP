@@ -93,7 +93,7 @@ public class GrammarVariable extends Elem {
     protected String getStrRules() {
         String result = "";
         for(final Rule rule : _listRule) {
-            result += this.toString() + "\t -> \t " + rule.toString() + "\n";
+            result += "(" + rule.getId() + ")\t" + this.toString() + "\t -> \t " + rule.toString() + "\n";
         }
         return result;
     }

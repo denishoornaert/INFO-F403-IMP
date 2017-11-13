@@ -425,6 +425,7 @@ public class Main {
         
         grammar.addVariables(B, C);
         
+        System.out.println(grammar);
         System.out.println("Action table: ");
         grammar.printActionTable(a, b, c, d);
     }

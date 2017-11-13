@@ -230,7 +230,7 @@ public class Grammar {
             for (Symbol sym : syms) {
                 Rule res = var.getRuleThatLeadsToSymbol(sym);
                 if(res != null) {
-                    System.out.print("|");
+                    System.out.print(res.getId());
                 }
                 System.out.print("\t");
             }
