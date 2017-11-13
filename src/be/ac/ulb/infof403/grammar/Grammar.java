@@ -74,8 +74,8 @@ public class Grammar {
     }
     
     private void removeRuleWithUnproductiveVariable(final HashSet<GrammarVariable> productiveVariable) {
-        final ArrayList<GrammarVariable> cloneListRule =
-                (ArrayList<GrammarVariable>) _variables.clone();
+        final HashSet<GrammarVariable> cloneListRule =
+                (HashSet<GrammarVariable>) _variables.clone();
         for(final GrammarVariable sym : cloneListRule) {
             if(!productiveVariable.contains(sym)) {
                 _variables.remove(sym);
@@ -100,8 +100,8 @@ public class Grammar {
             }
         }
         
-        final ArrayList<GrammarVariable> cloneListRule =
-                (ArrayList<GrammarVariable>) _variables.clone();
+        final HashSet<GrammarVariable> cloneListRule =
+                (HashSet<GrammarVariable>) _variables.clone();
         for(final GrammarVariable var : cloneListRule) {
             if(!accessibleVariable.contains(var)) {
                 _variables.remove(var);
@@ -188,7 +188,16 @@ public class Grammar {
     }
     
     public HashSet<Terminal> getFollow(final GrammarVariable gramVar) {
+        return getFollow(gramVar, new HashSet<>());
+    }
+    
+    private HashSet<Terminal> getFollow(final GrammarVariable gramVar, 
+            final HashSet<GrammarVariable> prevGramVarAlreadyFollow) {
         final HashSet<Terminal> result = new HashSet<>();
+        if(prevGramVarAlreadyFollow.contains(gramVar)) {
+            return result;
+        }
+        prevGramVarAlreadyFollow.add(gramVar);
         
         for(final GrammarVariable gramVarContained : _variables) {
             final HashSet<Elem> allFollowedElem = gramVarContained.getDirectFollowed(gramVar);
@@ -198,7 +207,9 @@ public class Grammar {
                     
                     for(final Terminal term : followedElem.first()) {
                         if(term instanceof Epsilon) {
-                            result.addAll(getFollow((GrammarVariable) followedElem));
+                            final GrammarVariable gramVarFollowedElem = (GrammarVariable) followedElem;
+                            result.addAll(getFollow(gramVarFollowedElem, 
+                                    prevGramVarAlreadyFollow));
                         } else {
                             result.add(term);
                         }
@@ -210,25 +221,25 @@ public class Grammar {
             }
             
             if(gramVarContained.isGramVarEndOfAtLeastOneRule(gramVar) && gramVarContained != gramVar) {
-                result.addAll(getFollow(gramVarContained));
+                result.addAll(getFollow(gramVarContained, prevGramVarAlreadyFollow));
             }
             
         }
         return result;
     }
     
-    public void printActionTable(Symbol... syms) {
+    public void printActionTable(final Symbol... syms) {
         // Header
         System.out.print("\t");
-        for (Symbol sym : syms) {
+        for (final Symbol sym : syms) {
             System.out.print(sym.getValue()+"\t");
         }
         System.out.println("");
         // Table
-        for (GrammarVariable var : _variables) {
+        for (final GrammarVariable var : _variables) {
             System.out.print(var.getVarName()+" |\t");
-            for (Symbol sym : syms) {
-                Rule res = var.getRuleThatLeadsToSymbol(sym);
+            for (final Symbol sym : syms) {
+                final Rule res = var.getRuleThatLeadsToSymbol(sym);
                 if(res != null) {
                     System.out.print(res.getId());
                 }

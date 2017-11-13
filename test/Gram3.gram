@@ -1,0 +1,4 @@
+<init> -> <A> 
+<A>    -> b <init> 
+       -> b 
+       -> epsilon
