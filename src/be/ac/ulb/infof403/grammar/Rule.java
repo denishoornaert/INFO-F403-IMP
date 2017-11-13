@@ -10,12 +10,21 @@ import java.util.HashSet;
  */
 public class Rule extends ArrayList<Elem> {
     
+    private static int ruleId = 0;
+    
+    private int _id;
+    
     public Rule(Elem... elems) {
-        super(new ArrayList<Elem>(Arrays.asList(elems)));
+        this(new ArrayList<Elem>(Arrays.asList(elems)));
     }
     
     public Rule(final ArrayList<Elem> composant) {
         super(composant);
+        _id = ruleId++;
+    }
+    
+    public int getId() {
+        return _id;
     }
     
     @Override
