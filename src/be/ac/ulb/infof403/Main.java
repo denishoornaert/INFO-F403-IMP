@@ -110,7 +110,7 @@ public class Main {
     }
     
     /**
-     * Optimise grammar and scan it
+     * optimize grammar and scan it
      * 
      * @param args arguments
      */
