@@ -180,18 +180,18 @@ public class Grammar {
         for(final GrammarVariable gramVar : _variables) {
             System.out.println("\n\n--------------");
             System.out.print("Follow of " + gramVar + ": ");
-            for(final Terminal follow : getFollow(gramVar)) {
+            for(final Terminal follow : follow(gramVar)) {
                 System.out.print(follow.getValue() + ", ");
             }
             System.out.println("");
         }
     }
     
-    public HashSet<Terminal> getFollow(final GrammarVariable gramVar) {
-        return getFollow(gramVar, new HashSet<>());
+    public HashSet<Terminal> follow(final GrammarVariable gramVar) {
+        return follow(gramVar, new HashSet<>());
     }
     
-    private HashSet<Terminal> getFollow(final GrammarVariable gramVar, 
+    private HashSet<Terminal> follow(final GrammarVariable gramVar, 
             final HashSet<GrammarVariable> prevGramVarAlreadyFollow) {
         final HashSet<Terminal> result = new HashSet<>();
         if(prevGramVarAlreadyFollow.contains(gramVar)) {
@@ -208,7 +208,7 @@ public class Grammar {
                     for(final Terminal term : followedElem.first()) {
                         if(term instanceof Epsilon) {
                             final GrammarVariable gramVarFollowedElem = (GrammarVariable) followedElem;
-                            result.addAll(getFollow(gramVarFollowedElem, 
+                            result.addAll(follow(gramVarFollowedElem, 
                                     prevGramVarAlreadyFollow));
                         }
                         else {
@@ -222,7 +222,7 @@ public class Grammar {
             }
             
             if(gramVarContained.isGramVarEndOfAtLeastOneRule(gramVar) && gramVarContained != gramVar) {
-                result.addAll(getFollow(gramVarContained, prevGramVarAlreadyFollow));
+                result.addAll(follow(gramVarContained, prevGramVarAlreadyFollow));
             }
             
         }

@@ -24,32 +24,38 @@ public class Main {
             printHelp();
             return;
         }
+        int currentIndex = 0;
         
         boolean printTable = false;
         final String grammarFile;
-        if(args.length > 0) {
-           grammarFile = args[0];
+        if(args.length > 0 && !(args[currentIndex].startsWith("-"))) {
+           grammarFile = args[currentIndex];
+           ++currentIndex;
         } else {
             grammarFile = DEFAULT_GRAMMAR_FILE;
         }
         
         String testImpFile = "";
+        boolean printScanResult = false;
         final String impFile;
-        if(args.length > 1) {
-            impFile = args[1];
+        if(args.length > 1 && !(args[currentIndex].startsWith("-"))) {
+            impFile = args[currentIndex];
+            ++currentIndex;
         } else {
             impFile = DEFAULT_IMP_FILE;
         }
         
-        int currentIndex = 2;
+        
         while(args.length > currentIndex) {
             switch(args[currentIndex]) {
                 
-                case "-table":
+                case "--ta":
+                case "--table":
                     printTable = true;
                     break;
                 
-                case "-testscan":
+                case "-ts":
+                case "--testscan":
                     if(args.length > currentIndex+1 && !args[currentIndex+1].startsWith("-")) {
                         testImpFile = args[++currentIndex];
                         
@@ -59,6 +65,11 @@ public class Main {
                     }
                     break;
                 
+                case "-ps":
+                case "--printscan":
+                    printScanResult = true;
+                    break;
+                    
                 default:
                     System.err.println("Unknow argument (" + args[currentIndex] + ")");
                     return;
@@ -68,8 +79,8 @@ public class Main {
             ++currentIndex;
         }
         
-        final TokenList tokenList = scan(impFile, testImpFile);
-        
+        final TokenList tokenList = scan(impFile, testImpFile, printScanResult);
+        final Grammar grammar = getGrammar(grammarFile);
         
         
 //        final String[] newArgs = Arrays.copyOfRange(args, 1, args.length);
@@ -86,7 +97,7 @@ public class Main {
     
     private static boolean argsContainsHelp(final String[] args) {
         for(final String arg : args) {
-            if(arg.equalsIgnoreCase("-help") || arg.equalsIgnoreCase("-h")) {
+            if(arg.equalsIgnoreCase("--help") || arg.equalsIgnoreCase("-h")) {
                 return true;
             }
         }
@@ -99,12 +110,13 @@ public class Main {
      * @param impFilename file with imp source code
      * @param testImpFile expeted output file for imp analyse
      */
-    private static TokenList scan(final String impFilename, final String testOutputFile) {
-        ImpScanner impScanner = null;
+    private static TokenList scan(final String impFilename, final String testOutputFile,
+            final boolean printResult) {
+        final ImpScanner impScanner;
         if(!testOutputFile.isEmpty()) {
-            impScanner = new ImpScanner(impFilename, testOutputFile);
+            impScanner = new ImpScanner(impFilename, testOutputFile, printResult);
         } else {
-            impScanner = new ImpScanner(impFilename);
+            impScanner = new ImpScanner(impFilename, printResult);
         }
         return impScanner.getTokenList();
     }
@@ -153,43 +165,16 @@ public class Main {
     /**
      * optimize grammar and scan it
      * 
-     * @param args arguments
+     * @param grammarFilename path to grammar file
      */
-    private static void grammar(final String[] args) {
-        String gramFileName = "./test/Gram.gram";
-        if(args.length >= 1) {
-            gramFileName = args[0]; 
-        }
+    private static Grammar getGrammar(final String grammarFilename) {
+        final Grammar grammar = openAndScanGrammar(grammarFilename);
         
-        final Grammar grammar = openAndScanGrammar(gramFileName);
+        grammar.removeUseless();
+        grammar.removeLeftRecursion();
+        grammar.facorisation();
         
-        boolean removeUseless = true;
-        boolean factorisation = true;
-        for (int i = 1; i < args.length; ++i) {
-            switch(args[i]) {
-                case "-sru":
-                case "-sremoveuseless":
-                    removeUseless = false;
-                    break;
-                    
-                case "-sfact":
-                case "-sfactorisation":
-                    factorisation = false;
-                    break;
-                    
-                case "-":
-                    break;
-                    
-            }
-        }
-        
-        if(removeUseless) {
-            grammar.removeUseless();
-        }
-        
-        if(factorisation) {
-            grammar.facorisation();
-        }
+        return grammar;
     }
     
     /**
@@ -197,12 +182,12 @@ public class Main {
      */
     private static void printHelp() {
         System.out.println("Command: java -jar INFO-F403-IMP.jar <grammarFile> <IMPFile> [options]");
-        System.out.println("");
-        System.out.println("\t-help\tPrint this text");
-        System.out.println("\tgrammarFile\tThe file that contains the Grammar (default: './test/Gram.gram')");
-        System.out.println("\tIMPFile\tThe file with the IMP code (default: './test/Euclid.imp')");
-        System.out.println("\t-table\tPrint the action table");
-        System.out.println("\t-testscan [filePath]\tTest that the scanner have the good output");
+        System.out.println("  <grammarFile>\t\t\tThe file that contains the Grammar (default: './test/Gram.gram')");
+        System.out.println("  <IMPFile>\t\t\tThe file with the IMP code (default: './test/Euclid.imp')");
+        System.out.println("  -h/--help\t\t\tPrint this text");
+        System.out.println("  -ta/--table\t\t\tPrint the action table");
+        System.out.println("  -ts/--testscan [filePath]\tTest that the scanner have the good output");
+        System.out.println("  -ps/--printscan\t\tPrint the scan result");
     }
 
 }

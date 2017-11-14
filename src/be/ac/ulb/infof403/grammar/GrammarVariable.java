@@ -71,7 +71,7 @@ public class GrammarVariable extends Elem {
                 final HashSet<Terminal> listTerminal = firstElem.first();
                 for (final Terminal term : listTerminal) {
                     if(term instanceof Epsilon) {
-                        res.addAll(_grammar.getFollow(this));
+                        res.addAll(_grammar.follow(this));
                     }
                 }
                 res.addAll(listTerminal);
@@ -89,7 +89,7 @@ public class GrammarVariable extends Elem {
             final Rule rule = _listRule.get(counter);
             final Elem elem = rule.get(0);
             // if sym in the set returned by first, save it and exit the loop
-            if((elem instanceof Epsilon && _grammar.getFollow(this).contains(sym)) ||
+            if((elem instanceof Epsilon && _grammar.follow(this).contains(sym)) ||
                     elem.first().contains(sym)) {
                 res = rule;
                 found = true;

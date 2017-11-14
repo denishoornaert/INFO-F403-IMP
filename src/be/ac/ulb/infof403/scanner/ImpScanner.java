@@ -24,9 +24,10 @@ public class ImpScanner {
      * Constructor 
      * 
      * @param fileName name of the IMP file which must be scan
+     * @param printResult True to print result
      */
-    public ImpScanner(final String fileName) {
-        this(fileName, "");
+    public ImpScanner(final String fileName, final boolean printResult) {
+        this(fileName, "", printResult);
     }
     
     /**
@@ -34,12 +35,15 @@ public class ImpScanner {
      * 
      * @param fileName name of the IMP file which must be scan
      * @param testFileName file name of that contain the expected output
+     * @param printResult print result or not
      */
-    public ImpScanner(final String fileName, final String testFileName) {
+    public ImpScanner(final String fileName, final String testFileName, final boolean printResult) {
         _tokens = new TokenList();
         _table = new SymbolTable();
         if(openAndInitScannerImpFile(fileName)) {
-            printResult();
+            if(printResult) {
+                printResult();
+            }
 
             if(!testFileName.isEmpty()) {
                 testOutput(testFileName);
