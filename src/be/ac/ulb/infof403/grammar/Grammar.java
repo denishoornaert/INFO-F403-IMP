@@ -223,6 +223,7 @@ public class Grammar {
     
     private HashSet<Symbol> getAllSymbol() {
         if(_symbols == null) {
+            _symbols = new HashSet<>();
             for(final GrammarVariable var : _variables) {
                 _symbols.addAll(var.getAllSymbol());
             }
