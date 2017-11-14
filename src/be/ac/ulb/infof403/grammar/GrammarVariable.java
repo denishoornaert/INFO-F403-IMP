@@ -81,16 +81,16 @@ public class GrammarVariable extends Elem {
         return res;
     }
     
-    public Rule getRuleThatLeadsToSymbol(Symbol sym) {
+    public Rule getRuleThatLeadsToSymbol(final Symbol sym) {
         Rule res = null;
         int counter = 0;
         boolean found = false;
         while (counter < _listRule.size() && !found) {
-            Rule rule = _listRule.get(counter);
+            final Rule rule = _listRule.get(counter);
+            final Elem elem = rule.get(0);
             // if sym in the set returned by first, save it and exit the loop
-            System.out.print("§"+rule.get(0)+"§");
-            if(rule.get(0).first().contains(sym)) {
-                System.out.print("@");
+            if((elem instanceof Epsilon && _grammar.getFollow(this).contains(sym)) ||
+                    elem.first().contains(sym)) {
                 res = rule;
                 found = true;
             }
@@ -147,7 +147,7 @@ public class GrammarVariable extends Elem {
         return false;
     }
     
-    protected boolean isGramVarEndOfAtLeastOneRule(GrammarVariable gramVar) {
+    protected boolean isGramVarEndOfAtLeastOneRule(final GrammarVariable gramVar) {
         for(final Rule rule : _listRule) {
             final int index = rule.indexOf(gramVar);
             if(index >= 0 && index == (rule.size()-1)) {
