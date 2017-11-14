@@ -120,14 +120,7 @@ public class Main {
             gramFileName = args[0]; 
         }
         
-        //final Grammar grammar = openAndScanGrammar(gramFileName);
-        
-        // temporary TODO remove for final version
-        // testGrammar2();
-        // testGrammar3();
-        // stree_test_with_factorisation();
-        // stree_test_with_no_factorisation();
-        // testActionTable();
+        final Grammar grammar = openAndScanGrammar(gramFileName);
         
         boolean removeUseless = true;
         boolean factorisation = true;
@@ -148,7 +141,7 @@ public class Main {
                     
             }
         }
-        /*
+        
         if(removeUseless) {
             grammar.removeUseless();
         }
@@ -156,9 +149,6 @@ public class Main {
         if(factorisation) {
             grammar.facorisation();
         }
-        */
-        // System.out.println("Follow results:\n" + grammar);
-        // grammar.printFollow();
     }
     
     /**
