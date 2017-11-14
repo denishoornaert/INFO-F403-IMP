@@ -2,8 +2,11 @@ package be.ac.ulb.infof403.grammar;
 
 import be.ac.ulb.infof403.Elem;
 import be.ac.ulb.infof403.Epsilon;
+import be.ac.ulb.infof403.LexicalUnit;
 import be.ac.ulb.infof403.Symbol;
 import be.ac.ulb.infof403.Terminal;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -59,16 +62,10 @@ public class Grammar {
         while(addVariable) {
             addVariable = false;
             for(final GrammarVariable sym : _variables) {
-                if(sym.haveNoRule()) {
-                    if(newGrammarVariable.add(sym)) {
-                        addVariable = true;
-                    }
-                } else {
-                    if(sym.allRuleComposantTerminal(newGrammarVariable)) {
-                        if(newGrammarVariable.add(sym)) {
-                            addVariable = true;
-                        }
-                    }
+                if( (sym.haveNoRule() && newGrammarVariable.add(sym)) || 
+                    (sym.allRuleComposantTerminal(newGrammarVariable) && 
+                        newGrammarVariable.add(sym)) ) {
+                    addVariable = true;
                 }
             }
         }
@@ -120,13 +117,9 @@ public class Grammar {
                 s.add(rule);
             }
             final Grammar g = s.generateRules();
-            for (GrammarVariable variable : g.getVariables()) {
-                System.out.println(variable.getVarName());
-                if(!_variables.contains(variable)) {
-                    System.out.println("no match");
-                    // implicitly add the rules associated to this variable.
-                    _variables.add(variable);
-                }
+            for (final GrammarVariable variable : g.getVariables()) {
+                // implicitly add the rules associated to this variable.
+                _variables.add(variable);
             }
         }
     }
@@ -248,6 +241,48 @@ public class Grammar {
             }
             System.out.println("");
         }
+    }
+    
+    
+    /**
+     * Open and scan grammar file
+     * 
+     * @param gramFilePath the path to the grammar
+     * @return The grammar object of null if not correct
+     */
+    public static Grammar openAndScanGrammar(final String gramFilePath) {
+        Grammar result = null;
+        
+        boolean allOk = true;
+        GrammarScanner gramScanner = null;
+        final FileReader file;
+        try {
+            file = new FileReader(gramFilePath);
+            gramScanner = new GrammarScanner(file);
+
+        } catch (IOException exception) {
+            System.err.println("Error with grammar file: " + exception.getMessage());
+            allOk = false;
+        }
+        
+        if(allOk && gramScanner != null) {
+            result = readGrammar(gramScanner);
+        }
+        
+        return result;
+    }
+    
+    private static Grammar readGrammar(final GrammarScanner gramScanner) {
+        Symbol symbol = null;
+        try {
+            while(symbol == null || symbol.getType() != LexicalUnit.EOS) {
+                symbol = gramScanner.nextToken();
+            }
+        } catch (IOException ex) {
+            System.err.println("Bug with token Grammar flex: " + ex.getMessage());
+        }
+        
+        return GrammarScanner.getGrammar();
     }
     
 }

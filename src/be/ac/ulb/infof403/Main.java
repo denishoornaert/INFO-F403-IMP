@@ -1,10 +1,7 @@
 package be.ac.ulb.infof403;
 
 import be.ac.ulb.infof403.grammar.Grammar;
-import be.ac.ulb.infof403.grammar.GrammarScanner;
 import be.ac.ulb.infof403.scanner.ImpScanner;
-import java.io.FileReader;
-import java.io.IOException;
 
 /**
  * Main class
@@ -122,53 +119,12 @@ public class Main {
     }
     
     /**
-     * Open and scan grammar file
-     * 
-     * @param gramFilePath the path to the grammar
-     * @return The grammar object of null if not correct
-     */
-    private static Grammar openAndScanGrammar(final String gramFilePath) {
-        Grammar result = null;
-        
-        boolean allOk = true;
-        GrammarScanner gramScanner = null;
-        final FileReader file;
-        try {
-            file = new FileReader(gramFilePath);
-            gramScanner = new GrammarScanner(file);
-
-        } catch (IOException exception) {
-            System.err.println("Error with grammar file: " + exception.getMessage());
-            allOk = false;
-        }
-        
-        if(allOk && gramScanner != null) {
-            result = readGrammar(gramScanner);
-        }
-        
-        return result;
-    }
-    
-    private static Grammar readGrammar(final GrammarScanner gramScanner) {
-        Symbol symbol = null;
-        try {
-            while(symbol == null || symbol.getType() != LexicalUnit.EOS) {
-                symbol = gramScanner.nextToken();
-            }
-        } catch (IOException ex) {
-            System.err.println("Bug with token Grammar flex: " + ex.getMessage());
-        }
-        
-        return GrammarScanner.getGrammar();
-    }
-    
-    /**
      * optimize grammar and scan it
      * 
      * @param grammarFilename path to grammar file
      */
     private static Grammar getGrammar(final String grammarFilename) {
-        final Grammar grammar = openAndScanGrammar(grammarFilename);
+        final Grammar grammar = Grammar.openAndScanGrammar(grammarFilename);
         
         grammar.removeUseless();
         grammar.removeLeftRecursion();
