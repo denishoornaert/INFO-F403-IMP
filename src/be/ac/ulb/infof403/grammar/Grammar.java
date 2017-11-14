@@ -95,7 +95,8 @@ public class Grammar {
         while(addVariable) {
             addVariable = false;
             
-            for(final GrammarVariable var : accessibleVariable) {
+            final HashSet<GrammarVariable> allAccessibleVar = (HashSet<GrammarVariable>) accessibleVariable.clone();
+            for(final GrammarVariable var : allAccessibleVar) {
                 if(accessibleVariable.addAll(var.getAllGrammarVariable())) {
                     addVariable = true;
                 }
