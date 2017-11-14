@@ -1,6 +1,7 @@
 package be.ac.ulb.infof403.grammar;
 
 import be.ac.ulb.infof403.Elem;
+import be.ac.ulb.infof403.Epsilon;
 import be.ac.ulb.infof403.Symbol;
 import be.ac.ulb.infof403.Terminal;
 import java.util.ArrayList;
@@ -17,6 +18,8 @@ public class GrammarVariable extends Elem {
     private final int _counter;
     private final String _varName;
     private ArrayList<Rule> _listRule;
+    private Grammar _grammar;
+    private boolean _marked = false;
     
     public GrammarVariable() {
         this("");
@@ -26,6 +29,14 @@ public class GrammarVariable extends Elem {
         _varName = varName;
         _counter = globalCounter++;
         _listRule = new ArrayList<>();
+        _grammar = null;
+    }
+    
+    protected void setGrammar(Grammar gram) {
+        if(_grammar != null) {
+            throw new UnknownError("GRammar already defined.");
+        }
+        _grammar = gram;
     }
     
     public String getVarName() {
@@ -51,12 +62,21 @@ public class GrammarVariable extends Elem {
     }
     
     @Override
-    public HashSet<Terminal> first() {
+    public HashSet<Terminal> first() { // add marker
         final HashSet<Terminal> res = new HashSet<>();
-        for (final Rule rule : _listRule) {
-            Elem firstElem = rule.get(0);
-            HashSet<Terminal> listTerminal = firstElem.first();
-            res.addAll(listTerminal);
+        if(!_marked) {
+            _marked = true;
+            for (final Rule rule : _listRule) {
+                final Elem firstElem = rule.get(0);
+                final HashSet<Terminal> listTerminal = firstElem.first();
+                for (final Terminal term : listTerminal) {
+                    if(term instanceof Epsilon) {
+                        res.addAll(_grammar.getFollow(this));
+                    }
+                }
+                res.addAll(listTerminal);
+            }
+            _marked = false;
         }
         return res;
     }
@@ -68,7 +88,9 @@ public class GrammarVariable extends Elem {
         while (counter < _listRule.size() && !found) {
             Rule rule = _listRule.get(counter);
             // if sym in the set returned by first, save it and exit the loop
+            System.out.print("§"+rule.get(0)+"§");
             if(rule.get(0).first().contains(sym)) {
+                System.out.print("@");
                 res = rule;
                 found = true;
             }

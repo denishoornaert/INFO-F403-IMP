@@ -425,6 +425,17 @@ public class Main {
         
         grammar.addVariables(B, C);
         
+        System.out.println("First  :");
+        System.out.println("C :\t"+C.first());
+        System.out.println("Follow :");
+        System.out.println("A :\t"+grammar.getFollow(A));
+        System.out.println("B :\t"+grammar.getFollow(B));
+        System.out.println("C :\t"+grammar.getFollow(C));
+        System.out.println("C rule that leads to symbol d : ");
+        System.out.println(C.getRuleThatLeadsToSymbol(d));
+        System.out.println("A rule that leads to symbol d : ");
+        System.out.println(A.getRuleThatLeadsToSymbol(d));
+        
         System.out.println(grammar);
         System.out.println("Action table: ");
         grammar.printActionTable(a, b, c, d);

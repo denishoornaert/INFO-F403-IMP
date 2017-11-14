@@ -28,6 +28,9 @@ public class Grammar {
     }
     
     public void addVariables(final Collection<GrammarVariable> allVariables) {
+        for (final GrammarVariable variable : allVariables) {
+            variable.setGrammar(this);
+        }
         _variables.addAll(allVariables);
     }
     
@@ -117,9 +120,6 @@ public class Grammar {
                 s.add(rule);
             }
             final Grammar g = s.generateRules();
-            // Replacement of the former rule by the (new) one(s).
-            //_variables.remove(var);
-            //_listRule.put(var, g.getRulesForVariable(var));
             for (GrammarVariable variable : g.getVariables()) {
                 System.out.println(variable.getVarName());
                 if(!_variables.contains(variable)) {
@@ -210,7 +210,8 @@ public class Grammar {
                             final GrammarVariable gramVarFollowedElem = (GrammarVariable) followedElem;
                             result.addAll(getFollow(gramVarFollowedElem, 
                                     prevGramVarAlreadyFollow));
-                        } else {
+                        }
+                        else {
                             result.add(term);
                         }
                     }
