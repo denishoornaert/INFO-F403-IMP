@@ -10,7 +10,7 @@ import java.util.HashSet;
  */
 public class Rule extends ArrayList<Elem> {
     
-    private static int ruleId = 0;
+    private static int ruleId = 1;
     
     private int _id;
     

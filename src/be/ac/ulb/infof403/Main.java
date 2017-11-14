@@ -133,14 +133,15 @@ public class Main {
             gramFileName = args[0]; 
         }
         
-        final Grammar grammar = openAndScanGrammar(gramFileName);
+        //final Grammar grammar = openAndScanGrammar(gramFileName);
         
         // temporary TODO remove for final version
         // testGrammar2();
         // testGrammar3();
         // stree_test_with_factorisation();
         // stree_test_with_no_factorisation();
-        testActionTable();
+        // testActionTable();
+        testActionTableLarge();
         
         boolean removeUseless = false;
         boolean factorisation = false;
@@ -157,7 +158,7 @@ public class Main {
                     break;
             }
         }
-        
+        /*
         if(removeUseless) {
             grammar.removeUseless();
         }
@@ -165,9 +166,9 @@ public class Main {
         if(factorisation) {
             grammar.facorisation();
         }
-        
-        System.out.println("Follow results:\n" + grammar);
-        grammar.printFollow();
+        */
+        // System.out.println("Follow results:\n" + grammar);
+        // grammar.printFollow();
     }
     
     //////////// DEBUG ////////////
@@ -424,21 +425,74 @@ public class Main {
         C.addRule(e);
         
         grammar.addVariables(B, C);
-        
-        System.out.println("First  :");
-        System.out.println("C :\t"+C.first());
-        System.out.println("Follow :");
-        System.out.println("A :\t"+grammar.getFollow(A));
-        System.out.println("B :\t"+grammar.getFollow(B));
-        System.out.println("C :\t"+grammar.getFollow(C));
-        System.out.println("C rule that leads to symbol d : ");
-        System.out.println(C.getRuleThatLeadsToSymbol(d));
-        System.out.println("A rule that leads to symbol d : ");
-        System.out.println(A.getRuleThatLeadsToSymbol(d));
-        
-        System.out.println(grammar);
+                
         System.out.println("Action table: ");
         grammar.printActionTable(a, b, c, d);
+    }
+    
+    private static void testActionTableLarge() {
+        /* -=- Grammar -=-
+        <S>       -> <Exp>$
+        <Exp>     -> <Prod><Exp'>
+        <Exp'>    -> +<Prod><Exp'>
+                  -> -<Prod><Exp'>
+                  -> epsilon
+        <Prod>    -> <Atom><Prod'>
+        <Prod'>   -> *<Atom><Prod'>
+                  -> /<Atom><Prod'>
+                  -> epsilon
+        <Atom>    -> -<Atom>
+                  -> Cst
+                  -> Id
+                  -> (<Exp>)
+        */
+        
+        // Define variable
+        final GrammarVariable S = new GrammarVariable("S");
+        final GrammarVariable Exp = new GrammarVariable("Exp");
+        final GrammarVariable ExpB = new GrammarVariable("Exp'");
+        final GrammarVariable Prod = new GrammarVariable("Prod");
+        final GrammarVariable ProdB = new GrammarVariable("Prod'");
+        final GrammarVariable Atom = new GrammarVariable("Atom");
+        
+        // Define terminal
+        final Symbol dol = new Symbol(LexicalUnit.VARNAME, "$");
+        final Symbol plu = new Symbol(LexicalUnit.PLUS, "+");
+        final Symbol sub = new Symbol(LexicalUnit.MINUS, "-");
+        final Epsilon ep = new Epsilon();
+        final Symbol mul = new Symbol(LexicalUnit.TIMES, "*");
+        final Symbol div = new Symbol(LexicalUnit.DIVIDE, "/");
+        final Symbol cst = new Symbol(LexicalUnit.VARNAME, "Cst");
+        final Symbol ide = new Symbol(LexicalUnit.VARNAME, "Id");
+        final Symbol lpa = new Symbol(LexicalUnit.LPAREN, "(");
+        final Symbol rpa = new Symbol(LexicalUnit.RPAREN, ")");
+        
+        final Grammar grammar = new Grammar(S);
+        
+        // <S>
+        S.addRule(Exp, dol);
+        // <Exp>
+        Exp.addRule(Prod, ExpB);
+        // <ExpB>
+        ExpB.addRule(plu, Prod, ExpB);
+        ExpB.addRule(sub, Prod, ExpB);
+        ExpB.addRule(ep);
+        // <Prod>
+        Prod.addRule(Atom, ProdB);
+        // <ProdB>
+        ProdB.addRule(mul, Atom, ProdB);
+        ProdB.addRule(div, Atom, ProdB);
+        ProdB.addRule(ep);
+        // <Atom>
+        Atom.addRule(sub, Atom);
+        Atom.addRule(cst);
+        Atom.addRule(ide);
+        Atom.addRule(lpa, Exp, rpa);
+        
+        grammar.addVariables(Exp, ExpB, Prod, ProdB, Atom);
+        
+        System.out.println("Action table: ");
+        grammar.printActionTable(dol, plu, sub, mul, div, cst, ide, lpa, rpa);
     }
     
     /**
