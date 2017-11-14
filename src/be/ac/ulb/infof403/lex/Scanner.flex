@@ -77,4 +77,5 @@ CloseComment    = "*)"
 <COMMENT> {
     {CloseComment} {yybegin(YYINITIAL);}
     [^]            {}
+    <<EOF>>        {throw new ImpSyntaxException("File finish without closing comment");}
 }
