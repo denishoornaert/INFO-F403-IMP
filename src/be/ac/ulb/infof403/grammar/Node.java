@@ -2,6 +2,8 @@ package be.ac.ulb.infof403.grammar;
 
 import be.ac.ulb.infof403.Elem;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * Class used by the stree.
@@ -12,66 +14,73 @@ public class Node {
     private final Elem _value;
     private final ArrayList<Node> _children;
     
-    public Node(final Elem value) {
+    protected Node(final Elem value, final List<Elem> list) {
         _value = value;
         _children = new ArrayList<>();
+        
+        add(list);
     }
     
-    public void add(final ArrayList<Elem> list) {
-        this.add(0, list);
-    }
     
-    public void add(final int index, final ArrayList<Elem> list) {
-        if(index < list.size()) {
+    protected void add(final List<Elem> list) {
+        if(!list.isEmpty()) { // If list isn't empty
+            final Elem firstElem = list.get(0);
+            final List<Elem> newList = list.subList(1, list.size());
+            
+            // Try to find a match node
             int counter = 0;
             boolean find = false;
             while(counter < _children.size() && !find) {
-                if(_children.get(counter).getValue().equals(list.get(index))) {
+                if(_children.get(counter).getValue().equals(firstElem)) {
                     find = true;
+                } else {
+                    counter++;
                 }
-                counter++;
             }
-            if(!find) {
-                _children.add(new Node(list.get(index)));
-                _children.get(counter).add(index+1, list);
+            
+            // If we find a match
+            if(find) {
+                // Test now with the sublist
+                _children.get(counter).add(newList);
             }
-            else {
-                _children.get(counter-1).add(index+1, list);
+            else { // Else just add a node to the stree
+                _children.add(new Node(firstElem, newList));
             }
+            
         }
     }
     
-    public Elem getValue() {
+    protected Elem getValue() {
         return _value;
     }
     
-    public ArrayList<Node> getChildren() {
-        return _children;
-    }
-    
-    public int getChildrenNumber() {
-        return _children.size();
-    }
-    
-    public void generateRules(final Rule list, final GrammarVariable currentVar, final Grammar grammar) {
-        list.add(_value);
-        if(_children.isEmpty()) {
-            currentVar.addRule(list);
+    protected HashSet<GrammarVariable> generateRules(final Rule newRule, final GrammarVariable currentVar) {
+        final HashSet<GrammarVariable> newGramVars = new HashSet<>();
+        
+        // Add value to new Rule
+        newRule.add(_value);
+        
+        if(_children.isEmpty()) { // If no children -> :tada: end of the rule
+            currentVar.addRule(newRule);
         }
         else {
+            // If there is one children
             if(_children.size() == 1) {
-                _children.get(0).generateRules(list, currentVar, grammar);
+                newGramVars.addAll(_children.get(0).generateRules(newRule, currentVar));
             }
             else {
-                final GrammarVariable var = new GrammarVariable(currentVar.getVarName()+"'");
-                list.add(var);
-                currentVar.addRule(list);
-                grammar.addVariables(var);
+                final GrammarVariable newVar = new GrammarVariable(currentVar.getVarName()+"'");
+                newGramVars.add(newVar);
+                newRule.add(newVar);
+                
+                currentVar.addRule(newRule);
+                
                 for (final Node node : _children) {
-                    node.generateRules(new Rule(), var, grammar);
+                    newGramVars.addAll(node.generateRules(new Rule(), newVar));
                 }
             }
         }
+        return newGramVars;
     }
     
 }

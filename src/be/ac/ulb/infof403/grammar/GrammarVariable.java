@@ -34,7 +34,7 @@ public class GrammarVariable extends Elem {
     
     protected void setGrammar(Grammar gram) {
         if(_grammar != null) {
-            throw new UnknownError("GRammar already defined.");
+            throw new UnknownError("Grammar already defined for " + this.getVarName() +".");
         }
         _grammar = gram;
     }
@@ -81,7 +81,7 @@ public class GrammarVariable extends Elem {
         return res;
     }
     
-    public Rule getRuleThatLeadsToSymbol(final Symbol sym) {
+    protected Rule getRuleThatLeadsToSymbol(final Symbol sym) {
         Rule res = null;
         int counter = 0;
         boolean found = false;
@@ -174,6 +174,19 @@ public class GrammarVariable extends Elem {
         return result;
     }
     
+    /**
+     * Get all symbol that contains the rules of this
+     * 
+     * @return all variable
+     */
+    protected HashSet<Symbol> getAllSymbol() {
+        final HashSet<Symbol> result = new HashSet<>();
+        for(final Rule rule : _listRule) {
+            result.addAll(rule.getAllSymbol());
+        }
+        return result;
+    }
+    
     protected final ArrayList<Rule> getRules() {
         return _listRule;
     }
@@ -184,6 +197,10 @@ public class GrammarVariable extends Elem {
     
     public void addRule(final ArrayList<Elem> listElem) {
         _listRule.add(new Rule(listElem));
+    }
+    
+    public void removeRule(final Rule rule) {
+        _listRule.remove(rule);
     }
     
     public void cleanRules() {

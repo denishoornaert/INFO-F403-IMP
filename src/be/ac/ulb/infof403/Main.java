@@ -49,7 +49,7 @@ public class Main {
         while(args.length > currentIndex) {
             switch(args[currentIndex]) {
                 
-                case "--ta":
+                case "-ta":
                 case "--table":
                     printTable = true;
                     break;
@@ -87,8 +87,7 @@ public class Main {
         final TokenList tokenList = scan(impFile, testImpFile, printScanResult);
         final Grammar grammar = getGrammar(grammarFile);
         if(printTable) {
-            // TODO
-            // grammar.printActionTable("");
+             grammar.printActionTable();
         }
         
         new LL1(grammar, tokenList);
@@ -165,7 +164,7 @@ public class Main {
         System.out.println("  -ta/--table\t\t\tPrint the action table");
         System.out.println("  -ts/--testscan [filePath]\tTest that the scanner have the good output");
         System.out.println("  -ps/--printscan\t\tPrint the scan result");
-        System.out.println("  -d/--debug\t\tView debug messages");
+        System.out.println("  -d/--debug\t\t\tView debug messages");
     }
 
 }

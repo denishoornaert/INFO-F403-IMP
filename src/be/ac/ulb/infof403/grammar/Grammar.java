@@ -18,23 +18,25 @@ import java.util.HashSet;
 public class Grammar {
     
     private HashSet<GrammarVariable> _variables;
+    private HashSet<Symbol> _symbols = null;
     private final GrammarVariable _initialState;
     
     public Grammar(final GrammarVariable initialState) {
         _variables = new HashSet<>();
-        _variables.add(initialState);
+        addVariables(initialState);
         _initialState = initialState;
     }
     
-    public void addVariables(final GrammarVariable... variables) {
+    public final void addVariables(final GrammarVariable... variables) {
         addVariables(new ArrayList<>(Arrays.asList(variables)));
     }
     
-    public void addVariables(final Collection<GrammarVariable> allVariables) {
+    public final void addVariables(final Collection<GrammarVariable> allVariables) {
         for (final GrammarVariable variable : allVariables) {
-            variable.setGrammar(this);
+            if(_variables.add(variable)) {
+                variable.setGrammar(this);
+            }
         }
-        _variables.addAll(allVariables);
     }
     
     public HashSet<GrammarVariable> getVariables() {
@@ -110,16 +112,12 @@ public class Grammar {
     }
     
     public void factorisation() { // TODO has to be tested
-        for (final GrammarVariable var : _variables) {
+        final HashSet<GrammarVariable> allVariable = (HashSet<GrammarVariable>) _variables.clone();
+        for (final GrammarVariable var : allVariable) {
             // Setup of the stree and generation of the factorised rules.
             final Stree s = new Stree(var);
-            for (final Rule rule : var.getRules()) {
-                s.add(rule);
-            }
-            final Grammar g = s.generateRules();
-            for (final GrammarVariable variable : g.getVariables()) {
-                // implicitly add the rules associated to this variable.
-                _variables.add(variable);
+            if(s.addRules(var.getRules())) {
+                addVariables(s.generateNewGramVariable());
             }
         }
     }
@@ -222,7 +220,18 @@ public class Grammar {
         return result;
     }
     
-    public void printActionTable(final Symbol... syms) {
+    private HashSet<Symbol> getAllSymbol() {
+        if(_symbols == null) {
+            for(final GrammarVariable var : _variables) {
+                _symbols.addAll(var.getAllSymbol());
+            }
+        }
+        return _symbols;
+    }
+    
+    public void printActionTable() {
+        final HashSet<Symbol> syms = getAllSymbol();
+        
         // Header
         System.out.print("\t");
         for (final Symbol sym : syms) {

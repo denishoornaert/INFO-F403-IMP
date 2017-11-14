@@ -1,6 +1,7 @@
 package be.ac.ulb.infof403.grammar;
 
 import be.ac.ulb.infof403.Elem;
+import be.ac.ulb.infof403.Symbol;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -14,8 +15,8 @@ public class Rule extends ArrayList<Elem> {
     
     private int _id;
     
-    public Rule(Elem... elems) {
-        this(new ArrayList<Elem>(Arrays.asList(elems)));
+    public Rule(final Elem... elems) {
+        this(new ArrayList<>(Arrays.asList(elems)));
     }
     
     public Rule(final ArrayList<Elem> composant) {
@@ -37,7 +38,7 @@ public class Rule extends ArrayList<Elem> {
     }
     
     protected boolean allComposantTerminal(final HashSet<GrammarVariable> ignoreVar) {
-        for(Elem elem : this) {
+        for(final Elem elem : this) {
             if(elem instanceof GrammarVariable && !ignoreVar.contains((GrammarVariable) elem)) {
                 return false;
             }
@@ -47,12 +48,22 @@ public class Rule extends ArrayList<Elem> {
     
     protected HashSet<GrammarVariable> getAllGrammarVariable() {
         final HashSet<GrammarVariable> allGrammarVar = new HashSet();
-        for(Elem elem : this) {
+        for(final Elem elem : this) {
             if(elem instanceof GrammarVariable) {
                 allGrammarVar.add((GrammarVariable) elem);
             }
         }
         return allGrammarVar;
+    }
+    
+    protected HashSet<Symbol> getAllSymbol() {
+        final HashSet<Symbol> result = new HashSet<>();
+        for(final Elem elem : this) {
+            if(elem instanceof Symbol) {
+                result.add((Symbol) elem);
+            }
+        }
+        return result;
     }
     
 }

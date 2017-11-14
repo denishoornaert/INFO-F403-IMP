@@ -49,8 +49,8 @@ import java.util.ArrayList;
         _allRightElem.add(gramVar);
     }
 
-    private void addTerminal(String terminalName) {
-        _allRightElem.add(new Symbol(LexicalUnit.VARNAME, new String(yytext())));
+    private void addSymbol(Symbol symbol) {
+        _allRightElem.add(symbol);
     }
 
     private void addEpsilon() {
@@ -107,7 +107,11 @@ Epsilon         = "epsilon"|"eps"
 <RIGHT> {
     {Epsilon}      {addEpsilon();return null;}
     {BeginVar}     {yybegin(RIGHT_VARIABLE);return null;}
-    {Litteral}     {addTerminal(yytext());return null;}
+    "if"           {addSymbol(new Symbol(LexicalUnit.IF,        yyline, yycolumn, new String(yytext())));return null;}
+    "then"         {addSymbol(new Symbol(LexicalUnit.THEN,      yyline, yycolumn, new String(yytext())));return null;}
+    "endif"        {addSymbol(new Symbol(LexicalUnit.ENDIF,     yyline, yycolumn, new String(yytext())));return null;}
+    "else"         {addSymbol(new Symbol(LexicalUnit.ELSE,      yyline, yycolumn, new String(yytext())));return null;}
+    {Litteral}     {addSymbol(new Symbol(LexicalUnit.VARNAME,   new String(yytext())));return null;}
     " "            {return null;}
     "\t"           {return null;}
     "\n"           {endRule();yybegin(YYINITIAL);return null;}
