@@ -234,24 +234,57 @@ public class Grammar {
     public void printActionTable() {
         final HashSet<Symbol> syms = getAllSymbol();
         
-        // Header
-        System.out.print("\t");
-        for (final Symbol sym : syms) {
-            System.out.print(sym.getValue()+"\t");
+        int maxLenVarName = 0;
+        for(final GrammarVariable var : _variables) {
+            if(maxLenVarName < var.getValue().length()) {
+                maxLenVarName = var.getValue().length();
+            }
         }
+        
+        final ArrayList<Integer> lenSymbol = new ArrayList<>();
+        
+        // Header
+        System.out.print(getSpace(maxLenVarName) + " | ");
+        for (final Symbol sym : syms) {
+            final String strSym = sym.getValue().toString();
+            lenSymbol.add(Math.max(2, strSym.length()));
+            System.out.print(strSym + 
+                    (strSym.length() < 2 ? " " : "") + 
+                    " | ");
+        }
+        
         System.out.println("");
+        
         // Table
         for (final GrammarVariable var : _variables) {
-            System.out.print(var.getVarName()+" |\t");
+            final String varName = var.getVarName();
+            
+            int colonne = 0;
+            System.out.print(varName + getSpace(maxLenVarName-varName.length()) + " | ");
             for (final Symbol sym : syms) {
                 final Rule res = var.getRuleThatLeadsToSymbol(sym);
+                
+                final int sizeCol = Math.max(2, lenSymbol.get(colonne));
                 if(res != null) {
-                    System.out.print(res.getId());
+                    final Integer ruleId = res.getId();
+                    System.out.print(ruleId + getSpace(sizeCol-ruleId.toString().length()));
+                } else {
+                    System.out.print(getSpace(sizeCol));
                 }
-                System.out.print("\t");
+                
+                System.out.print(" | ");
+                ++colonne;
             }
             System.out.println("");
         }
+    }
+    
+    private String getSpace(final int nbrSpace) {
+        String result = "";
+        for(int i = 0; i < nbrSpace; ++i) {
+            result += " ";
+        }
+        return result;
     }
     
     
