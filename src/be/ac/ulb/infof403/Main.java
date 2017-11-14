@@ -1,6 +1,7 @@
 package be.ac.ulb.infof403;
 
 import be.ac.ulb.infof403.grammar.Grammar;
+import be.ac.ulb.infof403.parser.LL1;
 import be.ac.ulb.infof403.scanner.ImpScanner;
 
 /**
@@ -10,6 +11,8 @@ public class Main {
     
     private static final String DEFAULT_IMP_FILE = "./test/Euclid.imp";
     private static final String DEFAULT_GRAMMAR_FILE = "./test/Gram.gram";
+    
+    private static boolean _debug = false;
     
     /**
      * Main function 
@@ -67,6 +70,11 @@ public class Main {
                     printScanResult = true;
                     break;
                     
+                case "-d":
+                case "--debug":
+                    _debug = true;
+                    break;
+                    
                 default:
                     System.err.println("Unknow argument (" + args[currentIndex] + ")");
                     return;
@@ -78,18 +86,12 @@ public class Main {
         
         final TokenList tokenList = scan(impFile, testImpFile, printScanResult);
         final Grammar grammar = getGrammar(grammarFile);
+        if(printTable) {
+            // TODO
+            // grammar.printActionTable("");
+        }
         
-        
-//        final String[] newArgs = Arrays.copyOfRange(args, 1, args.length);
-//        switch(args[0]) {
-//            case "scan":
-//                scan(newArgs);
-//                break;
-//            
-//            case "grammar":
-//                grammar(newArgs);
-//                break;
-//        }
+        new LL1(grammar, tokenList);
     }
     
     private static boolean argsContainsHelp(final String[] args) {
@@ -126,9 +128,28 @@ public class Main {
     private static Grammar getGrammar(final String grammarFilename) {
         final Grammar grammar = Grammar.openAndScanGrammar(grammarFilename);
         
+        if(_debug) {
+            System.out.println("Grammar:");
+            System.out.println(grammar);
+        }
+        
         grammar.removeUseless();
+        if(_debug) {
+            System.out.println("Grammar (removeUseless):");
+            System.out.println(grammar);
+        }
+        
         grammar.removeLeftRecursion();
-        grammar.facorisation();
+        if(_debug) {
+            System.out.println("Grammar (removeLeftRecursion):");
+            System.out.println(grammar);
+        }
+        
+        grammar.factorisation();
+        if(_debug) {
+            System.out.println("Grammar (factorisation (final)):");
+            System.out.println(grammar);
+        }
         
         return grammar;
     }
@@ -144,6 +165,7 @@ public class Main {
         System.out.println("  -ta/--table\t\t\tPrint the action table");
         System.out.println("  -ts/--testscan [filePath]\tTest that the scanner have the good output");
         System.out.println("  -ps/--printscan\t\tPrint the scan result");
+        System.out.println("  -d/--debug\t\tView debug messages");
     }
 
 }

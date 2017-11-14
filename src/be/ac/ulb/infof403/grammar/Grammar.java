@@ -109,7 +109,7 @@ public class Grammar {
         }
     }
     
-    public void facorisation() { // TODO has to be tested
+    public void factorisation() { // TODO has to be tested
         for (final GrammarVariable var : _variables) {
             // Setup of the stree and generation of the factorised rules.
             final Stree s = new Stree(var);
