@@ -61,11 +61,13 @@ public class Main {
             
         }
         
+        ImpScanner impScanner = null;
         if(!testFile.isEmpty()) {
-            new ImpScanner(fileName, testFile);
+            impScanner = new ImpScanner(fileName, testFile);
         } else {
-            new ImpScanner(fileName);
+            impScanner = new ImpScanner(fileName);
         }
+        TokenList tokenList = impScanner.getTokenList(); // The rest of the programme will need this token list.
     }
     
     /**
