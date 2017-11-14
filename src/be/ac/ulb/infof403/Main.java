@@ -5,7 +5,6 @@ import be.ac.ulb.infof403.grammar.GrammarScanner;
 import be.ac.ulb.infof403.scanner.ImpScanner;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
 
 /**
  * Main class
@@ -13,6 +12,7 @@ import java.util.Arrays;
 public class Main {
     
     private static final String DEFAULT_IMP_FILE = "./test/Euclid.imp";
+    private static final String DEFAULT_GRAMMAR_FILE = "./test/Gram.gram";
     
     /**
      * Main function 
@@ -20,54 +20,93 @@ public class Main {
      * @param args parameters given when the program is executed
      */
     public static void main(final String[] args) {
-        if(args.length == 0) {
-            System.err.println("Missing argument");
+        if(argsContainsHelp(args)) {
             printHelp();
             return;
         }
         
-        final String[] newArgs = Arrays.copyOfRange(args, 1, args.length);
-        switch(args[0]) {
-            case "scan":
-                scan(newArgs);
-                break;
-            
-            case "grammar":
-                grammar(newArgs);
-                break;
+        boolean printTable = false;
+        final String grammarFile;
+        if(args.length > 0) {
+           grammarFile = args[0];
+        } else {
+            grammarFile = DEFAULT_GRAMMAR_FILE;
         }
+        
+        String testImpFile = "";
+        final String impFile;
+        if(args.length > 1) {
+            impFile = args[1];
+        } else {
+            impFile = DEFAULT_IMP_FILE;
+        }
+        
+        int currentIndex = 2;
+        while(args.length > currentIndex) {
+            switch(args[currentIndex]) {
+                
+                case "-table":
+                    printTable = true;
+                    break;
+                
+                case "-testscan":
+                    if(args.length > currentIndex+1 && !args[currentIndex+1].startsWith("-")) {
+                        testImpFile = args[++currentIndex];
+                        
+                    } else {
+                        final String fileNameWitoutExt = impFile.substring(0, impFile.lastIndexOf('.'));
+                        testImpFile = fileNameWitoutExt + ".out";
+                    }
+                    break;
+                
+                default:
+                    System.err.println("Unknow argument (" + args[currentIndex] + ")");
+                    return;
+                    
+            }
+            
+            ++currentIndex;
+        }
+        
+        final TokenList tokenList = scan(impFile, testImpFile);
+        
+        
+        
+//        final String[] newArgs = Arrays.copyOfRange(args, 1, args.length);
+//        switch(args[0]) {
+//            case "scan":
+//                scan(newArgs);
+//                break;
+//            
+//            case "grammar":
+//                grammar(newArgs);
+//                break;
+//        }
+    }
+    
+    private static boolean argsContainsHelp(final String[] args) {
+        for(final String arg : args) {
+            if(arg.equalsIgnoreCase("-help") || arg.equalsIgnoreCase("-h")) {
+                return true;
+            }
+        }
+        return false;
     }
     
     /**
      * Scan a IMP file
      * 
-     * @param args informations to scan
+     * @param impFilename file with imp source code
+     * @param testImpFile expeted output file for imp analyse
      */
-    private static void scan(final String[] args) {
-        String fileName = DEFAULT_IMP_FILE; // Default file name
-        if(args.length > 0) { // If file specified
-            fileName = args[0];
-        }
-        
-        // Make test
-        String testFile = "";
-        if(args.length > 1 && args[1].equalsIgnoreCase("-test")) {
-            if(args.length > 2) {
-                testFile = args[2];
-            } else {
-                final String fileNameWitoutExt = fileName.substring(0, fileName.lastIndexOf('.'));
-                testFile = fileNameWitoutExt + ".out";
-            }
-            
-        }
-        
+    private static TokenList scan(final String impFilename, final String testOutputFile) {
         ImpScanner impScanner = null;
-        if(!testFile.isEmpty()) {
-            impScanner = new ImpScanner(fileName, testFile);
+        if(!testOutputFile.isEmpty()) {
+            impScanner = new ImpScanner(impFilename, testOutputFile);
         } else {
-            impScanner = new ImpScanner(fileName);
+            impScanner = new ImpScanner(impFilename);
         }
-        TokenList tokenList = impScanner.getTokenList(); // The rest of the programme will need this token list.
+        return impScanner.getTokenList();
     }
     
     /**
@@ -157,20 +196,13 @@ public class Main {
      * Print help message and informations to launch jar
      */
     private static void printHelp() {
-        System.out.println("Command: java -jar INFO-F403-IMP.jar <scan/grammar> [options]");
+        System.out.println("Command: java -jar INFO-F403-IMP.jar <grammarFile> <IMPFile> [options]");
         System.out.println("");
-        System.out.println("--- Options Scan ---");
-        System.out.println("  > java -jar INFO-F403-IMP.jar scan [inputFile] [outputFile] [-test]");
-        System.out.println("  \tinputFile\tThe file with the IMP code (default: './test/Euclid.imp')");
-        System.out.println("  \toutputFile\tExpected output of IMP scan");
-        System.out.println("  \t-test\t\tAutomaticaly test that output is equals to the output system");
-        System.out.println("");
-        System.out.println("--- Options Grammar ---");
-        System.out.println("  > java -jar INFO-F403-IMP.jar grammar <grammarFile> [options]");
-        System.out.println("  \tgrammarFile\tThe file that contains the Grammar (default: './test/Gram.gram')");
-        System.out.println("  \t-sremoveuseless\tSkip the remove useless variable");
-        System.out.println("  \t-sfactorisation\tSkip the factorise of grammar");
-        System.out.println("  \t-test\t\tTemporary test grammar"); // TODO change when code is finish
+        System.out.println("\t-help\tPrint this text");
+        System.out.println("\tgrammarFile\tThe file that contains the Grammar (default: './test/Gram.gram')");
+        System.out.println("\tIMPFile\tThe file with the IMP code (default: './test/Euclid.imp')");
+        System.out.println("\t-table\tPrint the action table");
+        System.out.println("\t-testscan [filePath]\tTest that the scanner have the good output");
     }
 
 }
