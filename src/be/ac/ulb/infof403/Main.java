@@ -1,14 +1,8 @@
 package be.ac.ulb.infof403;
 
 import be.ac.ulb.infof403.grammar.Grammar;
-import be.ac.ulb.infof403.grammar.GrammarScanner;
-import be.ac.ulb.infof403.grammar.GrammarVariable;
-import be.ac.ulb.infof403.grammar.Stree;
+import be.ac.ulb.infof403.parser.LL1;
 import be.ac.ulb.infof403.scanner.ImpScanner;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Main class
@@ -16,6 +10,9 @@ import java.util.Arrays;
 public class Main {
     
     private static final String DEFAULT_IMP_FILE = "./test/Euclid.imp";
+    private static final String DEFAULT_GRAMMAR_FILE = "./test/Gram.gram";
+    
+    private static boolean _debug = false;
     
     /**
      * Main function 
@@ -23,204 +20,151 @@ public class Main {
      * @param args parameters given when the program is executed
      */
     public static void main(final String[] args) {
-        if(args.length == 0) {
-            System.err.println("Missing argument");
+        if(argsContainsHelp(args)) {
             printHelp();
             return;
         }
+        int currentIndex = 0;
         
-        final String[] newArgs = Arrays.copyOfRange(args, 1, args.length);
-        switch(args[0]) {
-            case "scan":
-                scan(newArgs);
-                break;
-            
-            case "grammar":
-                grammar(newArgs);
-                break;
-                
-            case "stree":
-                stree_test_with_factorisation();
-                stree_test_with_no_factorisation();
-                break;
+        boolean printTable = false;
+        final String grammarFile;
+        if(args.length > 0 && !(args[currentIndex].startsWith("-"))) {
+           grammarFile = args[currentIndex];
+           ++currentIndex;
+        } else {
+            grammarFile = DEFAULT_GRAMMAR_FILE;
         }
+        
+        String testImpFile = "";
+        boolean printScanResult = false;
+        final String impFile;
+        if(args.length > 1 && !(args[currentIndex].startsWith("-"))) {
+            impFile = args[currentIndex];
+            ++currentIndex;
+        } else {
+            impFile = DEFAULT_IMP_FILE;
+        }
+        
+        
+        while(args.length > currentIndex) {
+            switch(args[currentIndex]) {
+                
+                case "-ta":
+                case "--table":
+                    printTable = true;
+                    break;
+                
+                case "-ts":
+                case "--testscan":
+                    if(args.length > currentIndex+1 && !args[currentIndex+1].startsWith("-")) {
+                        testImpFile = args[++currentIndex];
+                        
+                    } else {
+                        final String fileNameWitoutExt = impFile.substring(0, impFile.lastIndexOf('.'));
+                        testImpFile = fileNameWitoutExt + ".out";
+                    }
+                    break;
+                
+                case "-ps":
+                case "--printscan":
+                    printScanResult = true;
+                    break;
+                    
+                case "-d":
+                case "--debug":
+                    _debug = true;
+                    break;
+                    
+                default:
+                    System.err.println("Unknow argument (" + args[currentIndex] + ")");
+                    return;
+                    
+            }
+            
+            ++currentIndex;
+        }
+        
+        final TokenList tokenList = scan(impFile, testImpFile, printScanResult);
+        final Grammar grammar = getGrammar(grammarFile);
+        if(printTable) {
+             grammar.printActionTable();
+        }
+        
+        new LL1(grammar, tokenList);
+    }
+    
+    private static boolean argsContainsHelp(final String[] args) {
+        for(final String arg : args) {
+            if(arg.equalsIgnoreCase("--help") || arg.equalsIgnoreCase("-h")) {
+                return true;
+            }
+        }
+        return false;
     }
     
     /**
      * Scan a IMP file
      * 
-     * @param args informations to scan
+     * @param impFilename file with imp source code
+     * @param testImpFile expeted output file for imp analyse
      */
-    private static void scan(final String[] args) {
-        String fileName = DEFAULT_IMP_FILE; // Default file name
-        if(args.length > 0) { // If file specified
-            fileName = args[0];
-        }
-        
-        // Make test
-        String testFile = "";
-        if(args.length > 1 && args[1].equalsIgnoreCase("-test")) {
-            if(args.length > 2) {
-                testFile = args[2];
-            } else {
-                final String fileNameWitoutExt = fileName.substring(0, fileName.lastIndexOf('.'));
-                testFile = fileNameWitoutExt + ".out";
-            }
-            
-        }
-        
-        if(!testFile.isEmpty()) {
-            new ImpScanner(fileName, testFile);
+    private static TokenList scan(final String impFilename, final String testOutputFile,
+            final boolean printResult) {
+        final ImpScanner impScanner;
+        if(!testOutputFile.isEmpty()) {
+            impScanner = new ImpScanner(impFilename, testOutputFile, printResult);
         } else {
-            new ImpScanner(fileName);
+            impScanner = new ImpScanner(impFilename, printResult);
         }
+        return impScanner.getTokenList();
     }
     
     /**
-     * Open and scan grammar file
+     * optimize grammar and scan it
      * 
-     * @param gramFilePath the path to the grammar
-     * @return The grammar object of null if not correct
+     * @param grammarFilename path to grammar file
      */
-    private static Grammar openAndScanGrammar(final String gramFilePath) {
-        Grammar result = null;
+    private static Grammar getGrammar(final String grammarFilename) {
+        final Grammar grammar = Grammar.openAndScanGrammar(grammarFilename);
         
-        boolean allOk = true;
-        GrammarScanner gramScanner = null;
-        final FileReader file;
-        try {
-            file = new FileReader(gramFilePath);
-            gramScanner = new GrammarScanner(file);
-
-        } catch (IOException exception) {
-            System.err.println("Error with grammar file: " + exception.getMessage());
-            allOk = false;
+        if(_debug) {
+            System.out.println("Grammar:");
+            System.out.println(grammar);
         }
         
-        if(allOk && gramScanner != null) {
-            result = readGrammar(gramScanner);
+        grammar.removeUseless();
+        if(_debug) {
+            System.out.println("Grammar (removeUseless):");
+            System.out.println(grammar);
         }
         
-        return result;
+        grammar.removeLeftRecursion();
+        if(_debug) {
+            System.out.println("Grammar (removeLeftRecursion):");
+            System.out.println(grammar);
+        }
+        
+        grammar.factorisation();
+        if(_debug) {
+            System.out.println("Grammar (factorisation (final)):");
+            System.out.println(grammar);
+        }
+        
+        return grammar;
     }
-    
-    private static Grammar readGrammar(final GrammarScanner gramScanner) {
-        Symbol symbol = null;
-        try {
-            while(symbol == null || symbol.getType() != LexicalUnit.EOS) {
-                symbol = gramScanner.nextToken();
-            }
-        } catch (IOException ex) {
-            System.err.println("Bug with token Grammar flex: " + ex.getMessage());
-        }
-        
-        return GrammarScanner.getGrammar();
-    }
-    
-    /**
-     * Optimise grammar and scan it
-     * 
-     * @param args arguments
-     */
-    private static void grammar(final String[] args) {
-        String gramFileName = "./test/Gram.gram";
-        if(args.length >= 1) {
-            gramFileName = args[0]; 
-        }
-        
-        final Grammar grammar = openAndScanGrammar(gramFileName);
-        
-        boolean removeUseless = false;
-        boolean factorisation = false;
-        for (int i = 1; i < args.length; ++i) {
-            switch(args[i]) {
-                case "-ru":
-                case "-removeuseless":
-                    removeUseless = true;
-                    break;
-                    
-                case "-fact":
-                case "-factorisation":
-                    factorisation = true;
-                    break;
-            }
-        }
-        
-        if(removeUseless) {
-            grammar.removeUseless();
-        }
-        
-        if(factorisation) {
-            grammar.facorisation();
-        }
-    }
-    
-    //////////// DEBUG ////////////
-    
-    private static void stree_test_with_factorisation() {
-        final GrammarVariable cond = new GrammarVariable("Cond");
-        final GrammarVariable code = new GrammarVariable("Code");
-        
-        final ArrayList<Elem> list1 = new ArrayList<>();
-        list1.add(new Symbol(LexicalUnit.IF, "if"));
-        list1.add(cond);
-        list1.add(new Symbol(LexicalUnit.THEN, "then"));
-        list1.add(code);
-        list1.add(new Symbol(LexicalUnit.ENDIF, "endif"));
-        
-        final ArrayList<Elem> list2 = new ArrayList<>();
-        list2.add(new Symbol(LexicalUnit.IF, "if"));
-        list2.add(cond);
-        list2.add(new Symbol(LexicalUnit.THEN, "then"));
-        list2.add(code);
-        list2.add(new Symbol(LexicalUnit.ELSE, "else"));
-        list2.add(code);
-        list2.add(new Symbol(LexicalUnit.ENDIF, "endif"));
-        
-        final Stree s = new Stree(new GrammarVariable("If"));
-        s.add(list1);
-        s.add(list2);
-        final Grammar g = s.generateRules();
-        System.out.println(g);
-    }
-    
-    private static void stree_test_with_no_factorisation() {
-        final GrammarVariable expr = new GrammarVariable("ExprArith");
-        
-        final ArrayList<Elem> list1 = new ArrayList<>();
-        list1.add(new Symbol(LexicalUnit.LPAREN, "("));
-        list1.add(expr);
-        list1.add(new Symbol(LexicalUnit.RPAREN, ")"));
-        
-        final ArrayList<Elem> list2 = new ArrayList<>();
-        list2.add(new Symbol(LexicalUnit.MINUS, "-"));
-        list2.add(expr);
-        
-        final Stree s = new Stree(new GrammarVariable("If"));
-        s.add(list1);
-        s.add(list2);
-        final Grammar g = s.generateRules();
-        System.out.println(g);
-    }
-    
     
     /**
      * Print help message and informations to launch jar
      */
     private static void printHelp() {
-        System.out.println("Command: java -jar INFO-F403-IMP.jar <scan/grammar> [options]");
-        System.out.println("");
-        System.out.println("--- Options Scan ---");
-        System.out.println("  > java -jar INFO-F403-IMP.jar scan [inputFile] [outputFile] [-test]");
-        System.out.println("  \tinputFile\tThe file with the IMP code (default: './test/Euclid.imp')");
-        System.out.println("  \toutputFile\tExpected output of IMP scan");
-        System.out.println("  \t-test\t\tAutomaticaly test that output is equals to the output system");
-        System.out.println("--- Options Grammar ---");
-        System.out.println("  > java -jar INFO-F403-IMP.jar grammar <grammarFile> [options]");
-        System.out.println("  \tgrammarFile\tThe file that contains the Grammar (default: './test/Gram.gram')");
-        System.out.println("  \t-removeuseless\tRemove useless variable");
-        System.out.println("  \t-factorisation\tFactorise the grammar");
-        System.out.println("  \t-test\t\tTemporary test grammar"); // TODO change when code is finish
+        System.out.println("Command: java -jar INFO-F403-IMP.jar <grammarFile> <IMPFile> [options]");
+        System.out.println("  <grammarFile>\t\t\tThe file that contains the Grammar (default: './test/Gram.gram')");
+        System.out.println("  <IMPFile>\t\t\tThe file with the IMP code (default: './test/Euclid.imp')");
+        System.out.println("  -h/--help\t\t\tPrint this text");
+        System.out.println("  -ta/--table\t\t\tPrint the action table");
+        System.out.println("  -ts/--testscan [filePath]\tTest that the scanner have the good output");
+        System.out.println("  -ps/--printscan\t\tPrint the scan result");
+        System.out.println("  -d/--debug\t\t\tView debug messages");
     }
 
 }

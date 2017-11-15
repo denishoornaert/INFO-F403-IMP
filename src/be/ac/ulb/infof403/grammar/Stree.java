@@ -2,45 +2,74 @@ package be.ac.ulb.infof403.grammar;
 
 import be.ac.ulb.infof403.Elem;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 public class Stree {
     
     private final ArrayList<Node> _head;
     private final GrammarVariable _variable;
-    private final Grammar _grammar;
     
     public Stree (final GrammarVariable var) {
         _head = new ArrayList<>();
-        _grammar = new Grammar(var);
         _variable = var;
     }
     
-    public void add(final ArrayList<Elem> list) {
-        int index = 0; // TODO neve change ? Why ?
-        if(index < list.size()) {
+    protected boolean addRules(final ArrayList<Rule> listRule) {
+        boolean newRule = false;
+        for (final Rule rule : listRule) {
+            newRule = newRule || add(rule);
+        }
+        return newRule;
+    }
+    
+    /**
+     * Add rule one per wone
+     * 
+     * @param list element of the rule
+     * @return True if one match between rules
+     */
+    private boolean add(final List<Elem> list) {
+        boolean oneMatch = false;
+        
+        if(list.size() > 1) {
+            
+            final Elem firstElem = list.get(0);
+            final List<Elem> newList = list.subList(1, list.size());
+            
+            // Try to find a match node
             int counter = 0;
             boolean find = false;
             while(counter < _head.size() && !find) {
-                if(_head.get(counter).getValue().equals(list.get(index))) {
+                if(_head.get(counter).getValue().equals(firstElem)) {
                     find = true;
+                } else {
+                    counter++;
                 }
-                counter++;
             }
-            if(!find) {
-                _head.add(new Node(list.get(index)));
-                _head.get(counter).add(index+1, list);
+            
+            // If we find a match
+            if(find) {
+                // Test now with the sublist
+                _head.get(counter).add(newList);
+                oneMatch = true;
             }
-            else {
-                _head.get(counter-1).add(index+1, list);
+            else { // Else just add a node to the stree
+                _head.add(new Node(firstElem, newList));
             }
+            
         }
+        
+        return oneMatch;
     }
     
-    public Grammar generateRules() {
+    public HashSet<GrammarVariable> generateNewGramVariable() {
+        final HashSet<GrammarVariable> result = new HashSet<>();
+        _variable.cleanRules();
         for (final Node node : _head) {
-            node.generateRules(new Rule(), _variable, _grammar);
+            result.addAll(node.generateRules(new Rule(), _variable));
         }
-        return _grammar;
+        return result;
     }
     
 }

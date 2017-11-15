@@ -1,5 +1,7 @@
 package be.ac.ulb.infof403;
 
+import java.util.HashSet;
+
 /**
  * 
  */
@@ -10,5 +12,5 @@ public abstract class Elem {
     
     public abstract Object getValue();
     
-    
+    public abstract HashSet<Terminal> first();
 }

@@ -2,6 +2,7 @@ package be.ac.ulb.infof403.grammar;
 
 import java.util.HashMap;
 import be.ac.ulb.infof403.Elem;
+import be.ac.ulb.infof403.Epsilon;
 import be.ac.ulb.infof403.LexicalUnit;
 import be.ac.ulb.infof403.Symbol;
 import java.util.ArrayList;
@@ -48,19 +49,24 @@ import java.util.ArrayList;
         _allRightElem.add(gramVar);
     }
 
-    private void addTerminal(String terminalName) {
-        _allRightElem.add(new Symbol(LexicalUnit.VARNAME, new String(yytext())));
+    private void addSymbol(Symbol symbol) {
+        _allRightElem.add(symbol);
+    }
+
+    private void addEpsilon() {
+        _allRightElem.add(new Epsilon());
     }
 
     private void endRule() {
-        if(_newGrammar != null && !_allRightElem.isEmpty()) {
-            _newGrammar.addRule(_currentGrammarVar, _allRightElem);
+        if(_currentGrammarVar != null && !_allRightElem.isEmpty()) {
+            _currentGrammarVar.addRule(_allRightElem);
             _allRightElem.clear();
         }
     }
 
     private Symbol endOfFile() {
         endRule();
+        _newGrammar.addVariables(_allGrammarVar.values());
         return new Symbol(LexicalUnit.EOS);
     }
 
@@ -76,8 +82,11 @@ import java.util.ArrayList;
 BeginVar        = "<"
 EndVar          = ">"
 Separation      = "->"
-VarName         = [a-zA-Z\;\-\_][a-zA-Z\;\-\_ ]*
-Litteral        = [a-zA-Z\;]+
+AllChar         = [a-zA-Z\;\$\(\)\-\_\'\+\*\/]
+AllCharSpace    = [a-zA-Z\;\$\(\)\-\_\'\+\*\/\ ]
+VarName         = {AllChar}{AllCharSpace}*
+Litteral        = {AllChar}+
+Epsilon         = "epsilon"|"eps"
 
 
 // Declare states
@@ -96,8 +105,42 @@ Litteral        = [a-zA-Z\;]+
 }
 
 <RIGHT> {
+    {Epsilon}      {addEpsilon();return null;}
     {BeginVar}     {yybegin(RIGHT_VARIABLE);return null;}
-    {Litteral}     {addTerminal(yytext());return null;}
+    "begin"        {addSymbol(new Symbol(LexicalUnit.BEGIN,     yyline, yycolumn, new String(yytext())));return null;}
+    "end"          {addSymbol(new Symbol(LexicalUnit.END,       yyline, yycolumn, new String(yytext())));return null;}
+    ";"            {addSymbol(new Symbol(LexicalUnit.SEMICOLON, yyline, yycolumn, new String(yytext())));return null;}
+    ":="           {addSymbol(new Symbol(LexicalUnit.ASSIGN,    yyline, yycolumn, new String(yytext())));return null;}
+    "("            {addSymbol(new Symbol(LexicalUnit.LPAREN,    yyline, yycolumn, new String(yytext())));return null;}
+    ")"            {addSymbol(new Symbol(LexicalUnit.RPAREN,    yyline, yycolumn, new String(yytext())));return null;}
+    "-"            {addSymbol(new Symbol(LexicalUnit.MINUS,     yyline, yycolumn, new String(yytext())));return null;}
+    "-"            {addSymbol(new Symbol(LexicalUnit.MINUS,     yyline, yycolumn, new String(yytext())));return null;}
+    "+"            {addSymbol(new Symbol(LexicalUnit.PLUS,      yyline, yycolumn, new String(yytext())));return null;}
+    "*"            {addSymbol(new Symbol(LexicalUnit.TIMES,     yyline, yycolumn, new String(yytext())));return null;}
+    "/"            {addSymbol(new Symbol(LexicalUnit.DIVIDE,    yyline, yycolumn, new String(yytext())));return null;}
+    "if"           {addSymbol(new Symbol(LexicalUnit.IF,        yyline, yycolumn, new String(yytext())));return null;}
+    "then"         {addSymbol(new Symbol(LexicalUnit.THEN,      yyline, yycolumn, new String(yytext())));return null;}
+    "endif"        {addSymbol(new Symbol(LexicalUnit.ENDIF,     yyline, yycolumn, new String(yytext())));return null;}
+    "else"         {addSymbol(new Symbol(LexicalUnit.ELSE,      yyline, yycolumn, new String(yytext())));return null;}
+    "not"          {addSymbol(new Symbol(LexicalUnit.NOT,       yyline, yycolumn, new String(yytext())));return null;}
+    "and"          {addSymbol(new Symbol(LexicalUnit.AND,       yyline, yycolumn, new String(yytext())));return null;}
+    "or"           {addSymbol(new Symbol(LexicalUnit.OR,        yyline, yycolumn, new String(yytext())));return null;}
+    "="            {addSymbol(new Symbol(LexicalUnit.EQ,        yyline, yycolumn, new String(yytext())));return null;}
+    "<="           {addSymbol(new Symbol(LexicalUnit.LEQ,       yyline, yycolumn, new String(yytext())));return null;}
+    "<"            {addSymbol(new Symbol(LexicalUnit.GT,        yyline, yycolumn, new String(yytext())));return null;}
+    ">="           {addSymbol(new Symbol(LexicalUnit.GEQ,       yyline, yycolumn, new String(yytext())));return null;}
+    ">"            {addSymbol(new Symbol(LexicalUnit.LT,        yyline, yycolumn, new String(yytext())));return null;}
+    "<>"           {addSymbol(new Symbol(LexicalUnit.NEQ,       yyline, yycolumn, new String(yytext())));return null;}
+    "while"        {addSymbol(new Symbol(LexicalUnit.WHILE,     yyline, yycolumn, new String(yytext())));return null;}
+    "do"           {addSymbol(new Symbol(LexicalUnit.DO,        yyline, yycolumn, new String(yytext())));return null;}
+    "done"         {addSymbol(new Symbol(LexicalUnit.DONE,      yyline, yycolumn, new String(yytext())));return null;}
+    "for"          {addSymbol(new Symbol(LexicalUnit.FOR,       yyline, yycolumn, new String(yytext())));return null;}
+    "from"         {addSymbol(new Symbol(LexicalUnit.FROM,      yyline, yycolumn, new String(yytext())));return null;}
+    "by"           {addSymbol(new Symbol(LexicalUnit.BY,        yyline, yycolumn, new String(yytext())));return null;}
+    "to"           {addSymbol(new Symbol(LexicalUnit.TO,        yyline, yycolumn, new String(yytext())));return null;}
+    "read"         {addSymbol(new Symbol(LexicalUnit.READ,      yyline, yycolumn, new String(yytext())));return null;}
+    "print"        {addSymbol(new Symbol(LexicalUnit.PRINT,     yyline, yycolumn, new String(yytext())));return null;}
+    {Litteral}     {addSymbol(new Symbol(LexicalUnit.VARNAME,   new String(yytext())));return null;}
     " "            {return null;}
     "\t"           {return null;}
     "\n"           {endRule();yybegin(YYINITIAL);return null;}

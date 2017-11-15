@@ -1,9 +1,15 @@
 package be.ac.ulb.infof403.grammar;
 
 import be.ac.ulb.infof403.Elem;
+import be.ac.ulb.infof403.Epsilon;
+import be.ac.ulb.infof403.LexicalUnit;
+import be.ac.ulb.infof403.Symbol;
+import be.ac.ulb.infof403.Terminal;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.HashSet;
 
 /**
@@ -11,40 +17,40 @@ import java.util.HashSet;
  */
 public class Grammar {
     
-    private HashMap<GrammarVariable, ArrayList<Rule>> _listRule;
+    private HashSet<GrammarVariable> _variables;
+    private HashSet<Symbol> _symbols = null;
     private final GrammarVariable _initialState;
     
     public Grammar(final GrammarVariable initialState) {
-        _listRule = new HashMap<>();
+        _variables = new HashSet<>();
+        addVariables(initialState);
         _initialState = initialState;
     }
     
-    public ArrayList getRuleForVariable(final GrammarVariable variable) {
-        return _listRule.get(variable);
+    public final void addVariables(final GrammarVariable... variables) {
+        addVariables(new ArrayList<>(Arrays.asList(variables)));
     }
     
-    public void addRule(final GrammarVariable sym, final Elem... listElem) {
-        addRule(sym, new ArrayList<>(Arrays.asList(listElem)));
-    }
-    
-    public void addRule(final GrammarVariable sym, final ArrayList<Elem> listElem) {
-        if(!_listRule.containsKey(sym)) {
-            _listRule.put(sym, new ArrayList<Rule>());
+    public final void addVariables(final Collection<GrammarVariable> allVariables) {
+        for (final GrammarVariable variable : allVariables) {
+            if(_variables.add(variable)) {
+                variable.setGrammar(this);
+            }
         }
-        _listRule.get(sym).add(new Rule(listElem));
+    }
+    
+    public HashSet<GrammarVariable> getVariables() {
+        return _variables;
     }
     
     @Override
-	public String toString() {
+    public String toString() {
         String result = "";
-        for(GrammarVariable sym : _listRule.keySet()) {
-            for(Rule rule : _listRule.get(sym)) {
-                result += sym.toString() + "\t -> \t " + rule.toString() + "\n";
-            }
+        for(final GrammarVariable sym : _variables) {
+            result += sym.getStrRules();
         }
-        
-		return result;
-	}
+        return result;
+    }
     
     public void removeUseless() {
         removeUnproductive();
@@ -57,20 +63,11 @@ public class Grammar {
         
         while(addVariable) {
             addVariable = false;
-            for(final GrammarVariable sym : _listRule.keySet()) {
-                if(_listRule.get(sym).isEmpty()) {
-                    if(newGrammarVariable.add(sym)) {
-                        addVariable = true;
-                    }
-                } else {
-                    for(final Rule rule : _listRule.get(sym)) {
-                        if(rule.allComposantTerminal(newGrammarVariable)) {
-                            if(newGrammarVariable.add(sym)) {
-                                addVariable = true;
-                            }
-                            break;
-                        }
-                    }
+            for(final GrammarVariable sym : _variables) {
+                if( (sym.haveNoRule() && newGrammarVariable.add(sym)) || 
+                    (sym.allRuleComposantTerminal(newGrammarVariable) && 
+                        newGrammarVariable.add(sym)) ) {
+                    addVariable = true;
                 }
             }
         }
@@ -79,18 +76,13 @@ public class Grammar {
     }
     
     private void removeRuleWithUnproductiveVariable(final HashSet<GrammarVariable> productiveVariable) {
-        final HashMap<GrammarVariable, ArrayList<Rule>> cloneListRule =
-                (HashMap<GrammarVariable, ArrayList<Rule>>) _listRule.clone();
-        for(final GrammarVariable sym : cloneListRule.keySet()) {
+        final HashSet<GrammarVariable> cloneListRule =
+                (HashSet<GrammarVariable>) _variables.clone();
+        for(final GrammarVariable sym : cloneListRule) {
             if(!productiveVariable.contains(sym)) {
-                _listRule.remove(sym);
+                _variables.remove(sym);
             } else {
-                final ArrayList<Rule> cloneSymListRule = (ArrayList<Rule>) _listRule.get(sym).clone();
-                for(final Rule rule : cloneSymListRule) {
-                    if(!rule.allComposantTerminal(productiveVariable)) {
-                        _listRule.get(sym).remove(rule);
-                    }
-                }
+                sym.removeRuleWithUnproductiveVariable(productiveVariable);
             }
         }
     }
@@ -103,42 +95,38 @@ public class Grammar {
         while(addVariable) {
             addVariable = false;
             
-            for(final GrammarVariable var : accessibleVariable) {
-                for(final Rule rule : _listRule.get(var)) {
-                    if(accessibleVariable.addAll(rule.getAllGrammarVariable())) {
-                        addVariable = true;
-                    }
+            final HashSet<GrammarVariable> allAccessibleVar = (HashSet<GrammarVariable>) accessibleVariable.clone();
+            for(final GrammarVariable var : allAccessibleVar) {
+                if(accessibleVariable.addAll(var.getAllGrammarVariable())) {
+                    addVariable = true;
                 }
             }
         }
         
-        final HashMap<GrammarVariable, ArrayList<Rule>> cloneListRule =
-                (HashMap<GrammarVariable, ArrayList<Rule>>) _listRule.clone();
-        for(final GrammarVariable var : cloneListRule.keySet()) {
+        final HashSet<GrammarVariable> cloneListRule =
+                (HashSet<GrammarVariable>) _variables.clone();
+        for(final GrammarVariable var : cloneListRule) {
             if(!accessibleVariable.contains(var)) {
-                _listRule.remove(var);
+                _variables.remove(var);
             }
         }
     }
     
-    public void facorisation() { // TODO has to be tested
-        for (final GrammarVariable var : _listRule.keySet()) {
+    public void factorisation() { // TODO has to be tested
+        final HashSet<GrammarVariable> allVariable = (HashSet<GrammarVariable>) _variables.clone();
+        for (final GrammarVariable var : allVariable) {
             // Setup of the stree and generation of the factorised rules.
             final Stree s = new Stree(var);
-            for (final Rule rule : _listRule.get(var)) {
-                s.add(rule);
+            if(s.addRules(var.getRules())) {
+                addVariables(s.generateNewGramVariable());
             }
-            final Grammar g = s.generateRules();
-            // Replacement of the former rule by the (new) one(s).
-            _listRule.remove(var);
-            _listRule.put(var, g.getRuleForVariable(var));
         }
     }
     
     public void removeLeftRecursion() {
-        final HashMap<GrammarVariable, ArrayList<Rule>> workingList = (HashMap<GrammarVariable, ArrayList<Rule>>)_listRule.clone();
-        for (final GrammarVariable key : _listRule.keySet()) {
-            final ArrayList<Rule> value = _listRule.get(key);
+        final HashSet<GrammarVariable> workingList = (HashSet<GrammarVariable>)_variables.clone();
+        for (final GrammarVariable key : _variables) {
+            final ArrayList<Rule> value = key.getRules();
             Boolean again = true;
             int counter = 0;
             while(counter < value.size() && again) {
@@ -147,39 +135,198 @@ public class Grammar {
                     again = false;
                     final GrammarVariable u = new GrammarVariable(key.getVarName()+"U");
                     final GrammarVariable v = new GrammarVariable(key.getVarName()+"V");
-                    final ArrayList<Rule> list = workingList.get(key);
-                    createUVRule(workingList, key, u, v);
+                    final ArrayList<Rule> list = key.getRules();
+                    createUVRule(key, u, v);
                     createURule(workingList, list, u);
                     createVRule(workingList, list, v);
                 }
                 counter++;
             }
         }
-        _listRule = workingList;
+        _variables = workingList;
     }
     
-    private void createUVRule(final HashMap<GrammarVariable, ArrayList<Rule>> workingList, 
-            final GrammarVariable key, final GrammarVariable u, final GrammarVariable v) {
-        workingList.remove(key);
-        workingList.put(key, new ArrayList<Rule>());
-        workingList.get(key).add(new Rule(u, v));
+    private void createUVRule(final GrammarVariable key, final GrammarVariable u, final GrammarVariable v) {
+        key.cleanRules();
+        key.addRule(new Rule(u, v));
     }
     
-    private void createURule(final HashMap<GrammarVariable, ArrayList<Rule>> workingList, 
+    private void createURule(final HashSet<GrammarVariable> workingList, 
             final ArrayList<Rule> list, final GrammarVariable u) {
-        workingList.put(u, new ArrayList<Rule>());
+        workingList.add(u);
         for (int i = 1; i < list.size(); i++) {
-            workingList.get(u).add(list.get(i));
+            u.addRule(list.get(i));
         }
     }
     
-    private void createVRule(final HashMap<GrammarVariable, ArrayList<Rule>> workingList, 
+    private void createVRule(final HashSet<GrammarVariable> workingList, 
             final ArrayList<Rule> list, final GrammarVariable v) {
         final Rule workingRule = list.get(0);
         workingRule.remove(0);
         workingRule.add(v);
-        workingList.put(v, new ArrayList<Rule>());
-        workingList.get(v).add(workingRule);
+        workingList.add(v);
+        v.addRule(workingRule);
+    }
+    
+    public void printFollow() {
+        for(final GrammarVariable gramVar : _variables) {
+            System.out.println("\n\n--------------");
+            System.out.print("Follow of " + gramVar + ": ");
+            for(final Terminal follow : follow(gramVar)) {
+                System.out.print(follow.getValue() + ", ");
+            }
+            System.out.println("");
+        }
+    }
+    
+    public HashSet<Terminal> follow(final GrammarVariable gramVar) {
+        return follow(gramVar, new HashSet<>());
+    }
+    
+    private HashSet<Terminal> follow(final GrammarVariable gramVar, 
+            final HashSet<GrammarVariable> prevGramVarAlreadyFollow) {
+        final HashSet<Terminal> result = new HashSet<>();
+        if(prevGramVarAlreadyFollow.contains(gramVar)) {
+            return result;
+        }
+        prevGramVarAlreadyFollow.add(gramVar);
+        
+        for(final GrammarVariable gramVarContained : _variables) {
+            final HashSet<Elem> allFollowedElem = gramVarContained.getDirectFollowed(gramVar);
+            
+            for(final Elem followedElem : allFollowedElem) {
+                if(followedElem instanceof GrammarVariable) {
+                    
+                    for(final Terminal term : followedElem.first()) {
+                        if(term instanceof Epsilon) {
+                            final GrammarVariable gramVarFollowedElem = (GrammarVariable) followedElem;
+                            result.addAll(follow(gramVarFollowedElem, 
+                                    prevGramVarAlreadyFollow));
+                        }
+                        else {
+                            result.add(term);
+                        }
+                    }
+                    
+                } else if(followedElem instanceof Terminal) {
+                    result.add((Terminal) followedElem);
+                }
+            }
+            
+            if(gramVarContained.isGramVarEndOfAtLeastOneRule(gramVar) && gramVarContained != gramVar) {
+                result.addAll(follow(gramVarContained, prevGramVarAlreadyFollow));
+            }
+            
+        }
+        return result;
+    }
+    
+    private HashSet<Symbol> getAllSymbol() {
+        if(_symbols == null) {
+            _symbols = new HashSet<>();
+            for(final GrammarVariable var : _variables) {
+                _symbols.addAll(var.getAllSymbol());
+            }
+        }
+        return _symbols;
+    }
+    
+    public void printActionTable() {
+        final HashSet<Symbol> syms = getAllSymbol();
+        
+        int maxLenVarName = 0;
+        for(final GrammarVariable var : _variables) {
+            if(maxLenVarName < var.getValue().length()) {
+                maxLenVarName = var.getValue().length();
+            }
+        }
+        
+        final ArrayList<Integer> lenSymbol = new ArrayList<>();
+        
+        // Header
+        System.out.print(getSpace(maxLenVarName) + " | ");
+        for (final Symbol sym : syms) {
+            final String strSym = sym.getValue().toString();
+            lenSymbol.add(Math.max(2, strSym.length()));
+            System.out.print(strSym + 
+                    (strSym.length() < 2 ? " " : "") + 
+                    " | ");
+        }
+        
+        System.out.println("");
+        
+        // Table
+        for (final GrammarVariable var : _variables) {
+            final String varName = var.getVarName();
+            
+            int colonne = 0;
+            System.out.print(varName + getSpace(maxLenVarName-varName.length()) + " | ");
+            for (final Symbol sym : syms) {
+                final Rule res = var.getRuleThatLeadsToSymbol(sym);
+                
+                final int sizeCol = Math.max(2, lenSymbol.get(colonne));
+                if(res != null) {
+                    final Integer ruleId = res.getId();
+                    System.out.print(ruleId + getSpace(sizeCol-ruleId.toString().length()));
+                } else {
+                    System.out.print(getSpace(sizeCol));
+                }
+                
+                System.out.print(" | ");
+                ++colonne;
+            }
+            System.out.println("");
+        }
+    }
+    
+    private String getSpace(final int nbrSpace) {
+        String result = "";
+        for(int i = 0; i < nbrSpace; ++i) {
+            result += " ";
+        }
+        return result;
+    }
+    
+    
+    /**
+     * Open and scan grammar file
+     * 
+     * @param gramFilePath the path to the grammar
+     * @return The grammar object of null if not correct
+     */
+    public static Grammar openAndScanGrammar(final String gramFilePath) {
+        Grammar result = null;
+        
+        boolean allOk = true;
+        GrammarScanner gramScanner = null;
+        final FileReader file;
+        try {
+            file = new FileReader(gramFilePath);
+            gramScanner = new GrammarScanner(file);
+
+        } catch (IOException exception) {
+            System.err.println("Error with grammar file: " + exception.getMessage());
+            allOk = false;
+        }
+        
+        if(allOk && gramScanner != null) {
+            result = readGrammar(gramScanner);
+        }
+        
+        return result;
+    }
+    
+    private static Grammar readGrammar(final GrammarScanner gramScanner) {
+        Symbol symbol = null;
+        try {
+            while(symbol == null || symbol.getType() != LexicalUnit.EOS) {
+                symbol = gramScanner.nextToken();
+            }
+        } catch (IOException ex) {
+            System.err.println("Bug with token Grammar flex: " + ex.getMessage());
+        }
+        
+        return GrammarScanner.getGrammar();
     }
     
 }
