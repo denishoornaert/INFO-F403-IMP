@@ -1,4 +1,4 @@
-<S>     -> <Exp>$
+<S>     -> <Exp>endif
 <Exp>   -> <Prod><Exp'>
 <Exp'>  -> +<Prod><Exp'>
         -> -<Prod><Exp'>

@@ -25,12 +25,10 @@ public class Ll1 {
     public void parse() {
         _stack.push(_grammar.getInitialvariable());
         int i = 0;
-        while (!_stack.isEmpty()) { // and tokens not out of range ??
+        while (!_stack.isEmpty() && i < _tokens.size()) {
             Symbol symb = _tokens.get(i);
             if(_stack.tos() instanceof Symbol) {
                 if(!_stack.tos().equals(symb)) {
-                    System.out.println("@1");
-                    //System.out.println(_stack.tos()+" - "+symb);
                     throw new IllegalArgumentException(); // TODO create custom error. Something like GrammarError.
                 }
                 else {
@@ -43,8 +41,6 @@ public class Ll1 {
                 GrammarVariable var = (GrammarVariable)_stack.tos();
                 Rule r = var.getRuleThatLeadsToSymbol(symb);
                 if(r == null) {
-                    System.out.println("@2");
-                    System.out.print(" "+var+" to "+symb);
                     throw new IllegalArgumentException(); // TODO create custom error. Something like GrammarError.
                 }
                 else {
