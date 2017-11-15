@@ -1,7 +1,7 @@
 package be.ac.ulb.infof403;
 
 import be.ac.ulb.infof403.grammar.Grammar;
-import be.ac.ulb.infof403.parser.LL1;
+import be.ac.ulb.infof403.parser.Ll1;
 import be.ac.ulb.infof403.scanner.ImpScanner;
 
 /**
@@ -90,7 +90,8 @@ public class Main {
              grammar.printActionTable();
         }
         
-        new LL1(grammar, tokenList);
+        Ll1 l = new Ll1(grammar, tokenList);
+        l.parse();
     }
     
     private static boolean argsContainsHelp(final String[] args) {

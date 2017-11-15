@@ -39,6 +39,11 @@ public class Grammar {
         }
     }
     
+    public GrammarVariable getInitialvariable() {
+        return _initialState;
+    }
+    
+    // TODO Remy should we remove this method ?
     public HashSet<GrammarVariable> getVariables() {
         return _variables;
     }

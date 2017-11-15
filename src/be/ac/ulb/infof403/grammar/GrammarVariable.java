@@ -81,7 +81,7 @@ public class GrammarVariable extends Elem {
         return res;
     }
     
-    protected Rule getRuleThatLeadsToSymbol(final Symbol sym) {
+    public Rule getRuleThatLeadsToSymbol(final Symbol sym) {
         Rule res = null;
         int counter = 0;
         boolean found = false;
