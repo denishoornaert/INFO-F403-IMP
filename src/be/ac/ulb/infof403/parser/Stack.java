@@ -4,8 +4,6 @@ import be.ac.ulb.infof403.Elem;
 import be.ac.ulb.infof403.Epsilon;
 import be.ac.ulb.infof403.grammar.Rule;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.ListIterator;
 
 /**
  * Specific stack used by the parser during the syntax verification and tree construction processes

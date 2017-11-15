@@ -1,5 +1,5 @@
 <Program>       -> begin <Code> end
-                -> Epsilon
+<Code>          -> eps
                 -> <InstList>
 <InstList>      -> <Instruction>
                 -> <Instruction> ; <InstList>

@@ -6,6 +6,7 @@ import be.ac.ulb.infof403.TokenList;
 import be.ac.ulb.infof403.grammar.Grammar;
 import be.ac.ulb.infof403.grammar.GrammarVariable;
 import be.ac.ulb.infof403.grammar.Rule;
+import java.util.Iterator;
 
 /**
  * Recursive descent LL(1) which could parse for a given grammar an IMP File
@@ -13,41 +14,49 @@ import be.ac.ulb.infof403.grammar.Rule;
 public class Ll1 {
     
     private final Stack _stack;
-    private final TokenList _tokens;
     private final Grammar _grammar;
+    private final Iterator<Symbol> _i;
+    private Symbol _symb;
     
     public Ll1(final Grammar grammar, final TokenList tokenList) {
         _stack = new Stack();
-        _tokens = tokenList;
         _grammar = grammar;
+        _i = tokenList.iterator();
+        _symb = _i.next();
+    }
+    
+    private void symbolManagement() {
+        if(!_stack.tos().equals(_symb)) {
+            throw new IllegalArgumentException(); // TODO create custom error. Something like GrammarError.
+        }
+        else {
+            System.out.print("M, ");
+            _stack.pop();
+            _symb = _i.next();
+        }
+    }
+    
+    private void variableManagement() {
+        GrammarVariable var = (GrammarVariable)_stack.tos();
+        Rule r = var.getRuleThatLeadsToSymbol(_symb);
+        if(r == null) {
+            throw new IllegalArgumentException(); // TODO create custom error. Something like GrammarError.
+        }
+        else {
+            System.out.print(r.getId()+", ");
+            _stack.pop();
+            _stack.push(r);
+        }
     }
     
     public void parse() {
         _stack.push(_grammar.getInitialvariable());
-        int i = 0;
-        while (!_stack.isEmpty() && i < _tokens.size()) {
-            Symbol symb = _tokens.get(i);
+        while (!_stack.isEmpty() && _i.hasNext()) {
             if(_stack.tos() instanceof Symbol) {
-                if(!_stack.tos().equals(symb)) {
-                    throw new IllegalArgumentException(); // TODO create custom error. Something like GrammarError.
-                }
-                else {
-                    System.out.print("M, ");
-                    Elem tmp = _stack.pop();
-                    i++;
-                }
+                this.symbolManagement();
             }
-            else { // _stack.tos() instanceof GrammarVariable
-                GrammarVariable var = (GrammarVariable)_stack.tos();
-                Rule r = var.getRuleThatLeadsToSymbol(symb);
-                if(r == null) {
-                    throw new IllegalArgumentException(); // TODO create custom error. Something like GrammarError.
-                }
-                else {
-                    System.out.print(r.getId()+", ");
-                    _stack.pop();
-                    _stack.push(r);
-                }
+            else { // _stack.tos() instanceof GrammarVariable // we can do that as we are sure only Symbol and GrammarVariable are stocked in the stack.
+                this.variableManagement();
             }
         }
         System.out.println("");
