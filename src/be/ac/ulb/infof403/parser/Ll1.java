@@ -1,11 +1,13 @@
 package be.ac.ulb.infof403.parser;
 
+import be.ac.ulb.infof403.Elem;
 import be.ac.ulb.infof403.Symbol;
 import be.ac.ulb.infof403.TokenList;
 import be.ac.ulb.infof403.grammar.Grammar;
 import be.ac.ulb.infof403.grammar.GrammarVariable;
 import be.ac.ulb.infof403.grammar.Rule;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 
 /**
@@ -42,7 +44,8 @@ public class Ll1 {
         GrammarVariable var = (GrammarVariable)_stack.tos();
         Rule r = var.getRuleThatLeadsToSymbol(_symb);
         if(r == null) {
-            throw new UnexpectedCharacterException(_symb); // TODO create custom error. Something like GrammarError.
+            HashSet<Elem> elems = var.getExpectedCharacters();
+            throw new UnexpectedCharacterException(_symb, elems); // TODO create custom error. Something like GrammarError.
         }
         else {
             _transitions.add(""+r.getId());

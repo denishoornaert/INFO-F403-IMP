@@ -99,6 +99,19 @@ public class GrammarVariable extends Elem {
         return res;
     }
     
+    // TODO this method looks like the previous one (for some aspects) there might be something to refactore here...
+    public HashSet<Elem> getExpectedCharacters() {
+        HashSet<Elem> res = new HashSet<>();
+        res.addAll(_grammar.follow(this));
+        for (Rule rule : _listRule) {
+            Elem elem = rule.get(0);
+            if(!(elem instanceof Epsilon)) {
+                res.addAll(rule.get(0).first());
+            }
+        }
+        return res;
+    }
+    
     protected boolean allRuleComposantTerminal(final HashSet<GrammarVariable> ignoreVar) {
         for(final Rule rule : _listRule) {
             if(rule.allComposantTerminal(ignoreVar)) {
