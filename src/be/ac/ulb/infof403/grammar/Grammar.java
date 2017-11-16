@@ -147,8 +147,8 @@ public class Grammar {
                     again = false;
                     final GrammarVariable u = new GrammarVariable(key.getVarName()+"U");
                     final GrammarVariable v = new GrammarVariable(key.getVarName()+"V");
-                    createURule(_variables, listRule, u, currentRule);
-                    createVRule(_variables, currentRule, v);
+                    createURule(listRule, u, currentRule);
+                    createVRule(currentRule, v);
                     createUVRule(key, u, v);
                 }
             }
@@ -160,10 +160,9 @@ public class Grammar {
         key.addRule(new Rule(u, v));
     }
     
-    private void createURule(final HashSet<GrammarVariable> workingList, 
-            final HashSet<Rule> listRule, final GrammarVariable u,
+    private void createURule(final HashSet<Rule> listRule, final GrammarVariable u,
             final Rule ignoreRule) {
-        workingList.add(u);
+        addVariables(u);
         for(final Rule rule : listRule) {
             if(rule != ignoreRule) {
                 u.addRule(rule);
@@ -171,13 +170,12 @@ public class Grammar {
         }
     }
     
-    private void createVRule(final HashSet<GrammarVariable> workingList, 
-            final Rule workingRule, final GrammarVariable v) {
+    private void createVRule(final Rule workingRule, final GrammarVariable v) {
         workingRule.remove(0);
         workingRule.add(v);        
         v.addRule(workingRule);
         v.addRule(new Epsilon());
-        workingList.add(v);
+        addVariables(v);
     }
     
     public void printFollow() {
