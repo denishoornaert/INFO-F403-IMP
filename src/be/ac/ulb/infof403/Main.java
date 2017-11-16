@@ -91,6 +91,7 @@ public class Main {
              grammar.printActionTable();
         }
         
+        
         Ll1 l = new Ll1(grammar, tokenList);
         try {
             l.parse();

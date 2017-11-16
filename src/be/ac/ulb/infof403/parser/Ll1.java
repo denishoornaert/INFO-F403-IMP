@@ -29,7 +29,8 @@ public class Ll1 {
     
     private void symbolManagement() {
         if(!_stack.tos().equals(_symb)) {
-            System.err.println(_stack.tos().getValue()+" vs "+_symb.getValue());
+            System.err.println("(line: " + _symb.getLine() + ") " + 
+                    _stack.tos().getValue()+" vs "+_symb.getValue());
             throw new IllegalArgumentException(); // TODO create custom error. Something like GrammarError.
         }
         else {
@@ -43,6 +44,7 @@ public class Ll1 {
     private void variableManagement() throws UnexpectedCharacterException {
         final GrammarVariable var = (GrammarVariable)_stack.tos();
         final Rule r = var.getRuleThatLeadsToSymbol(_symb);
+        
         if(r == null) {
             // TODO create custom error. Something like GrammarError.
             throw new UnexpectedCharacterException(_symb, var.getExpectedCharacters()); 
@@ -58,6 +60,7 @@ public class Ll1 {
         _stack.push(_grammar.getInitialvariable());
         while (!_stack.isEmpty() && _i.hasNext()) {
             System.out.println(_stack);
+            
             if(_stack.tos() instanceof Symbol) {
                 this.symbolManagement();
             }

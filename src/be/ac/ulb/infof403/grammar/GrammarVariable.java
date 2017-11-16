@@ -98,11 +98,11 @@ public class GrammarVariable extends Elem implements Comparable {
             } else {
                 expetedElem = elem.first();
             }
-            final Iterator<Terminal> iteratorExptedElem = expetedElem.iterator();
-            while(iteratorExptedElem.hasNext() && !found) {
-                if(iteratorExptedElem.next().equals(sym)) {
+            final Iterator<Terminal> iteratorExpetedElem = expetedElem.iterator();
+            while(iteratorExpetedElem.hasNext() && !found) {
+                if(iteratorExpetedElem.next().equals(sym)) {
                     res = rule;
-                found = true;
+                    found = true;
                 }
             }
         }
@@ -111,10 +111,10 @@ public class GrammarVariable extends Elem implements Comparable {
     
     // TODO this method looks like the previous one (for some aspects) there might be something to refactore here...
     public HashSet<Elem> getExpectedCharacters() {
-        HashSet<Elem> res = new HashSet<>();
+        final HashSet<Elem> res = new HashSet<>();
         res.addAll(_grammar.follow(this));
-        for (Rule rule : _listRule) {
-            Elem elem = rule.get(0);
+        for (final Rule rule : _listRule) {
+            final Elem elem = rule.get(0);
             if(!(elem instanceof Epsilon)) {
                 res.addAll(rule.get(0).first());
             }
@@ -172,7 +172,7 @@ public class GrammarVariable extends Elem implements Comparable {
     
     protected boolean isGramVarEndOfAtLeastOneRule(final GrammarVariable gramVar) {
         for(final Rule rule : _listRule) {
-            final int index = rule.indexOf(gramVar);
+            final int index = rule.lastIndexOf(gramVar);
             if(index >= 0 && index == (rule.size()-1)) {
                 return true;
             }

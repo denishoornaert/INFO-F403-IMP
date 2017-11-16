@@ -2,6 +2,7 @@ package be.ac.ulb.infof403.parser;
 
 import be.ac.ulb.infof403.Elem;
 import be.ac.ulb.infof403.Epsilon;
+import be.ac.ulb.infof403.Symbol;
 import be.ac.ulb.infof403.grammar.Rule;
 import java.util.ArrayList;
 
@@ -49,7 +50,22 @@ public class Stack {
     
     @Override
     public String toString() {
-        return _stack.toString();
+        String result = "";
+        boolean first = true;
+        for(final Elem elem : _stack) {
+            if(!first) {
+                result += ", ";
+            }
+            first = false;
+            
+            if(elem instanceof Symbol) {
+                result += ((Symbol) elem).getType();
+            } else {
+                result += elem.toString();
+            }
+        }
+        
+        return result;
     }
     
 }
