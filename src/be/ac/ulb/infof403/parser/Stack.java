@@ -5,6 +5,7 @@ import be.ac.ulb.infof403.Epsilon;
 import be.ac.ulb.infof403.Symbol;
 import be.ac.ulb.infof403.grammar.Rule;
 import java.util.ArrayList;
+import java.util.ListIterator;
 
 /**
  * Specific stack used by the parser during the syntax verification and tree construction processes
@@ -25,9 +26,11 @@ public class Stack {
     }
     
     public void push(final Rule r) {
-        // TODO havn't found any kind of iterator for that... Does one exist ??
-        for (int i = r.size()-1; i >= 0; i--) {
-            this.push(r.get(i));
+        final ListIterator<Elem> li = r.listIterator(r.size());
+
+        // Iterate in reverse.
+        while(li.hasPrevious()) {
+            this.push(li.previous());
         }
     }
     
