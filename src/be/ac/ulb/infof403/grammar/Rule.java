@@ -32,12 +32,6 @@ public class Rule extends ArrayList<Elem> implements Comparable {
 	public String toString() {
         String result = "";
         for(final Elem elem : this) {
-            // TODO DEBUG
-//            if(elem instanceof Symbol) {
-//                result += "(" + ((Symbol) elem).getType() + ") " + elem.getValue()+ " ";
-//            } else {
-//                result += elem.getValue()+ " ";
-//            }
             result += elem.getValue()+ " ";
         }
         return result;

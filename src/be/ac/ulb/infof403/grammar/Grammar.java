@@ -134,7 +134,7 @@ public class Grammar {
     
     public void removeLeftRecursion() {
         final HashSet<GrammarVariable> workingList = (HashSet<GrammarVariable>)_variables.clone();
-        for (final GrammarVariable key : _variables) {
+        for (final GrammarVariable key : workingList) {
             final HashSet<Rule> listRule = key.getRules();
             Boolean again = true;
             
@@ -147,14 +147,12 @@ public class Grammar {
                     again = false;
                     final GrammarVariable u = new GrammarVariable(key.getVarName()+"U");
                     final GrammarVariable v = new GrammarVariable(key.getVarName()+"V");
-                    final HashSet<Rule> list = key.getRules();
+                    createURule(_variables, listRule, u, currentRule);
+                    createVRule(_variables, currentRule, v);
                     createUVRule(key, u, v);
-                    createURule(workingList, list, u);
-                    createVRule(workingList, currentRule, v);
                 }
             }
         }
-        _variables = workingList;
     }
     
     private void createUVRule(final GrammarVariable key, final GrammarVariable u, final GrammarVariable v) {
@@ -163,19 +161,23 @@ public class Grammar {
     }
     
     private void createURule(final HashSet<GrammarVariable> workingList, 
-            final HashSet<Rule> listRule, final GrammarVariable u) {
+            final HashSet<Rule> listRule, final GrammarVariable u,
+            final Rule ignoreRule) {
         workingList.add(u);
         for(final Rule rule : listRule) {
-            u.addRule(rule);
+            if(rule != ignoreRule) {
+                u.addRule(rule);
+            }
         }
     }
     
     private void createVRule(final HashSet<GrammarVariable> workingList, 
             final Rule workingRule, final GrammarVariable v) {
         workingRule.remove(0);
-        workingRule.add(v);
-        workingList.add(v);
+        workingRule.add(v);        
         v.addRule(workingRule);
+        v.addRule(new Epsilon());
+        workingList.add(v);
     }
     
     public void printFollow() {
