@@ -9,7 +9,7 @@ import java.util.HashSet;
 /**
  * Rule of the grammar
  */
-public class Rule extends ArrayList<Elem> {
+public class Rule extends ArrayList<Elem> implements Comparable {
     
     private static int ruleId = 1;
     
@@ -31,7 +31,13 @@ public class Rule extends ArrayList<Elem> {
     @Override
 	public String toString() {
         String result = "";
-        for(Elem elem : this) {
+        for(final Elem elem : this) {
+            // TODO DEBUG
+//            if(elem instanceof Symbol) {
+//                result += "(" + ((Symbol) elem).getType() + ") " + elem.getValue()+ " ";
+//            } else {
+//                result += elem.getValue()+ " ";
+//            }
             result += elem.getValue()+ " ";
         }
         return result;
@@ -64,6 +70,16 @@ public class Rule extends ArrayList<Elem> {
             }
         }
         return result;
+    }
+
+    @Override
+    public int compareTo(Object objToCompare) {
+        if(objToCompare instanceof Rule) {
+            final Rule ruleToCompare = (Rule) objToCompare;
+            final Integer currentId = getId();
+            return currentId.compareTo(ruleToCompare.getId());
+        }
+        return -1;
     }
     
 }

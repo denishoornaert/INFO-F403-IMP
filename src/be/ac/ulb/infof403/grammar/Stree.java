@@ -15,7 +15,7 @@ public class Stree {
         _variable = var;
     }
     
-    protected boolean addRules(final ArrayList<Rule> listRule) {
+    protected boolean addRules(final HashSet<Rule> listRule) {
         boolean newRule = false;
         for (final Rule rule : listRule) {
             newRule = newRule || add(rule);

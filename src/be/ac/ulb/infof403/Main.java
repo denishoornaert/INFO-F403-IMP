@@ -4,8 +4,6 @@ import be.ac.ulb.infof403.grammar.Grammar;
 import be.ac.ulb.infof403.parser.Ll1;
 import be.ac.ulb.infof403.parser.UnexpectedCharacterException;
 import be.ac.ulb.infof403.scanner.ImpScanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Main class
