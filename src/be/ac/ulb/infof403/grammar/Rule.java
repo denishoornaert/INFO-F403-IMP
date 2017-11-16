@@ -24,7 +24,7 @@ public class Rule extends ArrayList<Elem> implements Comparable {
         _id = ruleId++;
     }
     
-    public int getId() {
+    public Integer getId() {
         return _id;
     }
     

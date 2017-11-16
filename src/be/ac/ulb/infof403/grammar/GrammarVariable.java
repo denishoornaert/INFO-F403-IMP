@@ -92,10 +92,18 @@ public class GrammarVariable extends Elem implements Comparable {
             final Rule rule = iteratorRule.next();
             final Elem elem = rule.get(0);
             // if sym in the set returned by first, save it and exit the loop
-            if((elem instanceof Epsilon && _grammar.follow(this).contains(sym)) ||
-                    elem.first().contains(sym)) {
-                res = rule;
+            final HashSet<Terminal> expetedElem;
+            if(elem instanceof Epsilon) {
+                expetedElem = _grammar.follow(this);
+            } else {
+                expetedElem = elem.first();
+            }
+            final Iterator<Terminal> iteratorExptedElem = expetedElem.iterator();
+            while(iteratorExptedElem.hasNext() && !found) {
+                if(iteratorExptedElem.next().equals(sym)) {
+                    res = rule;
                 found = true;
+                }
             }
         }
         return res;

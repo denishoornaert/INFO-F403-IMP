@@ -1,13 +1,11 @@
 package be.ac.ulb.infof403.parser;
 
-import be.ac.ulb.infof403.Elem;
 import be.ac.ulb.infof403.Symbol;
 import be.ac.ulb.infof403.TokenList;
 import be.ac.ulb.infof403.grammar.Grammar;
 import be.ac.ulb.infof403.grammar.GrammarVariable;
 import be.ac.ulb.infof403.grammar.Rule;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 
 /**
@@ -18,7 +16,7 @@ public class Ll1 {
     private final Stack _stack;
     private final Grammar _grammar;
     private final Iterator<Symbol> _i;
-    private ArrayList<String> _transitions;
+    private final ArrayList<String> _transitions;
     private Symbol _symb;
     
     public Ll1(final Grammar grammar, final TokenList tokenList) {
@@ -43,14 +41,14 @@ public class Ll1 {
     
     // TODO what about replacing the 'if(r == null){...}' by a 'catch(nullPointerExeption) {...}' ?? more beautiful ??
     private void variableManagement() throws UnexpectedCharacterException {
-        GrammarVariable var = (GrammarVariable)_stack.tos();
-        Rule r = var.getRuleThatLeadsToSymbol(_symb);
+        final GrammarVariable var = (GrammarVariable)_stack.tos();
+        final Rule r = var.getRuleThatLeadsToSymbol(_symb);
         if(r == null) {
-            HashSet<Elem> elems = var.getExpectedCharacters();
-            throw new UnexpectedCharacterException(_symb, elems); // TODO create custom error. Something like GrammarError.
+            // TODO create custom error. Something like GrammarError.
+            throw new UnexpectedCharacterException(_symb, var.getExpectedCharacters()); 
         }
         else {
-            _transitions.add(""+r.getId());
+            _transitions.add(r.getId().toString());
             _stack.pop();
             _stack.push(r);
         }
@@ -63,7 +61,9 @@ public class Ll1 {
             if(_stack.tos() instanceof Symbol) {
                 this.symbolManagement();
             }
-            else { // _stack.tos() instanceof GrammarVariable // we can do that as we are sure only Symbol and GrammarVariable are stocked in the stack.
+            // _stack.tos() instanceof GrammarVariable 
+            // we can do that as we are sure only Symbol and GrammarVariable are stocked in the stack.
+            else { 
                 this.variableManagement();
             }
         }

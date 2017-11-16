@@ -11,19 +11,19 @@ import java.util.ArrayList;
  */
 public class Stack {
     
-    ArrayList<Elem> _stack; // TODO Remy does creating an interface for both Symbol and GrammarVariable is a good idea ??
+    private final ArrayList<Elem> _stack; // TODO Remy does creating an interface for both Symbol and GrammarVariable is a good idea ??
     
     public Stack() {
         _stack = new ArrayList<>();
     }
     
-    public void push(Elem elem) {
+    public void push(final Elem elem) {
         if(!(elem instanceof Epsilon)) {
             _stack.add(elem);
         }
     }
     
-    public void push(Rule r) {
+    public void push(final Rule r) {
         // TODO havn't found any kind of iterator for that... Does one exist ??
         for (int i = r.size()-1; i >= 0; i--) {
             this.push(r.get(i));
@@ -31,15 +31,15 @@ public class Stack {
     }
     
     public Elem pop() { // since tos exists does returning the removed elem is useful ??
-        int lastElemIndex = _stack.size()-1;
-        Elem tmp = _stack.get(lastElemIndex);
+        final int lastElemIndex = _stack.size()-1;
+        final Elem tmp = _stack.get(lastElemIndex);
         _stack.remove(lastElemIndex);
         return tmp;
     }
     
     public Elem tos() { // abbreviatio of Top Of Stack
-        int lastElemIndex = _stack.size()-1;
-        Elem tmp = _stack.get(lastElemIndex);
+        final int lastElemIndex = _stack.size()-1;
+        final Elem tmp = _stack.get(lastElemIndex);
         return tmp;
     }
     

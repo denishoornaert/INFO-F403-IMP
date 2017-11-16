@@ -10,24 +10,18 @@ import java.util.HashSet;
  */
 public class UnexpectedCharacterException extends Exception {
     
-    private String _message;
-    
-    UnexpectedCharacterException(Symbol symb, HashSet<Elem> elems){  
-        super();
-        generateMessage(symb, elems);
+    protected UnexpectedCharacterException(final Symbol symb, final HashSet<Elem> elems){  
+        super(generateMessage(symb, elems));
     }
 
-    private void generateMessage(Symbol symb, HashSet<Elem> elems) {
-        _message  = "(line : "+symb.getLine()+" col :"+symb.getColumn()+")\tUnexepected character "+"'"+symb.getValue()+"'";
-        _message += "\n\t\t\tThe expected character is one of the following : ";
-        for (Elem elem : elems) {
-            _message += elem.getValue()+" ";
+    private static String generateMessage(final Symbol symb, final HashSet<Elem> elems) {
+        String message = "(line : " + symb.getLine() + " col :" + symb.getColumn() + 
+                ")\tUnexepected character " + "'" + symb.getValue() + "'" +
+                "\n\t\t\tThe expected character is one of the following : ";
+        for (final Elem elem : elems) {
+            message += elem.getValue()+" ";
         }
-    }
-    
-    @Override
-    public String getMessage(){
-        return _message;
+        return message;
     }
     
 }
