@@ -36,5 +36,5 @@
 <While>         -> while <Cond> do <Code> done
 <For>           -> for [VarName] from <ExprArith> by <ExprArith> to <ExprArith> do <Code> done
                 -> for [VarName] from <ExprArith> to <ExprArith> do <Code> done
-<Print>         -> print([VarName])
-<Read>          -> read([VarName])
+<Print>         -> print ( [VarName] )
+<Read>          -> read ( [VarName] )

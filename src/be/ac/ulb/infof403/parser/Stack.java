@@ -47,4 +47,9 @@ public class Stack {
         return _stack.isEmpty();
     }
     
+    @Override
+    public String toString() {
+        return _stack.toString();
+    }
+    
 }

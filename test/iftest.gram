@@ -1,4 +1,6 @@
-<init> -> if <cond> then <code> endif
-<init> -> if <cond> then <code> else <code> endif
+<init> -> <cond> then <code> endif
+<init> -> <cond> then <code> else <code> endif
 <code> -> a
 <code> -> b
+<cond> -> U
+<cond> -> TY

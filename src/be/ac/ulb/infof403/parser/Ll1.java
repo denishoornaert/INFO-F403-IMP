@@ -31,6 +31,7 @@ public class Ll1 {
     
     private void symbolManagement() {
         if(!_stack.tos().equals(_symb)) {
+            System.err.println(_stack.tos().getValue()+" vs "+_symb.getValue());
             throw new IllegalArgumentException(); // TODO create custom error. Something like GrammarError.
         }
         else {
@@ -40,6 +41,7 @@ public class Ll1 {
         }
     }
     
+    // TODO what about replacing the 'if(r == null){...}' by a 'catch(nullPointerExeption) {...}' ?? more beautiful ??
     private void variableManagement() throws UnexpectedCharacterException {
         GrammarVariable var = (GrammarVariable)_stack.tos();
         Rule r = var.getRuleThatLeadsToSymbol(_symb);
@@ -57,6 +59,7 @@ public class Ll1 {
     public void parse() throws UnexpectedCharacterException {
         _stack.push(_grammar.getInitialvariable());
         while (!_stack.isEmpty() && _i.hasNext()) {
+            System.out.println(_stack);
             if(_stack.tos() instanceof Symbol) {
                 this.symbolManagement();
             }
@@ -64,6 +67,8 @@ public class Ll1 {
                 this.variableManagement();
             }
         }
+        // TODO send if tokens.size() > 0 after the loop because if not, it means the user can write whatever he wants after a 'end'
+        // What about a program like 'begin <code> end begin <code> end'
         System.out.println("Transitions : "+_transitions);
         
     }
