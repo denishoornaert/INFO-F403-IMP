@@ -9,6 +9,7 @@
 \usepackage{color}
 \usepackage{amsmath}
 \usepackage{tikz}
+\usepackage{subcaption}
 
 \title{Implementation of a compiler for an imperative language\\IMP}
 \author{Remy Detobel \& Denis Hoornaert}
@@ -208,8 +209,93 @@ token: [x]                lexical unit: VARNAME
   \subsection{Transforming the grammar to LL(1) grammar}
     % quick description of each step : factoring, left recursion removal, useless symbol removal and unambiguity
     % subsubsection about our automation of those step and references to our annexe where relevant.
+    In order to transform a given grammar that can be either deterministic or non-deterministic into a LL(1) --- which is deterministic ---, one must apply four transformations on this grammar. These transformations are \textit{factorisation}, \textit{left-recursion removal}, \textit{useless symbol removal} and \textit{ambiguity removal}.
+    
+    \subsubsection{Grammar factorisation}
+      This mechanism is applied every time a given variable has two (or more) rules that have a common prefix. The aim is to reduce the number of repetitions. To achieve this, each variable that has two (or more) rules with a common prefix sees these rules replaced by concatenation of the prefix and a new variable. This new variable has for rules the remaining of the factorized rules (i.e. the rules that have a common prefix without this prefix).
+      \begin{figure}[h!]
+          \centering
+          \begin{subfigure}[b]{0.4\textwidth}
+              \centering
+              \begin{align}
+                S &\rightarrow friendship \\
+                  &\rightarrow friend \\
+                  &\rightarrow relationship \\
+                  &\rightarrow friendly
+              \end{align}
+              \caption{Unmodified grammar}
+              \label{fig:unmodifiedgrammar1}
+          \end{subfigure}%
+          \begin{subfigure}[b]{0.4\textwidth}
+              \centering
+              \begin{align}
+                S  &\rightarrow relationship \\
+                   &\rightarrow friendS' \\
+                S' &\rightarrow ship \\
+                   &\rightarrow ly \\
+                   &\rightarrow \epsilon
+              \end{align}
+              \caption{Factorisation outcome}
+              \label{fig:resultinggrammar1}
+          \end{subfigure}
+          \caption{Caption place holder}
+      \end{figure}\\
+      For instance, in the fig.\ref{fig:unmodifiedgrammar1}, the rule (3) has no prefix whit the other rules whereas (1), (2) and (3) have a common prefix : '\textit{friend}'. Thus, following the mechanism explained above, we replace these three rules by a new one (rule (6)) composed of the prefix ('\textit{friend}') and the new variable (\textit{S'}). The variable \textit{S'} is then associated whit the remaining of each former rule with a common prefix of \textit{S}. Notice that the rule (2) is a particular case as it matches exactly the prefix. To overcome this issue, the created rule is formed of $\epsilon$ (rule (6)).\\\\
+      Such a technique is used to ensure that the parser will be deterministic. In our case, we want to implement a parser with a look ahead of one. Therefore, if a variable has two (or more) rules like $S \rightarrow fA$ and $S \rightarrow fZ$, the parser won't be able to decide which one to apply.
+      
+      \subsubsection{Removing left-recursion}
+        Even though recursion is a main feature of grammars as it allows them to recognise non-finite language, it also introduce non-determinism when the recursion occurs at the very first element of the right-hand side. To make a grammar (and thus the parser) deterministic but keep the recursivity, one must execute to manipulations.
+        \begin{figure}[h!]
+          \centering
+          \begin{subfigure}[b]{0.33\textwidth}
+              \centering
+              \begin{align}
+                S  &\rightarrow S'b \\
+                S' &\rightarrow Sa \\
+                   &\rightarrow \epsilon
+              \end{align}
+              \caption{Unmodified grammar}
+              \label{fig:unmodifiedgrammar2}
+          \end{subfigure}%
+          \begin{subfigure}[b]{0.33\textwidth}
+              \centering
+              \begin{align}
+                S  &\rightarrow Sab \\
+                   &\rightarrow a
+              \end{align}
+              \caption{Indirect recursion removal}
+              \label{fig:indirectremovalgrammar2}
+          \end{subfigure}
+          \begin{subfigure}[b]{0.33\textwidth}
+              \centering
+              \begin{align}
+                V  &\rightarrow aV' \\
+                V' &\rightarrow abV' \\
+                   &\rightarrow \epsilon
+              \end{align}
+              \caption{Transformation to right-recursive}
+              \label{fig:rightrecursivegrammar2}
+          \end{subfigure}
+          \caption{Caption place holder}
+      \end{figure}\\
+      First, one wants to transform every indirect left-recursion into direct left-recursion. Achieving that is quite simple as one only has to take a rule and replace every variable located at the very beginning of the left-hand side and replace it by all of its own rules. For instance, in fig.\ref{fig:unmodifiedgrammar2}, the grammar is indirectly recursive because \textit{S} call \textit{S'} which, when applying rule (11), call \textit{S}. The out come of this transformation (see fig.\ref{fig:indirectremovalgrammar2}) recognises the same language but is now directly left-recursive.\\
+      Secondly, one wants to transform every left-recursion by a right-recursion for determinism purpose (similar to factorisation). One can achieve it by introducing two new variables. The first variable will be associated to a set of rules each composed of the concatenation of a non-recursive rule and the newly created second variable. This second variable will be associated with a set of rules composed of every recursive rules where the first element (the recursive variable)has been removed concatenated with this exact second variable. Doing so transforms every left-recursion in a right-recursion. However, this right-recursion will never stops. This is why a rule composed of $\epsilon$ is associated to the second variable. % TODO the explanation is a bit ambiguous.
+      
+      \subsubsection{Removing useless variables}
+        %
+        
+      \subsubsection{Making a grammar unambiguous}
+        %
   
   \subsection{Results of simplifications on the IMP grammar}
+    %
+    
+  \subsection{Design of the LL(1) parser}
+  
+    \subsubsection{Action table}
+      % method first and follow
+      
+    \subsubsection{Syntax checking}
 
 \section{How to set up the project}
   In order to simplify the compilation and the support of external libraries, it has been decided to use a well known \textit{java} project manager named \textit{Maven}. Its configuration file (\verb|pom.xml|) defines the \verb|main| file, defines the source folder, manages the \textit{JFlex} library and the package that must be compiled with this library.
