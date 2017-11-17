@@ -1,0 +1,43 @@
+<Program>       -> begin <Code> end
+<Code>          -> eps
+                -> <InstList>
+<InstList>      -> <Instruction>
+                -> <Instruction> ; <InstList>
+<Instruction>   -> <Assign>
+                -> <If>
+                -> <While>
+                -> <For>
+                -> <Print>
+                -> <Read>
+<Assign>        -> [VarName] := <ExprArith>
+<ExprArith>     -> [VarName]
+                -> [Number]
+                -> ( <ExprArithA> )
+                -> - <ExprArithA>
+<ExprArithA>    -> <ExprArithA> <OpA> <ExprArithA>
+                -> <ExprArithB>
+<ExprArithB>    -> <ExprArithB> <OpB> <ExprArithB>
+                -> <ExprArith>
+<OpA>           -> +
+                -> -
+<OpB>           -> *
+                -> /
+<If>            -> if <Cond> then <Code> endif
+                -> if <Cond> then <Code> else <Code> endif
+<Cond>          -> <Cond> <BinOp> <Cond>
+                -> not <SimpleCond>
+                -> <SimpleCond>
+<SimpleCond>    -> <ExprArith> <Comp> <ExprArith>
+<BinOp>         -> and
+                -> or
+<Comp>          -> = 
+                -> >= 
+                -> > 
+                -> <= 
+                -> < 
+                -> <> 
+<While>         -> while <Cond> do <Code> done
+<For>           -> for [VarName] from <ExprArith> by <ExprArith> to <ExprArith> do <Code> done
+                -> for [VarName] from <ExprArith> to <ExprArith> do <Code> done
+<Print>         -> print ( [VarName] )
+<Read>          -> read ( [VarName] )
