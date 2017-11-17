@@ -282,7 +282,16 @@ token: [x]                lexical unit: VARNAME
       Secondly, one wants to transform every left-recursion by a right-recursion for determinism purpose (similar to factorisation). One can achieve it by introducing two new variables. The first variable will be associated to a set of rules each composed of the concatenation of a non-recursive rule and the newly created second variable. This second variable will be associated with a set of rules composed of every recursive rules where the first element (the recursive variable)has been removed concatenated with this exact second variable. Doing so transforms every left-recursion in a right-recursion. However, this right-recursion will never stops. This is why a rule composed of $\epsilon$ is associated to the second variable. % TODO the explanation is a bit ambiguous.
       
       \subsubsection{Removing useless variables}
-        %
+        When speaking of \textit{useless} variables, we distinguish two types of variables~:
+        \begin{description}
+          \item[The \textit{unproductive} ones~:]
+            An unproductive variable is a variable that never leads to any formation of a word. Typically, such a variable does not have any non-recursive rule. Thus, forming a word using this variable leads to an infinite recursion.
+          \item[The \textit{unreachable} ones~:]
+            An unreachable variable is a variable that is not called by any other rule of the grammar in which it belongs.
+        \end{description}
+        So far, the best way to find both unproductive and unreachable variables is to look respectively for productive and reachable variables and remove them from the grammar afterwards. However, eventually, we are only interested in productive and reachable variables. Thus, once the former and the latter are found, we consider them as the final grammar.\\\\
+        Determining the set of productive symbols consists of first considering every terminal as productive. Then, for each variable, we look at each rule and add the variable to the set if and only if every symbols appearing in the rule are already in the set. The resulting set is the set of every reachable symbols of the given grammar.
+        % Add an example.
         
       \subsubsection{Making a grammar unambiguous}
         %
