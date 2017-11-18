@@ -20,8 +20,18 @@ public class Rule extends ArrayList<Elem> implements Comparable {
     }
     
     public Rule(final ArrayList<Elem> composant) {
+        this(++ruleId, composant);
+    }
+    
+    /**
+     * Create rule
+     * 
+     * @param id specific ID (<b>only for test</b>)
+     * @param composant element of the rule
+     */
+    public Rule(final int id, final ArrayList<Elem> composant) {
         super(composant);
-        _id = ruleId++;
+        _id = id;
     }
     
     public Integer getId() {

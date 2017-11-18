@@ -10,8 +10,8 @@ import be.ac.ulb.infof403.scanner.ImpScanner;
  */
 public class Main {
     
-    private static final String DEFAULT_IMP_FILE = "./test/Euclid.imp";
-    private static final String DEFAULT_GRAMMAR_FILE = "./test/Gram.gram";
+    private static final String DEFAULT_IMP_FILE = "./test/imp/Euclide.imp";
+    private static final String DEFAULT_GRAMMAR_FILE = "./test/grammar/UnambiguousIMP.gram";
     
     private static boolean _debug = false;
     
@@ -157,7 +157,6 @@ public class Main {
             System.out.println("Grammar (factorisation (final)):");
             System.out.println(grammar);
         }
-        
         return grammar;
     }
     

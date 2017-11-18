@@ -220,6 +220,16 @@ public class GrammarVariable extends Elem implements Comparable {
         return listRule;
     }
     
+    /**
+     * Add a rule
+     * 
+     * @param id number of the rule (<b>Only for test</b>)
+     * @param listElem element that compose rule
+     */
+    public void addRule(final int id, final Elem... listElem) {
+        _listRule.add(new Rule(id, new ArrayList<>(Arrays.asList(listElem))));
+    }
+    
     public void addRule(final Elem... listElem) {
         addRule(new ArrayList<>(Arrays.asList(listElem)));
     }
