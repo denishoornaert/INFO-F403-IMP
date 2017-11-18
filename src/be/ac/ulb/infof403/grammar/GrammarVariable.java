@@ -83,6 +83,19 @@ public class GrammarVariable extends Elem implements Comparable {
         return res;
     }
     
+    private HashSet<Terminal> getExpectedElementWithRule(final Rule rule) {
+        final HashSet<Terminal> expetedElem;
+        final Elem elem = rule.get(0);
+        
+        if(elem instanceof Epsilon) {
+            expetedElem = _grammar.follow(this);
+        } else {
+            expetedElem = elem.first();
+        }
+        
+        return expetedElem;
+    }
+    
     public Rule getRuleThatLeadsToSymbol(final Symbol sym) {
         Rule res = null;
         final Iterator<Rule> iteratorRule = _listRule.iterator();
@@ -90,16 +103,10 @@ public class GrammarVariable extends Elem implements Comparable {
         boolean found = false;
         while (iteratorRule.hasNext() && !found) {
             final Rule rule = iteratorRule.next();
-            final Elem elem = rule.get(0);
-            // if sym in the set returned by first, save it and exit the loop
-            final HashSet<Terminal> expetedElem;
-            if(elem instanceof Epsilon) {
-                expetedElem = _grammar.follow(this);
-            } else {
-                expetedElem = elem.first();
-            }
+            final HashSet<Terminal> expetedElem = getExpectedElementWithRule(rule);
             final Iterator<Terminal> iteratorExpetedElem = expetedElem.iterator();
             while(iteratorExpetedElem.hasNext() && !found) {
+                // if sym in the set returned by first, save it and exit the loop
                 if(iteratorExpetedElem.next().equals(sym)) {
                     res = rule;
                     found = true;
@@ -109,15 +116,10 @@ public class GrammarVariable extends Elem implements Comparable {
         return res;
     }
     
-    // TODO this method looks like the previous one (for some aspects) there might be something to refactore here...
     public HashSet<Elem> getExpectedCharacters() {
         final HashSet<Elem> res = new HashSet<>();
-        res.addAll(_grammar.follow(this));
         for (final Rule rule : _listRule) {
-            final Elem elem = rule.get(0);
-            if(!(elem instanceof Epsilon)) {
-                res.addAll(rule.get(0).first());
-            }
+            res.addAll(getExpectedElementWithRule(rule));
         }
         return res;
     }
