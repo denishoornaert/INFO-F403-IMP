@@ -92,9 +92,10 @@ public class Main {
         }
         
         
-        Ll1 l = new Ll1(grammar, tokenList);
+        final Ll1 l = new Ll1(grammar, tokenList);
         try {
-            l.parse();
+//             l.stackParse();
+            l.treeParse();
             System.out.println("Syntax respected !");
         } catch (UnexpectedCharacterException ex) {
             System.err.println(ex.getMessage());

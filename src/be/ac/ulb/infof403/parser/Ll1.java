@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
- * Recursive descent LL(1) which could parse for a given grammar an IMP File
+ * Recursive descent LL(1) which could stackParse for a given grammar an IMP File
  */
 public class Ll1 {
     
@@ -36,7 +36,11 @@ public class Ll1 {
         else {
             _transitions.add("M");
             _stack.pop();
-            _symb = _i.next();
+            if(_i.hasNext()) {
+                _symb = _i.next();
+            } else {
+                _symb = null;
+            }
         }
     }
     
@@ -58,9 +62,9 @@ public class Ll1 {
         }
     }
     
-    public void parse() throws UnexpectedCharacterException {
+    public void stackParse() throws UnexpectedCharacterException {
         _stack.push(_grammar.getInitialvariable());
-        while (!_stack.isEmpty() && _i.hasNext()) {
+        while (!_stack.isEmpty() && _symb != null) {
             System.out.println(_stack);
             
             if(_stack.tos() instanceof Symbol) {
@@ -74,7 +78,7 @@ public class Ll1 {
         }
         
         if(!_stack.isEmpty()) {
-            System.err.println("Missing some code to end file");
+            System.err.println("Missing some code to end file (" + _stack.toString() + ")");
             throw new IllegalArgumentException();
             
         } else if(_i.hasNext()) { // If code is not finish
@@ -83,6 +87,36 @@ public class Ll1 {
             
         } else {
             System.out.println("Transitions : "+_transitions);
+        }
+    }
+    
+    
+    public void treeParse() throws UnexpectedCharacterException {
+        // TODO missing last rule
+        final RuleTree tree = new RuleTree(_grammar.getInitialvariable());
+        if(_i.hasNext()) {
+            analyseTree(tree);
+        }
+        
+        if(_i.hasNext()) {
+            throw new UnexpectedCharacterException(_symb, "Expected end of file"); 
+        } else {
+            System.out.println("All is ok !");
+        }
+    }
+    
+    private void analyseTree(final RuleTree currentRuleTree) throws UnexpectedCharacterException {
+        if(_i.hasNext()) {
+            if(currentRuleTree.isGrammarVariable()) {
+                currentRuleTree.addRuleForSymbol(_symb);
+                for(final RuleTree nextRuleTree : currentRuleTree.getChildren()) {
+                    analyseTree(nextRuleTree);
+                }
+            } else {
+                if(currentRuleTree.equalsValue(_symb)) {
+                    _symb = _i.next();
+                }
+            }
         }
     }
     

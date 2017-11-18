@@ -24,7 +24,7 @@ public class TestTwiceBegin {
         final TokenList tokenList = new ImpScanner("./test/imp/TwiceBegin.imp", false).getTokenList();
         final Ll1 ll1 = new Ll1(grammar, tokenList);
         expected.expect(be.ac.ulb.infof403.parser.UnexpectedCharacterException.class);
-        ll1.parse();
+        ll1.stackParse();
     }
     
     @After
