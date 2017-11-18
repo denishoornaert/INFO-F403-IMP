@@ -10,6 +10,7 @@
 \usepackage{amsmath}
 \usepackage{tikz}
 \usepackage{subcaption}
+\usepackage{tcolorbox}
 
 \title{Implementation of a compiler for an imperative language\\IMP}
 \author{Remy Detobel \& Denis Hoornaert}
@@ -290,11 +291,46 @@ token: [x]                lexical unit: VARNAME
             An unreachable variable is a variable that is not called by any other rule of the grammar in which it belongs.
         \end{description}
         So far, the best way to find both unproductive and unreachable variables is to look respectively for productive and reachable variables and remove them from the grammar afterwards. However, eventually, we are only interested in productive and reachable variables. Thus, once the former and the latter are found, we consider them as the final grammar.\\\\
-        Determining the set of productive symbols consists of first considering every terminal as productive. Then, for each variable, we look at each rule and add the variable to the set if and only if every symbols appearing in the rule are already in the set. The resulting set is the set of every reachable symbols of the given grammar.
+        Determining the set of productive symbols consists of first considering every terminal as productive. Then, for each variable, we look at each rule and add the variable to the set if and only if every symbols appearing in the rule are already in the set. The resulting set is the set of every reachable symbols of the given grammar.\\\\
         % Add an example.
+        Retrieving the set of reachable symbols from a given grammar can be achieved by using a similar method to the one explained above. In fact, one must consider first a set containing only the initial variable of the grammar which is --- without lost of generality --- always considered as reachable. Then, for each variable of the grammar, one must check whether the variable is in the set of reachable symbols. If yes, one can then add all the symbols appearing in the rules of this variable.
         
-      \subsubsection{Making a grammar unambiguous}
-        %
+      \subsubsection{Ambiguous grammar}
+        Ambiguity occurs when, for a given word/input, multiple interpretations (or trees) can be derived due to an \textit{ambiguity} in the rules the parser has to choose making it non-deterministic and thus in proper for any implementation. Unfortunately, there does not exist any algorithm resolving this issue as the given grammar gives little information. Henceforth, extra information only known by the language designer must be integrated. The most common example of ambiguity is the arithmetic priority (Reminder : the multiplication has an higher priority than the addition).
+        \begin{figure}[h!]
+          \centering
+          \begin{subfigure}[b]{0.4\textwidth}
+              \centering
+              \begin{align}
+                Exp &\rightarrow Exp+Exp \\
+                    &\rightarrow Exp*Exp \\
+                    &\rightarrow Cst \\
+                    &\rightarrow Id
+              \end{align}
+              \caption{Ambiguous grammar}
+              \label{fig:unmodifiedgrammar3}
+          \end{subfigure}%
+          \begin{subfigure}[b]{0.4\textwidth}
+              \centering
+              \begin{align}
+                Exp  &\rightarrow Exp+Prod \\
+                     &\rightarrow Prod \\
+                Prod &\rightarrow Prod*Atom \\
+                     &\rightarrow Atom \\
+                Atom &\rightarrow Cst \\
+                     &\rightarrow Id
+              \end{align}
+              \caption{Unambiguous grammar}
+              \label{fig:unambiguousgrammar3}
+          \end{subfigure}
+          \caption{Caption place holder}
+      \end{figure}\\
+      For example, applying the grammar of fig.\ref{fig:unmodifiedgrammar3} on the word $id+id*id$ will result in two different interpretation as shown in Fig.X.a and Fig.X.b.
+        % TODO Remy trees
+      To address this issue, the language designer must 'force' the derivation (and hence the priority) by introducing new variables that could be seen as extra layers. For instance, on fig.\ref{fig:unmodifiedgrammar3}, the grammar is composed of two \textit{atomic} terminals : \textit{Cst} and \textit{Id}. These terminals will be encapsulated in a new variable called \textit{Atom}. In addition, we decide --- based on the arithmetic priority --- that multiplication has an higher priority than addition. Therefore, as for atomic elements, we introduce a new variable called \textit{Prod} that has for rules a single atomic value (25) and the product of a multiplication and a atomic element (24). Finally, the same mechanism is once again applied to addition. Resulting in the rules (22) and (23).\\
+      \begin{tcolorbox}
+        As previously mentioned, there does not exist an algorithm that resolves grammar ambiguity. However, there exists many ambiguity detection algorithms with have their own proprieties as mention in this article\footnote{H.J.S. Basten, August 17, 2007. \textit{Ambiguity Detection Methods for Context-Free Grammars.} Master's Thesis, Universiteit Van Amsterdam.}. The reader is invited to read this document for more information.
+      \end{tcolorbox}
   
   \subsection{Results of simplifications on the IMP grammar}
     %
