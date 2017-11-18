@@ -13,7 +13,8 @@ import java.util.ListIterator;
  */
 public class Stack {
     
-    private final ArrayList<Elem> _stack; // TODO Remy does creating an interface for both Symbol and GrammarVariable is a good idea ??
+    // TODO Remy does creating an interface for both Symbol and GrammarVariable is a good idea ??
+    private final ArrayList<Elem> _stack; 
     
     public Stack() {
         _stack = new ArrayList<>();

@@ -13,14 +13,23 @@ public class UnexpectedCharacterException extends Exception {
     private static final String COLOR_RED = "\u001B[31m";
     private static final String COLOR_RESET = "\u001B[0m";
     
-    protected UnexpectedCharacterException(final Symbol symb, final HashSet<Elem> elems){  
+    protected UnexpectedCharacterException(final Symbol symb, final HashSet<Elem> elems) {
         super(generateMessage(symb, elems));
     }
-
-    private static String generateMessage(final Symbol symb, final HashSet<Elem> elems) {
+    
+    protected UnexpectedCharacterException(final Symbol symb, final String message) {
+        super(generateMessageSymbol(symb) + "\n\t" + message);
+    }
+    
+    private static String generateMessageSymbol(final Symbol symb) {
         String message = "(line : " + symb.getLine() + " col :" + symb.getColumn() + 
                 ")\t" + COLOR_RED + "Unexepected character " + "'" + symb.getValue() 
-                + "' of type " + symb.getType() + COLOR_RESET +
+                + "' of type " + symb.getType() + COLOR_RESET;
+        return message;
+    }
+    
+    private static String generateMessage(final Symbol symb, final HashSet<Elem> elems) {
+        String message = generateMessageSymbol(symb) +
                 "\n\t\t\tThe expected character is one of the following : ";
         for (final Elem elem : elems) {
             message += elem.getValue()+" ";

@@ -86,4 +86,12 @@ public class Rule extends ArrayList<Elem> implements Comparable {
         return -1;
     }
     
+    /**
+     * Reset the rule id (<b>Only for test</b>)
+     */
+    public static void resetId() {
+        ruleId = 1;
+    }
+    
+    
 }

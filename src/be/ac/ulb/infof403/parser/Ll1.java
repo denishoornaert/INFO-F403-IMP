@@ -41,6 +41,7 @@ public class Ll1 {
     }
     
     // TODO what about replacing the 'if(r == null){...}' by a 'catch(nullPointerExeption) {...}' ?? more beautiful ??
+    // No... With a "if" we show that a "normal" case when there is a problem :)
     private void variableManagement() throws UnexpectedCharacterException {
         final GrammarVariable var = (GrammarVariable)_stack.tos();
         
@@ -71,10 +72,18 @@ public class Ll1 {
                 this.variableManagement();
             }
         }
-        // TODO send if tokens.size() > 0 after the loop because if not, it means the user can write whatever he wants after a 'end'
-        // What about a program like 'begin <code> end begin <code> end'
-        System.out.println("Transitions : "+_transitions);
         
+        if(!_stack.isEmpty()) {
+            System.err.println("Missing some code to end file");
+            throw new IllegalArgumentException();
+            
+        } else if(_i.hasNext()) { // If code is not finish
+            // TODO Denis: may be change the message of explanation
+            throw new UnexpectedCharacterException(_symb, "Expected end of file"); 
+            
+        } else {
+            System.out.println("Transitions : "+_transitions);
+        }
     }
     
 }

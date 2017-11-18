@@ -45,11 +45,6 @@ public class Grammar {
         return _initialState;
     }
     
-    // TODO Remy should we remove this method ?
-    public HashSet<GrammarVariable> getVariables() {
-        return _variables;
-    }
-    
     @Override
     public String toString() {
         String result = "";
@@ -121,7 +116,7 @@ public class Grammar {
         }
     }
     
-    public void factorisation() { // TODO has to be tested
+    public void factorisation() {
         final HashSet<GrammarVariable> allVariable = (HashSet<GrammarVariable>) _variables.clone();
         for (final GrammarVariable var : allVariable) {
             // Setup of the stree and generation of the factorised rules.

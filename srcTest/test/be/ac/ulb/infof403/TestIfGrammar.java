@@ -4,6 +4,7 @@ import be.ac.ulb.infof403.LexicalUnit;
 import be.ac.ulb.infof403.Symbol;
 import be.ac.ulb.infof403.grammar.Grammar;
 import be.ac.ulb.infof403.grammar.GrammarVariable;
+import org.junit.After;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -52,6 +53,11 @@ public class TestIfGrammar {
         grammar.removeUseless();
         grammar.removeLeftRecursion();
         grammar.factorisation();
+    }
+    
+    @After
+    public void afterTest() {
+        be.ac.ulb.infof403.grammar.Rule.resetId();
     }
     
 }
