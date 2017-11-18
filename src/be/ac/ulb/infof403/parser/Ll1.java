@@ -43,10 +43,11 @@ public class Ll1 {
     // TODO what about replacing the 'if(r == null){...}' by a 'catch(nullPointerExeption) {...}' ?? more beautiful ??
     private void variableManagement() throws UnexpectedCharacterException {
         final GrammarVariable var = (GrammarVariable)_stack.tos();
+        
         final Rule r = var.getRuleThatLeadsToSymbol(_symb);
         
         if(r == null) {
-            // TODO create custom error. Something like GrammarError.
+            // create custom error
             throw new UnexpectedCharacterException(_symb, var.getExpectedCharacters()); 
         }
         else {
