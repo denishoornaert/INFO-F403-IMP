@@ -10,11 +10,11 @@
                 -> <Print>
                 -> <Read>
 <Assign>        -> [VarName] := <ExprArith>
-<ExprArith>     -> <ExprArithMul> <OpAdd> <ExprArithMul>
+<ExprArith>     -> <ExprArith> <OpAdd> <ExprArithMul>
 <ExprArith>     -> <ExprArithMul>
 <OpAdd>         -> +
                 -> -
-<ExprArithMul>  -> <ExprArithAtom> <OpMul> <ExprArithAtom>
+<ExprArithMul>  -> <ExprArithMul> <OpMul> <ExprArithAtom>
 <ExprArithMul>  -> <ExprArithAtom>
 <OpMul>         -> *
                 -> /
@@ -24,9 +24,9 @@
                 -> - <ExprArithAtom>
 <If>            -> if <Cond> then <Code> endif
                 -> if <Cond> then <Code> else <Code> endif
-<Cond>          -> <CondAnd> or <CondAnd>
+<Cond>          -> <Cond> or <CondAnd>
 <Cond>          -> <CondAnd>
-<CondAnd>       -> <CondAtom> and <CondAtom>
+<CondAnd>       -> <CondAnd> and <CondAtom>
 <CondAnd>       -> <CondAtom>
 <CondAtom>      -> not <SimpleCond>
                 -> <SimpleCond>
