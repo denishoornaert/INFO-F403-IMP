@@ -1,8 +1,17 @@
 /target/
+
+# Binnary
 /dist/INFO-F403-IMP.jar
-nb-configuration.xml
+
+# Jflex
 /src/be/ac/ulb/infof403/scanner/Scanner.java
 /src/be/ac/ulb/infof403/grammar/GrammarScanner.java
+
+# Netbeans
+nb-configuration.xml
+nbactions.xml
+
+# Report
 /doc/Report/Report.aux
 /doc/Report/Report.fdb_latexmk
 /doc/Report/Report.fls
@@ -11,4 +20,6 @@ nb-configuration.xml
 /doc/Report/Report.tex.backup
 /doc/Report/Report.toc
 /doc/Report/Report.out
+
+# Temporary file
 *~
