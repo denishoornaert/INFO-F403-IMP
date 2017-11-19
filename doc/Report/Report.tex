@@ -215,6 +215,7 @@ token: [x]                lexical unit: VARNAME
     In order to transform a given grammar that can be either deterministic or non-deterministic into a LL(1) --- which is deterministic ---, one must apply four transformations on this grammar. These transformations are \textit{factorisation}, \textit{left-recursion removal}, \textit{useless symbol removal} and \textit{ambiguity removal}.
     
     \subsubsection{Grammar factorisation}
+      \label{grammarfactorisation}
       This mechanism is applied every time a given variable has two (or more) rules that have a common prefix. The aim is to reduce the number of repetitions. To achieve this, each variable that has two (or more) rules with a common prefix sees these rules replaced by concatenation of the prefix and a new variable. This new variable has for rules the remaining of the factorized rules (i.e. the rules that have a common prefix without this prefix).
       \begin{figure}[h!]
           \centering
@@ -378,7 +379,9 @@ token: [x]                lexical unit: VARNAME
       The unambiguous IMP grammar does not contain any useless symbols. One can be easily convinced of the reachability by drawing a graph were every vertex represent the fact that the variable (a node) appears at least on one the rules of the other. One can also be convinced of the productiveness by observing that for each recursive rule, there is another that stops the recursivity. These intuitions were proved right by the implementation.
       
     \subsubsection{Left-recursion removal}
-      % looking for repetitions.
+      When one wants to remove the left-recursion, one knows following the definition given above ntat one has to look for rules where the left-hand side is also the first element of the right-hand side.\\
+      Doing so on the unambiguous and useless symbols free IMP grammar returns once again the arithmetic expressions and the conditions. But this is not surprising given the trick used to make the grammar unambiguous. in addition, why should one pays attention to not introduce left-recursion while the left-recursion removal step will be achieved afterwards ? This explains partly the order of which these steps are executed.\\
+      In both cases, there are the introduction of a suffixed U variable and a suffixed V variable. These variables respectively remove indirect left-recursion and transform the, then, direct left-recursion into a right-recursion. Notice that the introduced right-recursion are productive as the algorithm stipulates that the suffixed V variable needs a rule composed of an $\epsilon$.
       \begin{lstlisting}
 <ExprArith>	     -> <ExprArithU> <ExprArithV>
 <ExprArithU>	   -> <ExprArithMul>
@@ -388,22 +391,24 @@ token: [x]                lexical unit: VARNAME
 <ExprArithMulU>	 -> <ExprArithAtom> 
 <ExprArithMulV>	 -> <OpMul> <ExprArithAtom> <ExprArithMulV> 
 <ExprArithMulV>	 -> eps\end{lstlisting}
-      \begin{lstlisting}
+      \begin{lstlisting} 
+<Cond>	         -> <CondU> <CondV>
 <CondU>	         -> <CondAnd> 
 <CondV>	         -> or <CondAnd> <CondV> 
-<CondV>	         -> eps 
-<Cond>	         -> <CondU> <CondV> 
+<CondV>	         -> eps
+<CondAnd>	       -> <CondAndU> <CondAndV>
 <CondAndU>	     -> <CondAtom> 
 <CondAndV>	     -> and <CondAtom> <CondAndV> 
-<CondAndV>	     -> eps 
-<CondAnd>	       -> <CondAndU> <CondAndV>\end{lstlisting}
+<CondAndV>	     -> eps\end{lstlisting}
 
-    \subsubsection{Left-recursion removal}
-      %
+    \subsubsection{Factorisation}
+      Looking in a grammar for rules to factorise consists in identifying two or more rules of a given variable that share a common prefix (i.e. a same sequence of tokens/symbols). Theses rules are then modified following the mechanism explained in the subsection \ref{grammarfactorisation}.\\
+      In the case of the unambiguous, useless symbols free and left-recursion free IMP grammar, only three variables need to see their rules factorised : \verb|InstList|, \verb|If| and \verb|For| (respectively line 4, 22 and 37 in fig.\ref{fig:basicimpgrammar}).
       \begin{lstlisting}
 <InstList>	     -> <Instruction> <InstList'> 
 <InstList'>	     -> ; <InstList> 
 <InstList'>	     -> eps\end{lstlisting}
+      The factorisation of \verb|InstList| is an instance of the particular case mentioned in subsection \ref{grammarfactorisation}. In fact, one of the rule to factorised does not really diverge as it is equal to the suffix. Thus a rule only composed of $\epsilon$ is introduced (rule 3).
       \begin{lstlisting}
 <If>	           -> if <Cond> then <Code> <If'> 
 <If'>	           -> else <Code> endif 
@@ -412,6 +417,7 @@ token: [x]                lexical unit: VARNAME
 <For>	           -> for VarName from <ExprArith> <For'> 
 <For'>	         -> by <ExprArith> to <ExprArith> do <Code> done 
 <For'>	         -> to <ExprArith> do <Code> done\end{lstlisting}
+      The factorisation of \verb|If| and \verb|For| are quite mainstream as to present a real divergence. Thus after the prefix,  a new variable is introduced and associated to the remaining of the other common prefixed rules.
     
   \subsection{Design of the LL(1) parser}
   
