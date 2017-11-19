@@ -209,6 +209,7 @@ token: [x]                lexical unit: VARNAME
   \end{center}
   
   \subsection{Transforming the grammar to LL(1) grammar}
+    \label{grammartoll1methods}
     % quick description of each step : factoring, left recursion removal, useless symbol removal and unambiguity
     % subsubsection about our automation of those step and references to our annexe where relevant.
     In order to transform a given grammar that can be either deterministic or non-deterministic into a LL(1) --- which is deterministic ---, one must apply four transformations on this grammar. These transformations are \textit{factorisation}, \textit{left-recursion removal}, \textit{useless symbol removal} and \textit{ambiguity removal}.
@@ -330,10 +331,15 @@ token: [x]                lexical unit: VARNAME
         % TODO Remy trees
       To address this issue, the language designer must 'force' the derivation (and hence the priority) by introducing new variables that could be seen as extra layers. For instance, on fig.\ref{fig:unmodifiedgrammar3}, the grammar is composed of two \textit{atomic} terminals : \textit{Cst} and \textit{Id}. These terminals will be encapsulated in a new variable called \textit{Atom}. In addition, we decide --- based on the arithmetic priority --- that multiplication has an higher priority than addition. Therefore, as for atomic elements, we introduce a new variable called \textit{Prod} that has for rules a single atomic value (25) and the product of a multiplication and a atomic element (24). Finally, the same mechanism is once again applied to addition. Resulting in the rules (22) and (23).\\
       \begin{tcolorbox}
-        As previously mentioned, there does not exist an algorithm that resolves grammar ambiguity. However, there exists many ambiguity detection algorithms with have their own proprieties as mention in this article\footnote{H.J.S. Basten, August 17, 2007. \textit{Ambiguity Detection Methods for Context-Free Grammars.} Master's Thesis, Universiteit Van Amsterdam.}. The reader is invited to read this document for more information.
+        As previously mentioned, there does not exist an algorithm that resolves grammar ambiguity. However, there exists many ambiguity detection algorithms with have their own proprieties as mentioned in this article\footnote{H.J.S. Basten, August 17, 2007. \textit{Ambiguity Detection Methods for Context-Free Grammars.} Master's Thesis, Universiteit Van Amsterdam.}. The reader is invited to read this document for further information.
       \end{tcolorbox}
   
   \subsection{Results of simplifications on the IMP grammar}
+    As previously mentioned, being able to transform a non deterministic --- but yet rather simple to write --- into a deterministic grammar that is implementation friendly, is something one wants to do when asked to implement a parser for this grammar. In our case, all the methods previously presented in the section \ref{grammartoll1methods} have been applied to the IMP grammar (which is available in the annex fig.\ref{fig:basicimpgrammar}) through the use of a package containing an implemented version of these methods.\\
+    The present section is composed of four subsections that each describes and analyses the different results obtained that constitute the version of the IMP grammar that is eventually used.\\
+    \begin{tcolorbox}
+      For a matter of readability, it has been decided to only display the modified part of the grammar. To see the full version of the modified IMP grammar one must used the process described in the subsection X.X.
+    \end{tcolorbox}
     \subsubsection{Ambiguity}
       Arithmetic expressions~:
       \begin{lstlisting}
@@ -351,57 +357,57 @@ token: [x]                lexical unit: VARNAME
 <ExprArithAtom>	 -> - <ExprArithAtom>\end{lstlisting}
       Conditions~:
       \begin{lstlisting}
-<Cond>	     -> <Cond> or <CondAnd> 
-<Cond>	     -> <CondAnd> 
-<CondAnd>	   -> <CondAnd> and <CondAtom> 
-<CondAnd>	   -> <CondAtom> 
-<CondAtom>	 -> not <SimpleCond> 
-<CondAtom>	 -> <SimpleCond> 
-<SimpleCond> -> <ExprArith> <Comp> <ExprArith> 
-<Comp>	     -> = 
-<Comp>	     -> >= 
-<Comp>	     -> >  
-<Comp>	     -> <=  
-<Comp>	     -> <  
-<Comp>	     -> <>\end{lstlisting}
+<Cond>	         -> <Cond> or <CondAnd> 
+<Cond>	         -> <CondAnd> 
+<CondAnd>	       -> <CondAnd> and <CondAtom> 
+<CondAnd>	       -> <CondAtom> 
+<CondAtom>	     -> not <SimpleCond> 
+<CondAtom>	     -> <SimpleCond> 
+<SimpleCond>     -> <ExprArith> <Comp> <ExprArith> 
+<Comp>	         -> = 
+<Comp>	         -> >= 
+<Comp>	         -> >  
+<Comp>	         -> <=  
+<Comp>	         -> <  
+<Comp>	         -> <>\end{lstlisting}
     \subsubsection{Useless symbols removal}
       %
       
     \subsubsection{Left-recursion removal}
       % looking for repetitions.
       \begin{lstlisting}
-<ExprArithU>	  -> <ExprArithMul> 
-<ExprArithV>	  -> <OpAdd> <ExprArithMul> <ExprArithV> 
-<ExprArithV>	  -> eps 
-<ExprArith>	    -> <ExprArithU> <ExprArithV>
-<ExprArithMulU>	-> <ExprArithAtom> 
-<ExprArithMulV>	-> <OpMul> <ExprArithAtom> <ExprArithMulV> 
-<ExprArithMulV>	-> eps 
-<ExprArithMul>	-> <ExprArithMulU> <ExprArithMulV>\end{lstlisting}
+<ExprArithU>	   -> <ExprArithMul> 
+<ExprArithV>	   -> <OpAdd> <ExprArithMul> <ExprArithV> 
+<ExprArithV>	   -> eps 
+<ExprArith>	     -> <ExprArithU> <ExprArithV>
+<ExprArithMulU>	 -> <ExprArithAtom> 
+<ExprArithMulV>	 -> <OpMul> <ExprArithAtom> <ExprArithMulV> 
+<ExprArithMulV>	 -> eps 
+<ExprArithMul>	 -> <ExprArithMulU> <ExprArithMulV>\end{lstlisting}
       \begin{lstlisting}
-<CondU>	        -> <CondAnd> 
-<CondV>	        -> or <CondAnd> <CondV> 
-<CondV>	        -> eps 
-<Cond>	        -> <CondU> <CondV> 
-<CondAndU>	    -> <CondAtom> 
-<CondAndV>	    -> and <CondAtom> <CondAndV> 
-<CondAndV>	    -> eps 
-<CondAnd>	      -> <CondAndU> <CondAndV>\end{lstlisting}
+<CondU>	         -> <CondAnd> 
+<CondV>	         -> or <CondAnd> <CondV> 
+<CondV>	         -> eps 
+<Cond>	         -> <CondU> <CondV> 
+<CondAndU>	     -> <CondAtom> 
+<CondAndV>	     -> and <CondAtom> <CondAndV> 
+<CondAndV>	     -> eps 
+<CondAnd>	       -> <CondAndU> <CondAndV>\end{lstlisting}
 
     \subsubsection{Left-recursion removal}
       %
       \begin{lstlisting}
-<InstList>	 -> 	 <Instruction> <InstList'> 
-<InstList'>	 -> 	 ; <InstList> 
-<InstList'>	 -> 	 eps\end{lstlisting}
+<InstList>	     -> <Instruction> <InstList'> 
+<InstList'>	     -> ; <InstList> 
+<InstList'>	     -> eps\end{lstlisting}
       \begin{lstlisting}
-<If>	 -> 	 if <Cond> then <Code> <If'> 
-<If'>	 -> 	 else <Code> endif 
-<If'>	 -> 	 endif\end{lstlisting}
+<If>	           -> if <Cond> then <Code> <If'> 
+<If'>	           -> else <Code> endif 
+<If'>	           -> endif\end{lstlisting}
       \begin{lstlisting}
-<For>	 -> 	 for VarName from <ExprArith> <For'> 
-<For'>	 -> 	 by <ExprArith> to <ExprArith> do <Code> done 
-<For'>	 -> 	 to <ExprArith> do <Code> done\end{lstlisting}
+<For>	           -> for VarName from <ExprArith> <For'> 
+<For'>	         -> by <ExprArith> to <ExprArith> do <Code> done 
+<For'>	         -> to <ExprArith> do <Code> done\end{lstlisting}
     
   \subsection{Design of the LL(1) parser}
   
@@ -504,10 +510,9 @@ javadoc -d doc/javadoc/ -keywords -sourcepath src -subpackages be
   \subsection{IMP action table}
     \begin{sidewaystable} % <-- HERE
       \centering
-      
-        \input{ActionTable.txt}
-      
+      \input{ActionTable.txt}
       \caption{IMP action table.}
+      \label{impactiontable}
     \end{sidewaystable}
 
   \subsection{Left factorisation using strees}
