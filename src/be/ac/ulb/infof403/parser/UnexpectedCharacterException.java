@@ -22,7 +22,7 @@ public class UnexpectedCharacterException extends Exception {
     }
     
     private static String generateMessageSymbol(final Symbol symb) {
-        String message = "(line : " + symb.getLine() + " col :" + symb.getColumn() + 
+        final String message = "(line : " + symb.getLine() + " col :" + symb.getColumn() + 
                 ")\t" + COLOR_RED + "Unexepected character " + "'" + symb.getValue() 
                 + "' of type " + symb.getType() + COLOR_RESET;
         return message;

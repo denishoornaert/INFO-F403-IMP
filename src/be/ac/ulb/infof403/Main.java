@@ -14,6 +14,7 @@ public class Main {
     private static final String DEFAULT_GRAMMAR_FILE = "./test/grammar/UnambiguousIMP.gram";
     
     private static boolean _debug = false;
+    private static boolean _stackParsing = false;
     
     /**
      * Main function 
@@ -71,6 +72,11 @@ public class Main {
                     printScanResult = true;
                     break;
                     
+                case "-sp":
+                case "--stackparsing":
+                    _stackParsing = true;
+                    break;
+                    
                 case "-d":
                 case "--debug":
                     _debug = true;
@@ -94,8 +100,11 @@ public class Main {
         
         final Ll1 l = new Ll1(grammar, tokenList);
         try {
-//             l.stackParse();
-            l.treeParse();
+            if(_stackParsing) {
+                l.stackParse();
+            } else {
+                l.treeParse();
+            }
             System.out.println("Syntax respected !");
         } catch (UnexpectedCharacterException ex) {
             System.err.println(ex.getMessage());
@@ -172,6 +181,7 @@ public class Main {
         System.out.println("  -ta/--table\t\t\tPrint the action table");
         System.out.println("  -ts/--testscan [filePath]\tTest that the scanner have the good output");
         System.out.println("  -ps/--printscan\t\tPrint the scan result");
+        System.out.println("  -sp/--stackparsing\t\tParse IMP file with stack (and not a tree)");
         System.out.println("  -d/--debug\t\t\tView debug messages");
     }
 

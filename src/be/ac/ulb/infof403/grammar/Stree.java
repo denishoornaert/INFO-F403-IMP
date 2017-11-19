@@ -16,9 +16,9 @@ public class Stree {
         _variable = var;
     }
     
-    private ArrayList<Rule> sortSetBySize(HashSet<Rule> listRule) {
-        ArrayList<Rule> res = new ArrayList<>(listRule);
-        int n = res.size();  
+    private ArrayList<Rule> sortSetBySize(final HashSet<Rule> listRule) {
+        final ArrayList<Rule> res = new ArrayList<>(listRule);
+        final int n = res.size();  
         Rule temp = null;  
         for(int i=0; i < n; i++){  
             for(int j=1; j < (n-i); j++){  
@@ -72,7 +72,7 @@ public class Stree {
                     _head.get(counter).add(newList);
                 }
                 else {
-                    ArrayList<Elem> array = new ArrayList<>();
+                    final ArrayList<Elem> array = new ArrayList<>();
                     array.add(new Epsilon());
                     _head.get(counter).add(array);
                 }

@@ -77,7 +77,7 @@ public class Rule extends ArrayList<Elem> implements Comparable {
     }
 
     @Override
-    public int compareTo(Object objToCompare) {
+    public int compareTo(final Object objToCompare) {
         if(objToCompare instanceof Rule) {
             final Rule ruleToCompare = (Rule) objToCompare;
             final Integer currentId = getId();
@@ -92,6 +92,5 @@ public class Rule extends ArrayList<Elem> implements Comparable {
     public static void resetId() {
         ruleId = 1;
     }
-    
     
 }

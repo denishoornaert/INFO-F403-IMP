@@ -50,7 +50,7 @@ public class Node {
                     _children.get(counter).add(newList);
                 }
                 else {
-                    ArrayList<Elem> array = new ArrayList<Elem>();
+                    final ArrayList<Elem> array = new ArrayList<>();
                     array.add(new Epsilon());
                     _children.get(counter).add(array);
                 }

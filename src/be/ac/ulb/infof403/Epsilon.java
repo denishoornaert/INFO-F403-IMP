@@ -20,7 +20,7 @@ public class Epsilon extends Terminal {
 
     @Override
     public HashSet<Terminal> first() {
-        HashSet<Terminal> res = new HashSet<>();
+        final HashSet<Terminal> res = new HashSet<>();
         res.add(this);
         return res;
     }
