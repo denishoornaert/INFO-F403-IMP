@@ -7,8 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 
 /**
- * Class used by the stree.
- * 
+ * Class used by the {@link Stree } where Node are the element that compose the stree.
  */
 public class Node {
     

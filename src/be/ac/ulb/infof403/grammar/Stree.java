@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+/**
+ * Stree used to remove left reccursion and composed by {@link Node}
+ */
 public class Stree {
     
     private final ArrayList<Node> _head;

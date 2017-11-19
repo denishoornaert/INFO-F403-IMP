@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 /**
- * 
+ * Variable use in grammar.  This is a type of {@link Elem}.
  */
 public class GrammarVariable extends Elem implements Comparable {
     
