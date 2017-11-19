@@ -341,6 +341,9 @@ token: [x]                lexical unit: VARNAME
       For a matter of readability, it has been decided to only display the modified part of the grammar. To see the full version of the modified IMP grammar one must used the process described in the subsection X.X.
     \end{tcolorbox}
     \subsubsection{Ambiguity}
+      Following the assignment statement, identifying the rules where ambiguity occurs is rather simple. the two ambiguous part of the grammar involved both arithmetic expressions and conditions. For both the former and the latter, atomic rules have been identified and categorised as such/so. Then, two layers have been introduced in order to force the derivation.\\\\
+      In the case of arithmetic expression, the operator $-$ has been given the highest priority thus it has been introduced directly in the set of atomic rules (\verb|9| to \verb|12|). After that, the $*$ and $/$ operators were given the highest priority, this is why they are part of the first layer (\verb|5| to \verb|8|). Finally, the second and last layer (\verb|1| to \verb|4|) is composed of the rules involving the remaining of the operators.\\
+      Notice that, even though it has not been explicitly specified in the assignment statement, any arithmetic expression surrounded by parenthesis has been considered as having a priority as high has the $-$ operator.
       Arithmetic expressions~:
       \begin{lstlisting}
 <ExprArith>	     -> <ExprArith> <OpAdd> <ExprArithMul> 
@@ -353,7 +356,7 @@ token: [x]                lexical unit: VARNAME
 <OpMul>	         -> / 
 <ExprArithAtom>	 -> VarName 
 <ExprArithAtom>	 -> [Number] 
-<ExprArithAtom>	 -> ( <ExprArithAtom> ) 
+<ExprArithAtom>	 -> ( <ExprArith> ) 
 <ExprArithAtom>	 -> - <ExprArithAtom>\end{lstlisting}
       Conditions~:
       \begin{lstlisting}
@@ -370,20 +373,21 @@ token: [x]                lexical unit: VARNAME
 <Comp>	         -> <=  
 <Comp>	         -> <  
 <Comp>	         -> <>\end{lstlisting}
+
     \subsubsection{Useless symbols removal}
-      %
+      The unambiguous IMP grammar does not contain any useless symbols. One can be easily convinced of the reachability by drawing a graph were every vertex represent the fact that the variable (a node) appears at least on one the rules of the other. One can also be convinced of the productiveness by observing that for each recursive rule, there is another that stops the recursivity. These intuitions were proved right by the implementation.
       
     \subsubsection{Left-recursion removal}
       % looking for repetitions.
       \begin{lstlisting}
-<ExprArithU>	   -> <ExprArithMul> 
-<ExprArithV>	   -> <OpAdd> <ExprArithMul> <ExprArithV> 
-<ExprArithV>	   -> eps 
 <ExprArith>	     -> <ExprArithU> <ExprArithV>
+<ExprArithU>	   -> <ExprArithMul>
+<ExprArithV>	   -> <OpAdd> <ExprArithMul> <ExprArithV> 
+<ExprArithV>	   -> eps
+<ExprArithMul>	 -> <ExprArithMulU> <ExprArithMulV>
 <ExprArithMulU>	 -> <ExprArithAtom> 
 <ExprArithMulV>	 -> <OpMul> <ExprArithAtom> <ExprArithMulV> 
-<ExprArithMulV>	 -> eps 
-<ExprArithMul>	 -> <ExprArithMulU> <ExprArithMulV>\end{lstlisting}
+<ExprArithMulV>	 -> eps\end{lstlisting}
       \begin{lstlisting}
 <CondU>	         -> <CondAnd> 
 <CondV>	         -> or <CondAnd> <CondV> 
