@@ -20,7 +20,7 @@
                 -> /
 <ExprArithAtom> -> [VarName]
                 -> [Number]
-                -> ( <ExprArithAtom> )
+                -> ( <ExprArith> )
                 -> - <ExprArithAtom>
 <If>            -> if <Cond> then <Code> endif
                 -> if <Cond> then <Code> else <Code> endif
