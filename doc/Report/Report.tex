@@ -331,9 +331,58 @@ token: [x]                lexical unit: VARNAME
               \label{fig:unambiguousgrammar3}
           \end{subfigure}
           \caption{Caption place holder}
-      \end{figure}\\
-      For example, applying the grammar of fig.\ref{fig:unmodifiedgrammar3} on the word $id+id*id$ will result in two different interpretation as shown in Fig.X.a and Fig.X.b.
-        % TODO Remy trees
+	\end{figure}\\
+      For example, applying the grammar of fig.\ref{fig:unmodifiedgrammar3} on the word $id+id*id$ will result in two different interpretation as shown in Fig.\ref{fig:ambiguoustree1} and Fig.\ref{fig:ambiguoustree2}.
+      
+      \begin{figure}[h!]
+	\centering
+	\begin{subfigure}[b]{0.4\textwidth}
+	  \begin{tikzpicture}[tree]
+	    \node {Exp}
+	    child {
+	      node {Exp}
+		child { node {Exp} 
+		  child { node {id} }
+		}
+	      child { node {+} }
+	      child { 
+		node {Exp}
+		child { node {id} }
+	      }
+	    }
+	    child { node {*} }
+	    child { 
+	      node {Exp}
+		child { node {id} }
+	    };
+	  \end{tikzpicture}
+	  \caption{One representation of ambiguous grammar} % TODO Denis check spelling
+	  \label{fig:ambiguoustree1}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.4\textwidth}
+	  \begin{tikzpicture}[tree]
+	    \node {Exp}
+	    child { 
+	      node {Exp}
+		child { node {id} }
+	    }
+	    child { node {+} }
+	    child {
+	      node {Exp}
+		child { node {Exp} 
+		  child { node {id} }
+		}
+	      child { node {*} }
+	      child { 
+		node {Exp}
+		child { node {id} }
+	      }
+	    };
+	  \end{tikzpicture}
+	  \caption{Another representation of ambiguous grammar} % TODO Denis check spelling
+	  \label{fig:ambiguoustree2}
+	\end{subfigure}
+      \end{figure}
       To address this issue, the language designer must 'force' the derivation (and hence the priority) by introducing new variables that could be seen as extra layers. For instance, on fig.\ref{fig:unmodifiedgrammar3}, the grammar is composed of two \textit{atomic} terminals : \textit{Cst} and \textit{Id}. These terminals will be encapsulated in a new variable called \textit{Atom}. In addition, we decide --- based on the arithmetic priority --- that multiplication has an higher priority than addition. Therefore, as for atomic elements, we introduce a new variable called \textit{Prod} that has for rules a single atomic value (25) and the product of a multiplication and a atomic element (24). Finally, the same mechanism is once again applied to addition. Resulting in the rules (22) and (23).\\
       \begin{tcolorbox}
         As previously mentioned, there does not exist an algorithm that resolves grammar ambiguity. However, there exists many ambiguity detection algorithms with have their own proprieties as mentioned in this article\footnote{H.J.S. Basten, August 17, 2007. \textit{Ambiguity Detection Methods for Context-Free Grammars.} Master's Thesis, Universiteit Van Amsterdam.}. The reader is invited to read this document for further information.
