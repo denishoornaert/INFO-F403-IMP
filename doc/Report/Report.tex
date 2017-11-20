@@ -8,6 +8,7 @@
 \usepackage{listings}
 \usepackage{color}
 \usepackage{amsmath}
+\usepackage{mathtools}
 \usepackage{tikz}
 \usepackage{subcaption}
 \usepackage{tcolorbox}
@@ -431,6 +432,14 @@ token: [x]                lexical unit: VARNAME
       % method first and follow
       
     \subsubsection{Syntax checking}
+      Once one has an action table, checking the syntax of the input is possible through the use of a simple stack that will only contains variables and terminals. The mechanism used to check the syntax of the input works as follows. Firstly, one starts by pushing on the stack the initial variable of the grammar. Then, if the element on the top of the stack is a variable, one pops it and identifies using the action table which rule to apply given the variable and the look ahead. Once identified, we push the rule on the stack and we make sure that the left-most element is on the top of the stack. Otherwise, if the element on the top of the stack is a terminal, one pops it and compares it to the input. If it matches, one resumes, otherwise, it means that the syntax has not been respected.\\
+      In addition to that, for IMP, for add others rejecting or accepting conditions to our configuration. The IMP parser will rejects if there is no left character to read on the input and that the stack is not empty or is there are characters left on the input and that the stack is empty. The only accepting configuration is when the stack is empty and there is no character left on the input.\\
+      For example, let's consider the final IMP grammar and the following input \verb|begin a := b end|, the sequence of used rules and the stack utilisation will be as in the fig.\ref{fig:simpleprogram}.
+      \begin{figure}[h!]
+        \input{SimpleProgStack.txt}
+        \caption{Stack utilisation for a simple program.}
+        \label{fig:simpleprogram}
+      \end{figure}    
 
 \section{How to set up the project}
   In order to simplify the compilation and the support of external libraries, it has been decided to use a well known \textit{java} project manager named \textit{Maven}. Its configuration file (\verb|pom.xml|) defines the \verb|main| file, defines the source folder, manages the \textit{JFlex} library and the package that must be compiled with this library.
