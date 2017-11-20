@@ -187,26 +187,29 @@ token: [x]                lexical unit: VARNAME
     \label{example:grammar}
   \end{figure}
   Using the \textit{grammar} in fig.\ref{example:grammar} and the following instruction \verb|9-5+2| (that is yet to be translate into a list of token) the outcome of the parser will be the following \textit{syntax tree}~:\\
-  \begin{center}
+  \begin{figure}[h!]
+    \centering
     \begin{tikzpicture}[tree]
       \node {list}
-	  child {
-	    node {list}
-	      child { node {list} 
-		child { node {digit} 
-		  child { node {9} }
-		}
-	      }
-	    child { node {-} }
-	    child { 
-	      node {digit}
-	      child { node {5} }
-	    }
+    child {
+      node {list}
+        child { node {list} 
+	  child { node {digit} 
+	    child { node {9} }
 	  }
-	  child { node {+} }
-	  child { node {digit} };
+        }
+      child { node {-} }
+      child { 
+        node {digit}
+        child { node {5} }
+      }
+    }
+    child { node {+} }
+    child { node {digit} };
     \end{tikzpicture}
-  \end{center}
+  \caption{Syntax tree.}
+    \label{fig:syntaxtreeintroduction}
+  \end{figure}
   
   \subsection{Transforming the grammar to LL(1) grammar}
     \label{grammartoll1methods}
@@ -417,9 +420,12 @@ token: [x]                lexical unit: VARNAME
 <For>	           -> for VarName from <ExprArith> <For'> 
 <For'>	         -> by <ExprArith> to <ExprArith> do <Code> done 
 <For'>	         -> to <ExprArith> do <Code> done\end{lstlisting}
-      The factorisation of \verb|If| and \verb|For| are quite mainstream as to present a real divergence. Thus after the prefix,  a new variable is introduced and associated to the remaining of the other common prefixed rules.
+      The factorisation of \verb|If| and \verb|For| are quite mainstream as they present a real divergence. Thus after the prefix,  a new variable is introduced and associated to the remaining of the other common prefixed rules.
     
   \subsection{Design of the LL(1) parser}
+    A LL(1) grammar is a class of grammars that can be defined by a predictive top-down parser. Such grammars define context-free languages which can be recognised by push-down automaton (i.e. automaton that use a stack as memory). We define a predictive parser as a type of parser that has an access to the input. This access is characterised by the possibility to know what is the following character to be read (this is very different from reading on the input) in order to enable the parser to take deterministic decisions throughout its execution. Consequently the definition of the push-down automata used must be altered so that it can benefit from the look ahead advantages.\\
+    Another consequence is that there is a clear relation between the variable analysed (i.e. the one on the top of the stack) and the next character to be read. The structure established to summarised these relations is called an action table.\\
+    In the present section, we will see how an action table is constituted and how, by using all the tools previously introduced, a push-down automata can be designed to verify that a user wrote correctly a program (i.e. respected the grammar established).
   
     \subsubsection{Action table}
       % method first and follow
