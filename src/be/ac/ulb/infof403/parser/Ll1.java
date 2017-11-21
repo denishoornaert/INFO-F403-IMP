@@ -62,10 +62,12 @@ public class Ll1 {
         }
     }
     
-    public void stackParse() throws UnexpectedCharacterException {
+    public void stackParse(final boolean debug) throws UnexpectedCharacterException {
         _stack.push(_grammar.getInitialvariable());
         while (!_stack.isEmpty() && _symb != null) {
-            System.out.println(_stack);
+            if(debug) {
+                System.out.println("Stack: " + _stack);
+            }
             
             if(_stack.tos() instanceof Symbol) {
                 this.symbolManagement();

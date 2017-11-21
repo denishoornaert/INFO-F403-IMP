@@ -173,17 +173,6 @@ public class Grammar {
         addVariables(v);
     }
     
-    public void printFollow() {
-        for(final GrammarVariable gramVar : _variables) {
-            System.out.println("\n\n--------------");
-            System.out.print("Follow of " + gramVar + ": ");
-            for(final Terminal follow : follow(gramVar)) {
-                System.out.print(follow.getValue() + ", ");
-            }
-            System.out.println("");
-        }
-    }
-    
     public HashSet<Terminal> follow(final GrammarVariable gramVar) {
         return follow(gramVar, new HashSet<>());
     }

@@ -34,7 +34,6 @@ public class Node {
             int counter = 0;
             boolean find = false;
             while(counter < _children.size() && !find) {
-                System.out.println(_children.get(counter).getValue()+" --- "+firstElem);
                 if(_children.get(counter).getValue().equals(firstElem)) {
                     find = true;
                 } else {

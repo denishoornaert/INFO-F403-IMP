@@ -11,7 +11,7 @@ import java.util.HashSet;
  */
 public class Rule extends ArrayList<Elem> implements Comparable {
     
-    private static int ruleId = 1;
+    private static int ruleId = 0;
     
     private int _id;
     

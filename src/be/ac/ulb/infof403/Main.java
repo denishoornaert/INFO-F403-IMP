@@ -10,7 +10,7 @@ import be.ac.ulb.infof403.scanner.ImpScanner;
  */
 public class Main {
     
-    private static final String DEFAULT_IMP_FILE = "./test/imp/Euclide.imp";
+    private static final String DEFAULT_IMP_FILE = "./test/imp/Euclid.imp";
     private static final String DEFAULT_GRAMMAR_FILE = "./test/grammar/UnambiguousIMP.gram";
     
     private static boolean _debug = false;
@@ -101,7 +101,7 @@ public class Main {
         final Ll1 l = new Ll1(grammar, tokenList);
         try {
             if(_stackParsing) {
-                l.stackParse();
+                l.stackParse(_debug);
             } else {
                 l.treeParse();
             }
