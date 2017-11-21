@@ -1,0 +1,41 @@
+            // create the Model with data for the tree, and assign to the Diagram
+            myDiagram.model = $(go.TreeModel, { nodeDataArray: nodeDataArray });
+        }
+
+        // Customize the TreeLayout to position all of the leaf nodes at the same vertical Y position.
+        function FlatTreeLayout() {
+            go.TreeLayout.call(this);  // call base constructor
+        }
+        go.Diagram.inherit(FlatTreeLayout, go.TreeLayout);
+
+        // This assumes the TreeLayout.angle is 90 -- growing downward
+        /** @override */
+        FlatTreeLayout.prototype.commitLayout = function() {
+            go.TreeLayout.prototype.commitLayout.call(this);  // call base method first
+            // find maximum Y position of all Nodes
+            var y = -Infinity;
+            this.network.vertexes.each(function(v) {
+                y = Math.max(y, v.node.position.y);
+            });
+            // move down all leaf nodes to that Y position, but keeping their X position
+            this.network.vertexes.each(function(v) {
+                if (v.destinationEdges.count === 0) {
+                    // shift the node down to Y
+                    v.node.position = new go.Point(v.node.position.x, y);
+                    // extend the last segment vertically
+                    v.node.toEndSegmentLength = Math.abs(v.centerY - y);
+                } else {  // restore to normal value
+                    v.node.toEndSegmentLength = 10;
+                }
+            });
+        };
+        // end FlatTreeLayout
+
+    </script>
+</head>
+<body onload="init()">
+    <div id="sample">
+        <div id="myDiagramDiv" style="width:100%; height:1000px"></div>
+    </div>
+</body>
+</html>

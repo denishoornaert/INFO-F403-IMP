@@ -43,8 +43,12 @@ public class RuleTree {
         }
     }
     
-    protected ArrayList<RuleTree> getChildren() {
+    public ArrayList<RuleTree> getChildren() {
         return _children;
+    }
+    
+    public Elem getValue() {
+        return _value;
     }
     
     protected boolean equalsValue(final Elem elem) {

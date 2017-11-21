@@ -15,7 +15,6 @@
         <sourceDirectory>src</sourceDirectory>
         <testSourceDirectory>srcTest</testSourceDirectory>
         <plugins>
-            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -65,7 +64,7 @@
         </plugins>
         <resources>
             <resource>
-                <directory>src</directory>
+                <directory>assets</directory>
             </resource>
         </resources>
     </build>

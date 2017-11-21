@@ -4,6 +4,7 @@ import be.ac.ulb.infof403.grammar.Grammar;
 import be.ac.ulb.infof403.parser.Ll1;
 import be.ac.ulb.infof403.parser.UnexpectedCharacterException;
 import be.ac.ulb.infof403.scanner.ImpScanner;
+import java.io.File;
 
 /**
  * Main class
@@ -12,6 +13,7 @@ public class Main {
     
     private static final String DEFAULT_IMP_FILE = "./test/imp/Euclid.imp";
     private static final String DEFAULT_GRAMMAR_FILE = "./test/grammar/UnambiguousIMP.gram";
+    private static final String DEFAULT_GOJS_FOLDER = "./test/html/";
     
     private static boolean _debug = false;
     private static boolean _stackParsing = false;
@@ -47,6 +49,9 @@ public class Main {
             impFile = DEFAULT_IMP_FILE;
         }
         
+        // Default arguments
+        boolean gojs = false;
+        String gojsOutputFile = DEFAULT_GOJS_FOLDER;
         
         while(args.length > currentIndex) {
             switch(args[currentIndex]) {
@@ -77,6 +82,16 @@ public class Main {
                     _stackParsing = true;
                     break;
                     
+                case "-gojs":
+                case "--gojstree":
+                    gojs = true;
+                    if(args.length > currentIndex+1 && !args[currentIndex+1].startsWith("-")) {
+                        gojsOutputFile += args[++currentIndex];
+                    } else {
+                        gojsOutputFile += getFileWithoutExtension(getFileName(impFile)) + ".html";
+                    }
+                    break;
+                    
                 case "-d":
                 case "--debug":
                     _debug = true;
@@ -103,12 +118,20 @@ public class Main {
             if(_stackParsing) {
                 l.stackParse(_debug);
             } else {
-                l.treeParse();
+                l.treeParse(gojs, gojsOutputFile);
             }
             System.out.println("Syntax respected !");
         } catch (UnexpectedCharacterException ex) {
             System.err.println(ex.getMessage());
         }
+    }
+    
+    private static String getFileName(final String filePath) {
+        return new File(filePath).getName();
+    }
+    
+    private static String getFileWithoutExtension(final String fileName) {
+        return fileName.substring(0, fileName.lastIndexOf('.'));
     }
     
     private static boolean argsContainsHelp(final String[] args) {
@@ -182,6 +205,8 @@ public class Main {
         System.out.println("  -ts/--testscan [filePath]\tTest that the scanner have the good output");
         System.out.println("  -ps/--printscan\t\tPrint the scan result");
         System.out.println("  -sp/--stackparsing\t\tParse IMP file with stack (and not a tree)");
+        System.out.println("  -gojs/--gojstree [outputFile]\tView Gojs parse tree (output file is store in " + 
+                DEFAULT_GOJS_FOLDER + ")");
         System.out.println("  -d/--debug\t\t\tView debug messages");
     }
 

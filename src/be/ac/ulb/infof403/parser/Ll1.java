@@ -5,6 +5,7 @@ import be.ac.ulb.infof403.TokenList;
 import be.ac.ulb.infof403.grammar.Grammar;
 import be.ac.ulb.infof403.grammar.GrammarVariable;
 import be.ac.ulb.infof403.grammar.Rule;
+import be.ac.ulb.infof403.view.GenerateGojsParseTree;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -93,7 +94,7 @@ public class Ll1 {
     }
     
     
-    public void treeParse() throws UnexpectedCharacterException {
+    public void treeParse(boolean gojs, final String outputFile) throws UnexpectedCharacterException {
         // TODO missing last rule
         final RuleTree tree = new RuleTree(_grammar.getInitialvariable());
         if(_i.hasNext()) {
@@ -103,7 +104,10 @@ public class Ll1 {
         if(_i.hasNext()) {
             throw new UnexpectedCharacterException(_symb, "Expected end of file"); 
         } else {
-            System.out.println("All is ok !");
+            System.out.println("IMP file is valid !");
+            if(gojs) {
+                new GenerateGojsParseTree(tree, outputFile);
+            }
         }
     }
     
