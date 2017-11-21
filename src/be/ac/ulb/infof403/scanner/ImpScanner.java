@@ -4,7 +4,6 @@ import be.ac.ulb.infof403.LexicalUnit;
 import be.ac.ulb.infof403.Symbol;
 import be.ac.ulb.infof403.SymbolTable;
 import be.ac.ulb.infof403.TokenList;
-import be.ac.ulb.infof403.scanner.ImpSyntaxException;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;

@@ -51,10 +51,10 @@ CloseComment    = "*)"
     "or"           {return new Symbol(LexicalUnit.OR,        yyline, yycolumn, new String(yytext()));}
     "="            {return new Symbol(LexicalUnit.EQ,        yyline, yycolumn, new String(yytext()));}
     "<="           {return new Symbol(LexicalUnit.LEQ,       yyline, yycolumn, new String(yytext()));}
-    "<"            {return new Symbol(LexicalUnit.GT,        yyline, yycolumn, new String(yytext()));}
-    ">="           {return new Symbol(LexicalUnit.GEQ,       yyline, yycolumn, new String(yytext()));}
-    ">"            {return new Symbol(LexicalUnit.LT,        yyline, yycolumn, new String(yytext()));}
     "<>"           {return new Symbol(LexicalUnit.NEQ,       yyline, yycolumn, new String(yytext()));}
+    ">="           {return new Symbol(LexicalUnit.GEQ,       yyline, yycolumn, new String(yytext()));}
+    "<"            {return new Symbol(LexicalUnit.GT,        yyline, yycolumn, new String(yytext()));}
+    ">"            {return new Symbol(LexicalUnit.LT,        yyline, yycolumn, new String(yytext()));}
     "while"        {return new Symbol(LexicalUnit.WHILE,     yyline, yycolumn, new String(yytext()));}
     "do"           {return new Symbol(LexicalUnit.DO,        yyline, yycolumn, new String(yytext()));}
     "done"         {return new Symbol(LexicalUnit.DONE,      yyline, yycolumn, new String(yytext()));}

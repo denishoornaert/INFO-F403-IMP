@@ -1,0 +1,6 @@
+<Code>	 -> <InstList> 
+<InstList>	 -> <Instruction> ; <InstList>
+<InstList>       -> <Instruction>
+<Instruction>	 -> <Assign> 
+<Instruction>	 -> <If>
+<Instruction>	 -> <While>

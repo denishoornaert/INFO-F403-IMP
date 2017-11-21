@@ -4,20 +4,22 @@ import be.ac.ulb.infof403.Elem;
 import be.ac.ulb.infof403.Epsilon;
 import be.ac.ulb.infof403.Symbol;
 import be.ac.ulb.infof403.Terminal;
+import java.util.Collections;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 
 /**
- * 
+ * Variable use in grammar.  This is a type of {@link Elem}.
  */
-public class GrammarVariable extends Elem {
+public class GrammarVariable extends Elem implements Comparable {
     
     private static int globalCounter = 0;
     
     private final int _counter;
     private final String _varName;
-    private ArrayList<Rule> _listRule;
+    private HashSet<Rule> _listRule;
     private Grammar _grammar;
     private boolean _marked = false;
     
@@ -28,7 +30,7 @@ public class GrammarVariable extends Elem {
     public GrammarVariable(final String varName) {
         _varName = varName;
         _counter = globalCounter++;
-        _listRule = new ArrayList<>();
+        _listRule = new HashSet<>();
         _grammar = null;
     }
     
@@ -81,20 +83,43 @@ public class GrammarVariable extends Elem {
         return res;
     }
     
-    protected Rule getRuleThatLeadsToSymbol(final Symbol sym) {
+    private HashSet<Terminal> getExpectedElementWithRule(final Rule rule) {
+        final HashSet<Terminal> expetedElem;
+        final Elem elem = rule.get(0);
+        
+        if(elem instanceof Epsilon) {
+            expetedElem = _grammar.follow(this);
+        } else {
+            expetedElem = elem.first();
+        }
+        
+        return expetedElem;
+    }
+    
+    public Rule getRuleThatLeadsToSymbol(final Symbol sym) {
         Rule res = null;
-        int counter = 0;
+        final Iterator<Rule> iteratorRule = _listRule.iterator();
+        
         boolean found = false;
-        while (counter < _listRule.size() && !found) {
-            final Rule rule = _listRule.get(counter);
-            final Elem elem = rule.get(0);
-            // if sym in the set returned by first, save it and exit the loop
-            if((elem instanceof Epsilon && _grammar.follow(this).contains(sym)) ||
-                    elem.first().contains(sym)) {
-                res = rule;
-                found = true;
+        while (iteratorRule.hasNext() && !found) {
+            final Rule rule = iteratorRule.next();
+            final HashSet<Terminal> expetedElem = getExpectedElementWithRule(rule);
+            final Iterator<Terminal> iteratorExpetedElem = expetedElem.iterator();
+            while(iteratorExpetedElem.hasNext() && !found) {
+                // if sym in the set returned by first, save it and exit the loop
+                if(iteratorExpetedElem.next().equals(sym)) {
+                    res = rule;
+                    found = true;
+                }
             }
-            counter++;
+        }
+        return res;
+    }
+    
+    public HashSet<Elem> getExpectedCharacters() {
+        final HashSet<Elem> res = new HashSet<>();
+        for (final Rule rule : _listRule) {
+            res.addAll(getExpectedElementWithRule(rule));
         }
         return res;
     }
@@ -114,7 +139,7 @@ public class GrammarVariable extends Elem {
     
     protected String getStrRules() {
         String result = "";
-        for(final Rule rule : _listRule) {
+        for(final Rule rule : getRuleOrded()) {
             result += "(" + rule.getId() + ")\t" + this.toString() + "\t -> \t " + rule.toString() + "\n";
         }
         return result;
@@ -122,7 +147,7 @@ public class GrammarVariable extends Elem {
     
     protected void removeRuleWithUnproductiveVariable(final 
             HashSet<GrammarVariable> productiveVariable) {
-        final ArrayList<Rule> cloneSymListRule = (ArrayList<Rule>) _listRule.clone();
+        final HashSet<Rule> cloneSymListRule = (HashSet<Rule>) _listRule.clone();
         for(final Rule rule : cloneSymListRule) {
             if(!rule.allComposantTerminal(productiveVariable)) {
                 _listRule.remove(rule);
@@ -149,7 +174,7 @@ public class GrammarVariable extends Elem {
     
     protected boolean isGramVarEndOfAtLeastOneRule(final GrammarVariable gramVar) {
         for(final Rule rule : _listRule) {
-            final int index = rule.indexOf(gramVar);
+            final int index = rule.lastIndexOf(gramVar);
             if(index >= 0 && index == (rule.size()-1)) {
                 return true;
             }
@@ -181,14 +206,30 @@ public class GrammarVariable extends Elem {
      */
     protected HashSet<Symbol> getAllSymbol() {
         final HashSet<Symbol> result = new HashSet<>();
-        for(final Rule rule : _listRule) {
+        for(final Rule rule : getRuleOrded()) {
             result.addAll(rule.getAllSymbol());
         }
         return result;
     }
     
-    protected final ArrayList<Rule> getRules() {
+    protected final HashSet<Rule> getRules() {
         return _listRule;
+    }
+    
+    private ArrayList<Rule> getRuleOrded() {
+        final ArrayList<Rule> listRule = new ArrayList<>(_listRule);
+        Collections.sort(listRule);
+        return listRule;
+    }
+    
+    /**
+     * Add a rule
+     * 
+     * @param id number of the rule (<b>Only for test</b>)
+     * @param listElem element that compose rule
+     */
+    public void addRule(final int id, final Elem... listElem) {
+        _listRule.add(new Rule(id, new ArrayList<>(Arrays.asList(listElem))));
     }
     
     public void addRule(final Elem... listElem) {
@@ -206,4 +247,24 @@ public class GrammarVariable extends Elem {
     public void cleanRules() {
         _listRule.clear();
     }
+    
+    private int getMaxRuleId() {
+        final ArrayList<Rule> listRuleOrder = getRuleOrded();
+        if(!listRuleOrder.isEmpty()) {
+            return listRuleOrder.get(listRuleOrder.size()-1).getId();
+        }
+        return -1;
+    }
+    
+    
+    @Override
+    public int compareTo(Object objToCompare) {
+        if(objToCompare instanceof GrammarVariable) {
+            final GrammarVariable gramVarToCompare = (GrammarVariable) objToCompare;
+            final Integer currentId = getMaxRuleId();
+            return currentId.compareTo(gramVarToCompare.getMaxRuleId());
+        }
+        return -1;
+    }
+    
 }

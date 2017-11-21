@@ -1,18 +1,22 @@
 package be.ac.ulb.infof403;
 
 import be.ac.ulb.infof403.grammar.Grammar;
-import be.ac.ulb.infof403.parser.LL1;
+import be.ac.ulb.infof403.parser.Ll1;
+import be.ac.ulb.infof403.parser.UnexpectedCharacterException;
 import be.ac.ulb.infof403.scanner.ImpScanner;
+import java.io.File;
 
 /**
  * Main class
  */
 public class Main {
     
-    private static final String DEFAULT_IMP_FILE = "./test/Euclid.imp";
-    private static final String DEFAULT_GRAMMAR_FILE = "./test/Gram.gram";
+    private static final String DEFAULT_IMP_FILE = "./test/imp/Euclid.imp";
+    private static final String DEFAULT_GRAMMAR_FILE = "./test/grammar/UnambiguousIMP.gram";
+    private static final String DEFAULT_GOJS_FOLDER = "./test/html/";
     
     private static boolean _debug = false;
+    private static boolean _stackParsing = false;
     
     /**
      * Main function 
@@ -45,6 +49,9 @@ public class Main {
             impFile = DEFAULT_IMP_FILE;
         }
         
+        // Default arguments
+        boolean gojs = false;
+        String gojsOutputFile = DEFAULT_GOJS_FOLDER;
         
         while(args.length > currentIndex) {
             switch(args[currentIndex]) {
@@ -70,6 +77,21 @@ public class Main {
                     printScanResult = true;
                     break;
                     
+                case "-sp":
+                case "--stackparsing":
+                    _stackParsing = true;
+                    break;
+                    
+                case "-gojs":
+                case "--gojstree":
+                    gojs = true;
+                    if(args.length > currentIndex+1 && !args[currentIndex+1].startsWith("-")) {
+                        gojsOutputFile += args[++currentIndex];
+                    } else {
+                        gojsOutputFile += getFileWithoutExtension(getFileName(impFile)) + ".html";
+                    }
+                    break;
+                    
                 case "-d":
                 case "--debug":
                     _debug = true;
@@ -90,7 +112,36 @@ public class Main {
              grammar.printActionTable();
         }
         
-        new LL1(grammar, tokenList);
+        boolean validParsing = false;
+        final Ll1 l = new Ll1(grammar, tokenList);
+        try {
+            if(_stackParsing) {
+                l.stackParse(_debug);
+            } else {
+                l.treeParse(gojs, gojsOutputFile);
+            }
+            validParsing = true;
+        } catch (UnexpectedCharacterException ex) {
+            System.err.println(ex.getMessage());
+        }
+        
+        if(validParsing) {
+            System.out.println("Syntax respected !");
+            System.out.println("");
+            System.out.println("Grammar: ");
+            System.out.println(grammar);
+            System.out.println("");
+            l.printTransitions();
+        }
+        
+    }
+    
+    private static String getFileName(final String filePath) {
+        return new File(filePath).getName();
+    }
+    
+    private static String getFileWithoutExtension(final String fileName) {
+        return fileName.substring(0, fileName.lastIndexOf('.'));
     }
     
     private static boolean argsContainsHelp(final String[] args) {
@@ -149,7 +200,6 @@ public class Main {
             System.out.println("Grammar (factorisation (final)):");
             System.out.println(grammar);
         }
-        
         return grammar;
     }
     
@@ -158,12 +208,15 @@ public class Main {
      */
     private static void printHelp() {
         System.out.println("Command: java -jar INFO-F403-IMP.jar <grammarFile> <IMPFile> [options]");
-        System.out.println("  <grammarFile>\t\t\tThe file that contains the Grammar (default: './test/Gram.gram')");
-        System.out.println("  <IMPFile>\t\t\tThe file with the IMP code (default: './test/Euclid.imp')");
+        System.out.println("  <grammarFile>\t\t\tThe file that contains the Grammar (default: '" + DEFAULT_GRAMMAR_FILE + "')");
+        System.out.println("  <IMPFile>\t\t\tThe file with the IMP code (default: '" + DEFAULT_IMP_FILE + "')");
         System.out.println("  -h/--help\t\t\tPrint this text");
         System.out.println("  -ta/--table\t\t\tPrint the action table");
         System.out.println("  -ts/--testscan [filePath]\tTest that the scanner have the good output");
         System.out.println("  -ps/--printscan\t\tPrint the scan result");
+        System.out.println("  -sp/--stackparsing\t\tParse IMP file with stack (and not a tree)");
+        System.out.println("  -gojs/--gojstree [outputFile]\tView Gojs parse tree (output file is store in " + 
+                DEFAULT_GOJS_FOLDER + ")");
         System.out.println("  -d/--debug\t\t\tView debug messages");
     }
 

@@ -1,5 +1,5 @@
 <Program>       -> begin <Code> end
-                -> Epsilon
+<Code>          -> eps
                 -> <InstList>
 <InstList>      -> <Instruction>
                 -> <Instruction> ; <InstList>
@@ -10,31 +10,35 @@
                 -> <Print>
                 -> <Read>
 <Assign>        -> [VarName] := <ExprArith>
-<ExprArith>     -> [VarName]
+<ExprArith>     -> <ExprArith> <OpAdd> <ExprArithMul>
+<ExprArith>     -> <ExprArithMul>
+<OpAdd>         -> +
+                -> -
+<ExprArithMul>  -> <ExprArithMul> <OpMul> <ExprArithAtom>
+<ExprArithMul>  -> <ExprArithAtom>
+<OpMul>         -> *
+                -> /
+<ExprArithAtom> -> [VarName]
                 -> [Number]
                 -> ( <ExprArith> )
-                -> - <ExprArith>
-                -> <ExprArith> <Op> <ExprArith>
-<Op>            -> +
-                -> -
-                -> *
-                -> /
+                -> - <ExprArithAtom>
 <If>            -> if <Cond> then <Code> endif
                 -> if <Cond> then <Code> else <Code> endif
-<Cond>          -> <Cond> <BinOp> <Cond>
-                -> not <SimpleCond>
+<Cond>          -> <Cond> or <CondAnd>
+<Cond>          -> <CondAnd>
+<CondAnd>       -> <CondAnd> and <CondAtom>
+<CondAnd>       -> <CondAtom>
+<CondAtom>      -> not <SimpleCond>
                 -> <SimpleCond>
 <SimpleCond>    -> <ExprArith> <Comp> <ExprArith>
-<BinOp>         -> and
-                -> or
-<Comp>          -> =
-                -> >=
-                -> >
-                -> <=
-                -> <
-                -> <>
+<Comp>          -> = 
+                -> >= 
+                -> > 
+                -> <= 
+                -> < 
+                -> <> 
 <While>         -> while <Cond> do <Code> done
 <For>           -> for [VarName] from <ExprArith> by <ExprArith> to <ExprArith> do <Code> done
                 -> for [VarName] from <ExprArith> to <ExprArith> do <Code> done
-<Print>         -> print([VarName])
-<Read>          -> read([VarName])
+<Print>         -> print ( [VarName] )
+<Read>          -> read ( [VarName] )

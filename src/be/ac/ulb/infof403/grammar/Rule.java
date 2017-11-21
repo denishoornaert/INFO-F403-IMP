@@ -9,9 +9,9 @@ import java.util.HashSet;
 /**
  * Rule of the grammar
  */
-public class Rule extends ArrayList<Elem> {
+public class Rule extends ArrayList<Elem> implements Comparable {
     
-    private static int ruleId = 1;
+    private static int ruleId = 0;
     
     private int _id;
     
@@ -20,18 +20,28 @@ public class Rule extends ArrayList<Elem> {
     }
     
     public Rule(final ArrayList<Elem> composant) {
-        super(composant);
-        _id = ruleId++;
+        this(++ruleId, composant);
     }
     
-    public int getId() {
+    /**
+     * Create rule
+     * 
+     * @param id specific ID (<b>only for test</b>)
+     * @param composant element of the rule
+     */
+    public Rule(final int id, final ArrayList<Elem> composant) {
+        super(composant);
+        _id = id;
+    }
+    
+    public Integer getId() {
         return _id;
     }
     
     @Override
 	public String toString() {
         String result = "";
-        for(Elem elem : this) {
+        for(final Elem elem : this) {
             result += elem.getValue()+ " ";
         }
         return result;
@@ -64,6 +74,23 @@ public class Rule extends ArrayList<Elem> {
             }
         }
         return result;
+    }
+
+    @Override
+    public int compareTo(final Object objToCompare) {
+        if(objToCompare instanceof Rule) {
+            final Rule ruleToCompare = (Rule) objToCompare;
+            final Integer currentId = getId();
+            return currentId.compareTo(ruleToCompare.getId());
+        }
+        return -1;
+    }
+    
+    /**
+     * Reset the rule id (<b>Only for test</b>)
+     */
+    public static void resetId() {
+        ruleId = 1;
     }
     
 }

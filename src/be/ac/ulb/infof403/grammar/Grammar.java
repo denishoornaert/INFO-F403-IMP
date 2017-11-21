@@ -7,10 +7,12 @@ import be.ac.ulb.infof403.Symbol;
 import be.ac.ulb.infof403.Terminal;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 
 /**
  * List of rule of a grammar
@@ -39,14 +41,16 @@ public class Grammar {
         }
     }
     
-    public HashSet<GrammarVariable> getVariables() {
-        return _variables;
+    public GrammarVariable getInitialvariable() {
+        return _initialState;
     }
     
     @Override
     public String toString() {
         String result = "";
-        for(final GrammarVariable sym : _variables) {
+        final ArrayList<GrammarVariable> listVariable = new ArrayList<>(_variables);
+        Collections.sort(listVariable);
+        for(final GrammarVariable sym : listVariable) {
             result += sym.getStrRules();
         }
         return result;
@@ -112,7 +116,7 @@ public class Grammar {
         }
     }
     
-    public void factorisation() { // TODO has to be tested
+    public void factorisation() {
         final HashSet<GrammarVariable> allVariable = (HashSet<GrammarVariable>) _variables.clone();
         for (final GrammarVariable var : allVariable) {
             // Setup of the stree and generation of the factorised rules.
@@ -125,25 +129,25 @@ public class Grammar {
     
     public void removeLeftRecursion() {
         final HashSet<GrammarVariable> workingList = (HashSet<GrammarVariable>)_variables.clone();
-        for (final GrammarVariable key : _variables) {
-            final ArrayList<Rule> value = key.getRules();
+        for (final GrammarVariable key : workingList) {
+            final HashSet<Rule> listRule = key.getRules();
             Boolean again = true;
-            int counter = 0;
-            while(counter < value.size() && again) {
+            
+            final Iterator<Rule> itaratorListRule = listRule.iterator();
+            while(itaratorListRule.hasNext() && again) {
                 again = true;
-                if(key.equals(value.get(0).get(0))) {
+                final Rule currentRule = itaratorListRule.next();
+                
+                if(key.equals(currentRule.get(0))) {
                     again = false;
                     final GrammarVariable u = new GrammarVariable(key.getVarName()+"U");
                     final GrammarVariable v = new GrammarVariable(key.getVarName()+"V");
-                    final ArrayList<Rule> list = key.getRules();
+                    createURule(listRule, u, currentRule);
+                    createVRule(currentRule, v);
                     createUVRule(key, u, v);
-                    createURule(workingList, list, u);
-                    createVRule(workingList, list, v);
                 }
-                counter++;
             }
         }
-        _variables = workingList;
     }
     
     private void createUVRule(final GrammarVariable key, final GrammarVariable u, final GrammarVariable v) {
@@ -151,32 +155,22 @@ public class Grammar {
         key.addRule(new Rule(u, v));
     }
     
-    private void createURule(final HashSet<GrammarVariable> workingList, 
-            final ArrayList<Rule> list, final GrammarVariable u) {
-        workingList.add(u);
-        for (int i = 1; i < list.size(); i++) {
-            u.addRule(list.get(i));
-        }
-    }
-    
-    private void createVRule(final HashSet<GrammarVariable> workingList, 
-            final ArrayList<Rule> list, final GrammarVariable v) {
-        final Rule workingRule = list.get(0);
-        workingRule.remove(0);
-        workingRule.add(v);
-        workingList.add(v);
-        v.addRule(workingRule);
-    }
-    
-    public void printFollow() {
-        for(final GrammarVariable gramVar : _variables) {
-            System.out.println("\n\n--------------");
-            System.out.print("Follow of " + gramVar + ": ");
-            for(final Terminal follow : follow(gramVar)) {
-                System.out.print(follow.getValue() + ", ");
+    private void createURule(final HashSet<Rule> listRule, final GrammarVariable u,
+            final Rule ignoreRule) {
+        addVariables(u);
+        for(final Rule rule : listRule) {
+            if(rule != ignoreRule) {
+                u.addRule(rule);
             }
-            System.out.println("");
         }
+    }
+    
+    private void createVRule(final Rule workingRule, final GrammarVariable v) {
+        workingRule.remove(0);
+        workingRule.add(v);        
+        v.addRule(workingRule);
+        v.addRule(new Epsilon());
+        addVariables(v);
     }
     
     public HashSet<Terminal> follow(final GrammarVariable gramVar) {

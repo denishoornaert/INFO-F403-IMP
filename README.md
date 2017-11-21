@@ -12,5 +12,7 @@ Here are the [pantuml doc](http://plantuml.com/class-diagram) and the [online im
 - `doc` contains the Javadoc and the Report;
 - `test` contains example files;
 - `dist` contains the executable Jar;
-- `more` contains all other files (order, ...).
-- `src` contains source code
+- `more` contains all other files (order, ...);
+- `src` contains source code;
+- `srcTest` contains test code;
+- `assets` contains files use by the application.

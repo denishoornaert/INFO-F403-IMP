@@ -7,8 +7,8 @@ begin
     b := 0 ;
     for n from 0 to n do (* loop from 0 to n *)
         tmp := b ;
-        b := a + b ;
-        a := tmp ;
-    done
+        b := a ;
+        a := tmp 
+    done ;
     print(b) ;
 end

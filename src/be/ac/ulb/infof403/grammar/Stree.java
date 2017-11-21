@@ -1,10 +1,14 @@
 package be.ac.ulb.infof403.grammar;
 
 import be.ac.ulb.infof403.Elem;
+import be.ac.ulb.infof403.Epsilon;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+/**
+ * Stree used to remove left reccursion and composed by {@link Node}
+ */
 public class Stree {
     
     private final ArrayList<Node> _head;
@@ -15,9 +19,25 @@ public class Stree {
         _variable = var;
     }
     
-    protected boolean addRules(final ArrayList<Rule> listRule) {
+    private ArrayList<Rule> sortSetBySize(final HashSet<Rule> listRule) {
+        final ArrayList<Rule> res = new ArrayList<>(listRule);
+        final int n = res.size();  
+        Rule temp = null;  
+        for(int i=0; i < n; i++){  
+            for(int j=1; j < (n-i); j++){  
+                if(res.get(j-1).size() < res.get(j).size()){ 
+                    temp = res.get(j-1);  
+                    res.set(j-1, res.get(j));
+                    res.set(j, temp);
+                }
+            }
+        }
+        return res;
+    }
+    
+    protected boolean addRules(final HashSet<Rule> listRule) {
         boolean newRule = false;
-        for (final Rule rule : listRule) {
+        for (final Rule rule : this.sortSetBySize(listRule)) {
             newRule = newRule || add(rule);
         }
         return newRule;
@@ -32,7 +52,7 @@ public class Stree {
     private boolean add(final List<Elem> list) {
         boolean oneMatch = false;
         
-        if(list.size() > 1) {
+        if(list.size() > 0) {
             
             final Elem firstElem = list.get(0);
             final List<Elem> newList = list.subList(1, list.size());
@@ -47,11 +67,18 @@ public class Stree {
                     counter++;
                 }
             }
-            
+
             // If we find a match
             if(find) {
-                // Test now with the sublist
-                _head.get(counter).add(newList);
+                if(!newList.isEmpty()) {
+                    // Test now with the sublist
+                    _head.get(counter).add(newList);
+                }
+                else {
+                    final ArrayList<Elem> array = new ArrayList<>();
+                    array.add(new Epsilon());
+                    _head.get(counter).add(array);
+                }
                 oneMatch = true;
             }
             else { // Else just add a node to the stree

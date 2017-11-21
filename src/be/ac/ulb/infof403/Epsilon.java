@@ -2,6 +2,9 @@ package be.ac.ulb.infof403;
 
 import java.util.HashSet;
 
+/**
+ * Epsilon represent an empty token
+ */
 public class Epsilon extends Terminal {
 
     public Epsilon() {
@@ -20,7 +23,7 @@ public class Epsilon extends Terminal {
 
     @Override
     public HashSet<Terminal> first() {
-        HashSet<Terminal> res = new HashSet<>();
+        final HashSet<Terminal> res = new HashSet<>();
         res.add(this);
         return res;
     }

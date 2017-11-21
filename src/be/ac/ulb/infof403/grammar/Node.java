@@ -1,13 +1,13 @@
 package be.ac.ulb.infof403.grammar;
 
 import be.ac.ulb.infof403.Elem;
+import be.ac.ulb.infof403.Epsilon;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
 /**
- * Class used by the stree.
- * 
+ * Class used by the {@link Stree } where Node are the element that compose the stree.
  */
 public class Node {
     
@@ -17,10 +17,13 @@ public class Node {
     protected Node(final Elem value, final List<Elem> list) {
         _value = value;
         _children = new ArrayList<>();
-        
+
         add(list);
     }
     
+    protected int getNumberOfChildren() {
+        return _children.size();
+    }
     
     protected void add(final List<Elem> list) {
         if(!list.isEmpty()) { // If list isn't empty
@@ -40,8 +43,15 @@ public class Node {
             
             // If we find a match
             if(find) {
-                // Test now with the sublist
-                _children.get(counter).add(newList);
+                if(!newList.isEmpty()) {
+                    // Test now with the sublist
+                    _children.get(counter).add(newList);
+                }
+                else {
+                    final ArrayList<Elem> array = new ArrayList<>();
+                    array.add(new Epsilon());
+                    _children.get(counter).add(array);
+                }
             }
             else { // Else just add a node to the stree
                 _children.add(new Node(firstElem, newList));

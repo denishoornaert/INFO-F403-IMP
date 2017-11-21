@@ -13,8 +13,8 @@
 
     <build>
         <sourceDirectory>src</sourceDirectory>
+        <testSourceDirectory>srcTest</testSourceDirectory>
         <plugins>
-            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -64,7 +64,7 @@
         </plugins>
         <resources>
             <resource>
-                <directory>src</directory>
+                <directory>assets</directory>
             </resource>
         </resources>
     </build>
@@ -75,6 +75,13 @@
             <groupId>de.jflex</groupId>
             <artifactId>jflex-maven-plugin</artifactId>
             <version>1.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+            <type>jar</type>
         </dependency>
     </dependencies>
 
