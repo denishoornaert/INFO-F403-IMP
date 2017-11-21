@@ -112,7 +112,7 @@ public class Main {
              grammar.printActionTable();
         }
         
-        
+        boolean validParsing = false;
         final Ll1 l = new Ll1(grammar, tokenList);
         try {
             if(_stackParsing) {
@@ -120,10 +120,20 @@ public class Main {
             } else {
                 l.treeParse(gojs, gojsOutputFile);
             }
-            System.out.println("Syntax respected !");
+            validParsing = true;
         } catch (UnexpectedCharacterException ex) {
             System.err.println(ex.getMessage());
         }
+        
+        if(validParsing) {
+            System.out.println("Syntax respected !");
+            System.out.println("");
+            System.out.println("Grammar: ");
+            System.out.println(grammar);
+            System.out.println("");
+            l.printTransitions();
+        }
+        
     }
     
     private static String getFileName(final String filePath) {
@@ -198,8 +208,8 @@ public class Main {
      */
     private static void printHelp() {
         System.out.println("Command: java -jar INFO-F403-IMP.jar <grammarFile> <IMPFile> [options]");
-        System.out.println("  <grammarFile>\t\t\tThe file that contains the Grammar (default: './test/Gram.gram')");
-        System.out.println("  <IMPFile>\t\t\tThe file with the IMP code (default: './test/Euclid.imp')");
+        System.out.println("  <grammarFile>\t\t\tThe file that contains the Grammar (default: '" + DEFAULT_GRAMMAR_FILE + "')");
+        System.out.println("  <IMPFile>\t\t\tThe file with the IMP code (default: '" + DEFAULT_IMP_FILE + "')");
         System.out.println("  -h/--help\t\t\tPrint this text");
         System.out.println("  -ta/--table\t\t\tPrint the action table");
         System.out.println("  -ts/--testscan [filePath]\tTest that the scanner have the good output");

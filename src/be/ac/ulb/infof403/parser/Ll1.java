@@ -88,42 +88,49 @@ public class Ll1 {
             // TODO Denis: may be change the message of explanation
             throw new UnexpectedCharacterException(_symb, "Expected end of file"); 
             
-        } else {
-            System.out.println("Transitions : "+_transitions);
         }
     }
     
     
     public void treeParse(boolean gojs, final String outputFile) throws UnexpectedCharacterException {
-        // TODO missing last rule
         final RuleTree tree = new RuleTree(_grammar.getInitialvariable());
-        if(_i.hasNext()) {
-            analyseTree(tree);
-        }
+        analyseTree(tree);
         
         if(_i.hasNext()) {
             throw new UnexpectedCharacterException(_symb, "Expected end of file"); 
-        } else {
-            System.out.println("IMP file is valid !");
-            if(gojs) {
-                new GenerateGojsParseTree(tree, outputFile);
-            }
+        } else if(gojs) {
+            new GenerateGojsParseTree(tree, outputFile);
         }
     }
     
     private void analyseTree(final RuleTree currentRuleTree) throws UnexpectedCharacterException {
-        if(_i.hasNext()) {
+        if(_i.hasNext() || _symb != null) {
             if(currentRuleTree.isGrammarVariable()) {
-                currentRuleTree.addRuleForSymbol(_symb);
+                _transitions.add(currentRuleTree.addRuleForSymbol(_symb).toString());
                 for(final RuleTree nextRuleTree : currentRuleTree.getChildren()) {
                     analyseTree(nextRuleTree);
                 }
-            } else {
-                if(currentRuleTree.equalsValue(_symb)) {
+            } else if(currentRuleTree.equalsValue(_symb)) {
+                if(!_i.hasNext()) {
+                    _symb = null;
+                } else {
                     _symb = _i.next();
                 }
             }
         }
+    }
+    
+    public void printTransitions() {
+        String result = "Transition: ";
+        boolean first = true;
+        for(final String transition : _transitions) {
+            if(!first) {
+                result += ", ";
+            }
+            first = false;
+            result += transition;
+        }
+        System.out.println(result);
     }
     
 }

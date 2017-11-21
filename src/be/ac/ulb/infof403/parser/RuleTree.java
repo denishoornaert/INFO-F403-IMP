@@ -24,9 +24,16 @@ public class RuleTree {
         return _value instanceof GrammarVariable;
     }
     
-    protected void addRuleForSymbol(final Symbol symb) throws UnexpectedCharacterException {
+    /**
+     * Create new RuleTree with rule that can leads to symbol (in param) and add to this node in children
+     * 
+     * @param symb the next symbol
+     * @return Symbol Id
+     * @throws UnexpectedCharacterException if there isn't any rule
+     */
+    protected Integer addRuleForSymbol(final Symbol symb) throws UnexpectedCharacterException {
         if(!isGrammarVariable()) {
-            return;
+            return -1;
         }
         final GrammarVariable grammarValue = (GrammarVariable) _value;
         
@@ -36,11 +43,11 @@ public class RuleTree {
             throw new UnexpectedCharacterException(symb, grammarValue.getExpectedCharacters()); 
         }
         else {
-            System.out.println("Rule: " + _rule.getId());
             for(final Elem elem : _rule) {
                 _children.add(new RuleTree(elem));
             }
         }
+        return _rule.getId();
     }
     
     public ArrayList<RuleTree> getChildren() {
