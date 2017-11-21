@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Parse Tree</title>
+    <meta name="description" content="A collapsible tree layout with all of the leaf nodes at the same layer." />
+    <!-- Copyright 1998-2017 by Northwoods Software Corporation. -->
+    <meta charset="UTF-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gojs/1.8.2/go.js"></script>
+    <script id="code">
+        function init() {
+            if (window.goSamples) goSamples();  // init for these samples -- you don't need to call this
+            var $ = go.GraphObject.make;  // for conciseness in defining templates
+            myDiagram =
+                $(go.Diagram, "myDiagramDiv",
+                    {
+                        allowCopy: false,
+                        allowDelete: false,
+                        allowMove: false,
+                        initialContentAlignment: go.Spot.Center,
+                        initialAutoScale: go.Diagram.Uniform,
+                        layout:
+                            $(FlatTreeLayout,  // custom Layout, defined below
+                                { angle: 90,
+                                    compaction: go.TreeLayout.CompactionNone }),
+                            "undoManager.isEnabled": true
+                    });
+
+            myDiagram.nodeTemplate =
+                $(go.Node, "Vertical",
+                    { selectionObjectName: "BODY" },
+                        $(go.Panel, "Auto", { name: "BODY" },
+                            $(go.Shape, "RoundedRectangle",
+                                new go.Binding("fill"),
+                                new go.Binding("stroke")),
+                            $(go.TextBlock,
+                                { font: "bold 12pt Arial, sans-serif", margin: new go.Margin(4, 2, 2, 2) },
+                                new go.Binding("text"))
+                        ),
+                    $(go.Panel,  // this is underneath the "BODY"
+                        { height: 15 },  // always this height, even if the TreeExpanderButton is not visible
+                            $("TreeExpanderButton")
+                    )
+                );
+
+            // Add arrow or not
+            myDiagram.linkTemplate =
+                $(go.Link, $(go.Shape, { strokeWidth: 1.5 }));
+var nodeDataArray = [{ key: 1, text: "<Program>", fill: "#ccc", stroke: "black" },{ key: 2, text: "begin", fill: "#ccc", stroke: "black", parent: 1 },{ key: 3, text: "<Code>", fill: "#ccc", stroke: "black", parent: 1 },{ key: 4, text: "<InstList>", fill: "#ccc", stroke: "black", parent: 3 },{ key: 5, text: "<Instruction>", fill: "#ccc", stroke: "black", parent: 4 },{ key: 6, text: "<Assign>", fill: "#ccc", stroke: "black", parent: 5 },{ key: 7, text: "VarName", fill: "#ccc", stroke: "black", parent: 6 },{ key: 8, text: ":=", fill: "#ccc", stroke: "black", parent: 6 },{ key: 9, text: "<ExprArith>", fill: "#ccc", stroke: "black", parent: 6 },{ key: 10, text: "<ExprArithU>", fill: "#ccc", stroke: "black", parent: 9 },{ key: 11, text: "<ExprArithMul>", fill: "#ccc", stroke: "black", parent: 10 },{ key: 12, text: "<ExprArithMulU>", fill: "#ccc", stroke: "black", parent: 11 },{ key: 13, text: "<ExprArithAtom>", fill: "#ccc", stroke: "black", parent: 12 },{ key: 14, text: "VarName", fill: "#ccc", stroke: "black", parent: 13 },{ key: 15, text: "<ExprArithMulV>", fill: "#ccc", stroke: "black", parent: 11 },{ key: 16, text: "eps", fill: "#ccc", stroke: "black", parent: 15 },{ key: 17, text: "<ExprArithV>", fill: "#ccc", stroke: "black", parent: 9 },{ key: 18, text: "<OpAdd>", fill: "#ccc", stroke: "black", parent: 17 },{ key: 19, text: "+", fill: "#ccc", stroke: "black", parent: 18 },{ key: 20, text: "<ExprArithMul>", fill: "#ccc", stroke: "black", parent: 17 },{ key: 21, text: "<ExprArithMulU>", fill: "#ccc", stroke: "black", parent: 20 },{ key: 22, text: "<ExprArithAtom>", fill: "#ccc", stroke: "black", parent: 21 },{ key: 23, text: "VarName", fill: "#ccc", stroke: "black", parent: 22 },{ key: 24, text: "<ExprArithMulV>", fill: "#ccc", stroke: "black", parent: 20 },{ key: 25, text: "eps", fill: "#ccc", stroke: "black", parent: 24 },{ key: 26, text: "<ExprArithV>", fill: "#ccc", stroke: "black", parent: 17 },{ key: 27, text: "<OpAdd>", fill: "#ccc", stroke: "black", parent: 26 },{ key: 28, text: "-", fill: "#ccc", stroke: "black", parent: 27 },{ key: 29, text: "<ExprArithMul>", fill: "#ccc", stroke: "black", parent: 26 },{ key: 30, text: "<ExprArithMulU>", fill: "#ccc", stroke: "black", parent: 29 },{ key: 31, text: "<ExprArithAtom>", fill: "#ccc", stroke: "black", parent: 30 },{ key: 32, text: "VarName", fill: "#ccc", stroke: "black", parent: 31 },{ key: 33, text: "<ExprArithMulV>", fill: "#ccc", stroke: "black", parent: 29 },{ key: 34, text: "eps", fill: "#ccc", stroke: "black", parent: 33 },{ key: 35, text: "<ExprArithV>", fill: "#ccc", stroke: "black", parent: 26 },{ key: 36, text: "eps", fill: "#ccc", stroke: "black", parent: 35 },{ key: 37, text: "<InstList'>", fill: "#ccc", stroke: "black", parent: 4 },{ key: 38, text: "eps", fill: "#ccc", stroke: "black", parent: 37 },{ key: 39, text: "end", fill: "#ccc", stroke: "black", parent: 1 },]            // create the Model with data for the tree, and assign to the Diagram
+            myDiagram.model = $(go.TreeModel, { nodeDataArray: nodeDataArray });
+        }
+
+        // Customize the TreeLayout to position all of the leaf nodes at the same vertical Y position.
+        function FlatTreeLayout() {
+            go.TreeLayout.call(this);  // call base constructor
+        }
+        go.Diagram.inherit(FlatTreeLayout, go.TreeLayout);
+
+        // This assumes the TreeLayout.angle is 90 -- growing downward
+        /** @override */
+        FlatTreeLayout.prototype.commitLayout = function() {
+            go.TreeLayout.prototype.commitLayout.call(this);  // call base method first
+            // find maximum Y position of all Nodes
+            var y = -Infinity;
+            this.network.vertexes.each(function(v) {
+                y = Math.max(y, v.node.position.y);
+            });
+            // move down all leaf nodes to that Y position, but keeping their X position
+            this.network.vertexes.each(function(v) {
+                if (v.destinationEdges.count === 0) {
+                    // shift the node down to Y
+                    v.node.position = new go.Point(v.node.position.x, y);
+                    // extend the last segment vertically
+                    v.node.toEndSegmentLength = Math.abs(v.centerY - y);
+                } else {  // restore to normal value
+                    v.node.toEndSegmentLength = 10;
+                }
+            });
+        };
+        // end FlatTreeLayout
+
+    </script>
+</head>
+<body onload="init()">
+    <div id="sample">
+        <div id="myDiagramDiv" style="width:100%; height:1000px"></div>
+    </div>
+</body>
+</html>

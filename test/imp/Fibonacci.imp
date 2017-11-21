@@ -10,5 +10,5 @@ begin
         b := a ;
         a := tmp 
     done ;
-    print(b) ;
+    print(b)
 end
