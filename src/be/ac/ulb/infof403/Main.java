@@ -4,7 +4,13 @@ import be.ac.ulb.infof403.grammar.Grammar;
 import be.ac.ulb.infof403.parser.Ll1;
 import be.ac.ulb.infof403.parser.UnexpectedCharacterException;
 import be.ac.ulb.infof403.scanner.ImpScanner;
+import java.awt.Desktop;
 import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Main class
@@ -119,6 +125,7 @@ public class Main {
                 l.stackParse(_debug);
             } else {
                 l.treeParse(gojs, gojsOutputFile);
+                openBrowser(gojsOutputFile);
             }
             validParsing = true;
         } catch (UnexpectedCharacterException ex) {
@@ -134,6 +141,16 @@ public class Main {
             l.printTransitions();
         }
         
+    }
+    
+    private static void openBrowser(String url) {
+        // TODO check on Windows
+        url = "file://"+System.getProperty("user.dir")+"/"+url;
+        try {
+            Desktop.getDesktop().browse(new URL(url).toURI());
+        } catch (IOException | URISyntaxException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     private static String getFileName(final String filePath) {
