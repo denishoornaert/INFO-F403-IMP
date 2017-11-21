@@ -22,7 +22,6 @@ public class Main {
     private static final String DEFAULT_GOJS_FOLDER = "./test/html/";
     
     private static boolean _debug = false;
-    private static boolean _stackParsing = false;
     
     /**
      * Main function 
@@ -58,6 +57,7 @@ public class Main {
         // Default arguments
         boolean gojs = false;
         String gojsOutputFile = DEFAULT_GOJS_FOLDER;
+        boolean stackParsing = false;
         
         while(args.length > currentIndex) {
             switch(args[currentIndex]) {
@@ -85,7 +85,7 @@ public class Main {
                     
                 case "-sp":
                 case "--stackparsing":
-                    _stackParsing = true;
+                    stackParsing = true;
                     break;
                     
                 case "-gojs":
@@ -121,7 +121,7 @@ public class Main {
         boolean validParsing = false;
         final Ll1 l = new Ll1(grammar, tokenList);
         try {
-            if(_stackParsing) {
+            if(stackParsing) {
                 l.stackParse(_debug);
             } else {
                 l.treeParse(gojs, gojsOutputFile);
@@ -230,7 +230,7 @@ public class Main {
         System.out.println("  -h/--help\t\t\tPrint this text");
         System.out.println("  -ta/--table\t\t\tPrint the action table");
         System.out.println("  -ts/--testscan [filePath]\tTest that the scanner have the good output");
-        System.out.println("  -ps/--printscan\t\tPrint the scan result");
+        System.out.println("  -ps/--printscan\t\tPrint the scan result (like first part of this project)");
         System.out.println("  -sp/--stackparsing\t\tParse IMP file with stack (and not a tree)");
         System.out.println("  -gojs/--gojstree [outputFile]\tView Gojs parse tree (output file is store in " + 
                 DEFAULT_GOJS_FOLDER + ")");

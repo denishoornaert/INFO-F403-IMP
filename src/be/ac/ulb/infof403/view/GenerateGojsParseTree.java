@@ -1,24 +1,15 @@
 package be.ac.ulb.infof403.view;
 
 import be.ac.ulb.infof403.parser.RuleTree;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * 
  */
-public class GenerateGojsParseTree {
+public class GenerateGojsParseTree extends GenerateViewParseTree {
     
     private static final String HEADER_GOJS = "headerGojs.html";
     private static final String FOOTER_GOJS = "footerGojs.html";
-    private static final String ASSET_FOLDER = "assets";
     private static final String BG_COLOR = "#ccc";
     private static final String BORDER_COLOR = "black";
     
@@ -31,7 +22,6 @@ public class GenerateGojsParseTree {
         result += "var nodeDataArray = [" + generateTree(tree, -1) + "]";
         result += getFooter();
         writeFile(outputFile , result);
-        
     }
     
     private String generateTree(final RuleTree tree, final int parent) {
@@ -51,43 +41,14 @@ public class GenerateGojsParseTree {
                 (parent > 0 ? (", parent: " +  parent) : "") + " },";
     }
     
-    private String getFooter() {
+    @Override
+    protected String getFooter() {
         return readFile(ASSET_FOLDER + File.separator + FOOTER_GOJS);
     }
     
-    private String getHeader() {
+    @Override
+    protected String getHeader() {
         return readFile(ASSET_FOLDER + File.separator + HEADER_GOJS);
-    }
-    
-    private String readFile(final String fileName) {
-        String result = "";
-        try {
-            final FileReader fileReader = new FileReader(fileName);
-            final BufferedReader bufferedReader = new BufferedReader(fileReader);
-            
-            String line;
-            while((line = bufferedReader.readLine()) != null) {
-                result += line + "\n";
-            }   
-            bufferedReader.close();
-        } catch(IOException ex) {
-            System.out.println("Unable to open file '" + fileName + "'");                
-        }
-        
-        return result;
-    }
-    
-    private void writeFile(final String fileOutput, final String content) {
-        PrintWriter writer = null;
-        try {
-            writer = new PrintWriter(fileOutput, "UTF-8");
-            writer.print(content);
-        } catch (FileNotFoundException | UnsupportedEncodingException ex) {
-            Logger.getLogger(GenerateGojsParseTree.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        if(writer != null) {
-            writer.close();
-        }
     }
     
 }
