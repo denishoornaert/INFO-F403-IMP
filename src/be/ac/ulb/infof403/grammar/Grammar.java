@@ -48,9 +48,7 @@ public class Grammar {
     @Override
     public String toString() {
         String result = "";
-        final ArrayList<GrammarVariable> listVariable = new ArrayList<>(_variables);
-        Collections.sort(listVariable);
-        for(final GrammarVariable sym : listVariable) {
+        for(final GrammarVariable sym : getOrdonedGrammarVariable()) {
             result += sym.getStrRules();
         }
         return result;
@@ -225,6 +223,12 @@ public class Grammar {
         return _symbols;
     }
     
+    private ArrayList<GrammarVariable> getOrdonedGrammarVariable() {
+        final ArrayList<GrammarVariable> listVariable = new ArrayList<>(_variables);
+        Collections.sort(listVariable);
+        return listVariable;
+    }
+    
     public void printActionTable() {
         final HashSet<Symbol> syms = getAllSymbol();
         
@@ -279,6 +283,13 @@ public class Grammar {
             result += " ";
         }
         return result;
+    }
+    
+    public void renumberRule() {
+        Rule.resetId();
+        for(final GrammarVariable gramVar : getOrdonedGrammarVariable()) {
+            gramVar.renumberRule();
+        }
     }
     
     

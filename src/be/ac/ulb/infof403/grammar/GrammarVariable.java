@@ -256,6 +256,12 @@ public class GrammarVariable extends Elem implements Comparable {
         return -1;
     }
     
+    protected void renumberRule() {
+        for(final Rule rule : getRuleOrded()) {
+            rule.renumber();
+        }
+    }
+    
     
     @Override
     public int compareTo(Object objToCompare) {

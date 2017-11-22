@@ -33,15 +33,15 @@ public class TestIfGrammar {
         
         /// Add rule ///
         // (6) <init>	 -> 	 if <cond> then <code> <init'> 
-        initGramVar.addRule(7, ifSymbol, condGramVar, thenSymbol, codeGramVar, initPrimeGramVar);
+        initGramVar.addRule(6, ifSymbol, condGramVar, thenSymbol, codeGramVar, initPrimeGramVar);
         // (8) <init'>	 -> 	 else <code> endif 
-        initPrimeGramVar.addRule(9, elseSymbol, codeGramVar, endifSymbol);
+        initPrimeGramVar.addRule(8, elseSymbol, codeGramVar, endifSymbol);
         // (10) <init'>	 -> 	 endif 
-        initPrimeGramVar.addRule(11, endifSymbol);
+        initPrimeGramVar.addRule(10, endifSymbol);
         // (3) <code>	 -> 	 a 
-        codeGramVar.addRule(4, varASymbol);
+        codeGramVar.addRule(3, varASymbol);
         // (4) <cond>	 -> 	 b 
-        condGramVar.addRule(5, varBSymbol);
+        condGramVar.addRule(4, varBSymbol);
         
         final Grammar ifTestGrammar = new Grammar(initGramVar);
         ifTestGrammar.addVariables(initPrimeGramVar, codeGramVar, condGramVar);

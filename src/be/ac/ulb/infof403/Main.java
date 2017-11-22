@@ -210,9 +210,16 @@ public class Main {
         
         grammar.factorisation();
         if(_debug) {
-            System.out.println("Grammar (factorisation (final)):");
+            System.out.println("Grammar (factorisation):");
             System.out.println(grammar);
         }
+        
+        grammar.renumberRule();
+        if(_debug) {
+            System.out.println("Grammar (RenumberRule (final)):");
+            System.out.println(grammar);
+        }
+        
         return grammar;
     }
     

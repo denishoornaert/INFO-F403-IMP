@@ -34,6 +34,10 @@ public class Rule extends ArrayList<Elem> implements Comparable {
         _id = id;
     }
     
+    protected void renumber() {
+        _id = ++ruleId;
+    }
+    
     public Integer getId() {
         return _id;
     }
@@ -90,7 +94,7 @@ public class Rule extends ArrayList<Elem> implements Comparable {
      * Reset the rule id (<b>Only for test</b>)
      */
     public static void resetId() {
-        ruleId = 1;
+        ruleId = 0;
     }
     
 }
