@@ -4,13 +4,7 @@ import be.ac.ulb.infof403.grammar.Grammar;
 import be.ac.ulb.infof403.parser.Ll1;
 import be.ac.ulb.infof403.parser.UnexpectedCharacterException;
 import be.ac.ulb.infof403.scanner.ImpScanner;
-import java.awt.Desktop;
 import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Main class
@@ -20,6 +14,7 @@ public class Main {
     private static final String DEFAULT_IMP_FILE = "./test/imp/Euclid.imp";
     private static final String DEFAULT_GRAMMAR_FILE = "./test/grammar/UnambiguousIMP.gram";
     private static final String DEFAULT_GOJS_FOLDER = "./test/html/";
+    private static final String DEFAULT_LATEX_FOLDER = "./test/tex/";
     
     private static boolean _debug = false;
     
@@ -58,6 +53,8 @@ public class Main {
         boolean gojs = false;
         String gojsOutputFile = DEFAULT_GOJS_FOLDER;
         boolean stackParsing = false;
+        boolean latex = false;
+        String latexOutputFile = DEFAULT_LATEX_FOLDER;
         
         while(args.length > currentIndex) {
             switch(args[currentIndex]) {
@@ -98,6 +95,16 @@ public class Main {
                     }
                     break;
                     
+                case "-tex":
+                case "--latex":
+                    latex = true;
+                    if(args.length > currentIndex+1 && !args[currentIndex+1].startsWith("-")) {
+                        latexOutputFile += args[++currentIndex];
+                    } else {
+                        latexOutputFile += getFileWithoutExtension(getFileName(impFile)) + ".tex";
+                    }
+                    break;
+                    
                 case "-d":
                 case "--debug":
                     _debug = true;
@@ -124,8 +131,7 @@ public class Main {
             if(stackParsing) {
                 l.stackParse(_debug);
             } else {
-                l.treeParse(gojs, gojsOutputFile);
-                openBrowser(gojsOutputFile);
+                l.treeParse(gojs, gojsOutputFile, latex, latexOutputFile);
             }
             validParsing = true;
         } catch (UnexpectedCharacterException ex) {
@@ -141,16 +147,6 @@ public class Main {
             l.printTransitions();
         }
         
-    }
-    
-    private static void openBrowser(String url) {
-        // TODO check on Windows
-        url = "file://"+System.getProperty("user.dir")+"/"+url;
-        try {
-            Desktop.getDesktop().browse(new URL(url).toURI());
-        } catch (IOException | URISyntaxException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
     
     private static String getFileName(final String filePath) {
@@ -234,6 +230,8 @@ public class Main {
         System.out.println("  -sp/--stackparsing\t\tParse IMP file with stack (and not a tree)");
         System.out.println("  -gojs/--gojstree [outputFile]\tView Gojs parse tree (output file is store in " + 
                 DEFAULT_GOJS_FOLDER + ")");
+        System.out.println("  -tex/--latex [outputFile]\tView LaTeX parse tree (output file is store in " + 
+                DEFAULT_LATEX_FOLDER + ")");
         System.out.println("  -d/--debug\t\t\tView debug messages");
     }
 

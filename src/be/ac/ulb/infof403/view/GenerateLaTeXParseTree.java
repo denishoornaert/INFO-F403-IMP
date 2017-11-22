@@ -19,7 +19,7 @@ public class GenerateLaTeXParseTree extends GenerateViewParseTree {
         result += getFooter();
         writeFile(outputFile , result);
         
-        System.out.println("Write LaTeX File to: " + outputFile + " (total child: " + nbrChildren + ")");
+        System.out.println("/!\\ Warning: LaTeX generator use Tikz and doesn't work with big tree !");
     }
     
     private String generateTree(final RuleTree tree, final int profondeur) {

@@ -23,3 +23,10 @@ nbactions.xml
 
 # Temporary file
 *~
+
+# LaTeX generate file
+/test/tex/*.log
+/test/tex/*.aux
+/test/tex/*.out
+/test/tex/*.toc
+/test/tex/*.pdf

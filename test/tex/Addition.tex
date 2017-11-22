@@ -48,3 +48,124 @@
     \begin{figure}[h!]
       \centering
       \begin{tikzpicture}[tree]
+\node {<Program>}
+ child {
+node {begin}
+}
+ child {
+node {<Code>}
+ child {
+node {<InstList>}
+ child {
+node {<Instruction>}
+ child {
+node {<Assign>}
+ child {
+node {VarName}
+}
+ child {
+node {:=}
+}
+ child {
+node {<ExprArith>}
+ child {
+node {<ExprArithU>}
+ child {
+node {<ExprArithMul>}
+ child {
+node {<ExprArithMulU>}
+ child {
+node {<ExprArithAtom>}
+ child {
+node {VarName}
+}
+}
+}
+ child {
+node {<ExprArithMulV>}
+ child {
+node {eps}
+}
+}
+}
+}
+ child {
+node {<ExprArithV>}
+ child {
+node {<OpAdd>}
+ child {
+node {+}
+}
+}
+ child {
+node {<ExprArithMul>}
+ child {
+node {<ExprArithMulU>}
+ child {
+node {<ExprArithAtom>}
+ child {
+node {VarName}
+}
+}
+}
+ child {
+node {<ExprArithMulV>}
+ child {
+node {eps}
+}
+}
+}
+ child {
+node {<ExprArithV>}
+ child {
+node {<OpAdd>}
+ child {
+node {-}
+}
+}
+ child {
+node {<ExprArithMul>}
+ child {
+node {<ExprArithMulU>}
+ child {
+node {<ExprArithAtom>}
+ child {
+node {VarName}
+}
+}
+}
+ child {
+node {<ExprArithMulV>}
+ child {
+node {eps}
+}
+}
+}
+ child {
+node {<ExprArithV>}
+ child {
+node {eps}
+}
+}
+}
+}
+}
+}
+}
+ child {
+node {<InstList'>}
+ child {
+node {eps}
+}
+}
+}
+}
+ child {
+node {end}
+}
+;      \end{tikzpicture}
+    \end{figure}
+  \end{landscape}
+ 
+\end{document}
+

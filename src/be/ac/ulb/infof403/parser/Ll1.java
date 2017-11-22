@@ -6,6 +6,7 @@ import be.ac.ulb.infof403.grammar.Grammar;
 import be.ac.ulb.infof403.grammar.GrammarVariable;
 import be.ac.ulb.infof403.grammar.Rule;
 import be.ac.ulb.infof403.view.GenerateGojsParseTree;
+import be.ac.ulb.infof403.view.GenerateLaTeXParseTree;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -92,14 +93,21 @@ public class Ll1 {
     }
     
     
-    public void treeParse(boolean gojs, final String outputFile) throws UnexpectedCharacterException {
+    public void treeParse(final boolean gojs, final String gojsOutputFile,
+            final boolean latex, final String latexOutputFile) throws UnexpectedCharacterException {
         final RuleTree tree = new RuleTree(_grammar.getInitialvariable());
         analyseTree(tree);
         
         if(_i.hasNext()) {
             throw new UnexpectedCharacterException(_symb, "Expected end of file"); 
-        } else if(gojs) {
-            new GenerateGojsParseTree(tree, outputFile);
+        } else {
+            if(gojs) {
+                new GenerateGojsParseTree(tree, gojsOutputFile);
+            }
+            
+            if(latex) {
+                new GenerateLaTeXParseTree(tree, latexOutputFile);
+            }
         }
     }
     

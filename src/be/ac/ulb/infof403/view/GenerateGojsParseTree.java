@@ -2,6 +2,12 @@ package be.ac.ulb.infof403.view;
 
 import be.ac.ulb.infof403.parser.RuleTree;
 import java.io.File;
+import java.net.URL;
+import java.awt.Desktop;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * 
@@ -22,6 +28,8 @@ public class GenerateGojsParseTree extends GenerateViewParseTree {
         result += "var nodeDataArray = [" + generateTree(tree, -1) + "]";
         result += getFooter();
         writeFile(outputFile , result);
+        
+        openBrowser(outputFile);
     }
     
     private String generateTree(final RuleTree tree, final int parent) {
@@ -49,6 +57,17 @@ public class GenerateGojsParseTree extends GenerateViewParseTree {
     @Override
     protected String getHeader() {
         return readFile(ASSET_FOLDER + File.separator + HEADER_GOJS);
+    }
+    
+    private void openBrowser(String url) {
+        // TODO check on Windows
+        url = "file://"+System.getProperty("user.dir")+"/"+url;
+        try {
+            Desktop.getDesktop().browse(new URL(url).toURI());
+        } catch (IOException | URISyntaxException ex) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
     
 }
