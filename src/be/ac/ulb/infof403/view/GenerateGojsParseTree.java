@@ -61,7 +61,9 @@ public class GenerateGojsParseTree extends GenerateViewParseTree {
     
     private void openBrowser(String url) {
         // TODO check on Windows
-        url = "file://"+System.getProperty("user.dir")+"/"+url;
+        final String strUserDir = System.getProperty("user.dir").replaceAll(" ", "%20");
+        
+        url = "file://" + strUserDir + "/" + url;
         try {
             Desktop.getDesktop().browse(new URL(url).toURI());
         } catch (IOException | URISyntaxException ex) {
