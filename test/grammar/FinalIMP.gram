@@ -1,0 +1,55 @@
+<Program>           -> begin <Code> end 
+<Code>              -> eps 
+<Code>              -> <InstList> 
+<Instruction>       -> <Assign> 
+<Instruction>       -> <If> 
+<Instruction>       -> <While> 
+<Instruction>       -> <For> 
+<Instruction>       -> <Print> 
+<Instruction>       -> <Read> 
+<Assign>            -> VarName := <ExprArith> 
+<OpAdd>             -> + 
+<OpAdd>             -> - 
+<OpMul>             -> * 
+<OpMul>             -> / 
+<ExprArithAtom>     -> VarName 
+<ExprArithAtom>     -> [Number] 
+<ExprArithAtom>     -> ( <ExprArith> ) 
+<ExprArithAtom>     -> - <ExprArithAtom> 
+<CondAtom>          -> not <SimpleCond> 
+<CondAtom>          -> <SimpleCond> 
+<SimpleCond>        -> <ExprArith> <Comp> <ExprArith> 
+<Comp>              -> = 
+<Comp>              -> >= 
+<Comp>              -> >  
+<Comp>              -> <=  
+<Comp>              -> <  
+<Comp>              -> <>  
+<While>             -> while <Cond> do <Code> done 
+<Print>             -> print ( VarName ) 
+<Read>              -> read ( VarName ) 
+<ExprArithMulU>     -> <ExprArithAtom> 
+<ExprArithMulV>     -> <OpMul> <ExprArithAtom> <ExprArithMulV> 
+<ExprArithMulV>     -> eps 
+<ExprArithMul>      -> <ExprArithMulU> <ExprArithMulV> 
+<CondAndU>          -> <CondAtom> 
+<CondAndV>          -> and <CondAtom> <CondAndV> 
+<CondAndV>          -> eps 
+<CondAnd>           -> <CondAndU> <CondAndV> 
+<CondU>             -> <CondAnd> 
+<CondV>             -> or <CondAnd> <CondV> 
+<CondV>             -> eps 
+<Cond>              -> <CondU> <CondV> 
+<ExprArithU>        -> <ExprArithMul> 
+<ExprArithV>        -> <OpAdd> <ExprArithMul> <ExprArithV> 
+<ExprArithV>        -> eps 
+<ExprArith>         -> <ExprArithU> <ExprArithV> 
+<InstList>          -> <Instruction> <InstList'> 
+<InstList'>         -> ; <InstList> 
+<InstList'>         -> eps 
+<If>                -> if <Cond> then <Code> <If'> 
+<If'>               -> else <Code> endif 
+<If'>               -> endif 
+<For>               -> for VarName from <ExprArith> <For'> 
+<For'>              -> by <ExprArith> to <ExprArith> do <Code> done 
+<For'>              -> to <ExprArith> do <Code> done
