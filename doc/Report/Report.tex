@@ -361,7 +361,7 @@ token: [x]                lexical unit: VARNAME
 Error with a token: Unknown symbol '[' (9 character at line 1)
       \end{verbatim}
 
-\section{How to set up the project}à
+\section{How to set up the project}
   In order to simplify the compilation and the support of external libraries, it has been decided to use a well known \textit{java} project manager named \textit{Maven}. Its configuration file (\verb|pom.xml|) defines the \verb|main| file, defines the source folder, manages the \textit{JFlex} library and the package that must be compiled with this library.
   \subsection{Compilation}
     Compiling the project with \textit{Maven} is easy as the user only needs to execute~: \verb|mvn clean compile|. However, at the first execution, the user needs to execute \verb|mvn install| so that \textit{Maven} can install the required library.\\
