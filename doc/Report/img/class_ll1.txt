@@ -1,0 +1,38 @@
+@startuml
+'accessibilité
+skinparam classAttributeIconSize 0
+
+'pas d'ombre
+skinparam shadowing false
+
+'taille de l'image
+skinparam dpi 100
+
+'couleurs
+skinparam class {
+  BackgroundColor AliceBlue
+  ArrowColor CornflowerBlue
+  BorderColor CornflowerBlue
+}
+skinparam stereotypeCBackgroundColor OldLace
+
+class Grammar {
+
+}
+
+class LL1 {
+
+}
+
+class Stack {
+
+}
+
+class RuleTree {
+
+}
+
+LL1 *-- Stack
+Grammar --* LL1
+RuleTree --- LL1
+@enduml

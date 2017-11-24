@@ -1,0 +1,54 @@
+@startuml
+'accessibilité
+skinparam classAttributeIconSize 0
+
+'pas d'ombre
+skinparam shadowing false
+
+'taille de l'image
+skinparam dpi 100
+
+'couleurs
+skinparam class {
+  BackgroundColor AliceBlue
+  ArrowColor CornflowerBlue
+  BorderColor CornflowerBlue
+}
+skinparam stereotypeCBackgroundColor OldLace
+
+class Grammar {
+- HashSet<GrammarVariable>
+- HashSet<Symbol>
+}
+
+class GrammarScanner {
+
+}
+
+class GrammarVariable {
+- HashSet<Rule>
+}
+
+class Rule <ArrayList<Elem>> {
+
+}
+
+class Stree {
+- Arraylist<Node>
+}
+
+class Node {
+- Arraylist<Node>
+}
+
+Grammar --- GrammarScanner
+Grammar *-- GrammarVariable
+Grammar --- Stree
+Stree *-- Node
+Node *-- Node
+GrammarVariable o-- Rule
+Elem <|-down Terminal
+Elem <|-down GrammarVariable
+Terminal <|-down Epsilon
+Terminal <|-down Symbol
+@enduml
