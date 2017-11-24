@@ -587,53 +587,6 @@ child { node {id} }
       \caption{IMP action table.}
       \label{impactiontable}
     \end{sidewaystable}
-
-  \subsection{Left factorisation using strees}
-    Implying \textit{left-factorisation} is a good practice in order to optimise a given grammar. During the practicals, the following algorithm has been given~:
-    % insert algorithm
-    Even though this algorithm is pretty handy for humans, automatising it is harder because of the third(?) line. In fact, finding common prefixed sequences for a human is "easy" whereas it is harder for a computer and requires further structures to be implemented. In order to implement a simple-to-use algorithm that finds common prefixes, it has been decided to use a Stree and then to analyse its structures to find the common prefixes.\\
-    A stree is a memory structure that first aims to memorised a given set of strings in a compact way using trees (the names comes from the mix of \textbf{st}ring and tr\textbf{ee}). Typically, a stree consists in a tree in which each node is associated with both a value (generally a character) and a set of other nodes called \textit{children}. When inserting a string in the \textit{stree}, each node will check whether one of its children is associated with the same value has the character of the string it is given. If yes, the algorithm repeats the same mechanism with the following character of the string, otherwise, it creates a new node (to which it associates the character) and repeats the mechanism.\\
-    Generally, strees are used to retrieve stocked string but in our case, strees are used differently. Indeed, the way strees behave is perfect for left prefixes detection as each time to strings differ, the previous character (so the last common character) is the parent node of them. For instance, in fig.\ref{Fig:stree2}, the node \textbf{B} is the last common node of the two inserted strings and because the two strings then differ, the node \textbf{B} has two children.\\
-    This behaviour is something interesting to exploit in the case of left factoring however, two adaptations are required. Firstly, we do not consider string but sequence of tokens thus every node has an associated token and secondly, we do not want to retrieve sequences but to find nodes with more than one child so that we can replace them by new variable which has for rule(s) the following sequence of tokens.
-    
-    \begin{figure}[!h]
-      \begin{minipage}{0.48\textwidth}
-        \centering
-        
-        \begin{tikzpicture}[tree]
-	  \node {Head}
-	      child {
-		node {A}
-		  child { node {B} 
-		    child { node {C} 
-		      child { node {D} }
-		    }
-		  }
-	      };
-	\end{tikzpicture}
-        \caption{Insertion of 'ABCD'}
-        \label{Fig:stree1}
-      \end{minipage}\hfill
-      \begin {minipage}{0.48\textwidth}
-        \centering
-	\begin{tikzpicture}[tree]
-	  \node {Head}
-	      child {
-		node {A}
-		  child { node {B} 
-		    child { node {C} 
-		      child { node {D} }
-		    }
-		    child { node {E} 
-		      child { node {F} }
-		    }
-		  }
-	      };
-	\end{tikzpicture}
-         \caption{Insertion of 'ABEF'}
-         \label{Fig:stree2}
-       \end{minipage}
-    \end{figure}
     
 
 \end{document}
