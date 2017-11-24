@@ -218,11 +218,11 @@ token: [x]                lexical unit: VARNAME
   
     \subsubsection{Action table}
       An action table is a structure that emphasises the relation between a given variable and a terminal. Actually, it helps answering the following question : Which rule of a variable has to be applied if the next symbol to be read is x ?\\
-      To construct this structure, one has to introduce the function $first(\alpha)$ that returns all the symbols that can be reach in one step (i.e. using only the first element of a rule). If the first element of the rule is a terminal, $first(\alpha)$ add this terminal to the return set (the set of reachable variables). Otherwise, if the element is a variable, it calls $first(\alpha)$ on it and then merges the returned set with the current one. Unfortunately, there is a special case : the epsilon-rule\footnote{a variable rule which is only composed of an epsilon ($\epsilon$)}. In fact, because $\epsilon$ is neither a variable or a terminal and is --- by definition --- not expected on the input, one must, when encountering an epsilon, apply the function $first(\alpha)$ on any element following an appearance of the variable to which the epsilon-rule belongs. The research of those elements is done by a function called $follow(\alpha)$.
+      To construct this structure, one has to introduce the function $first(\alpha)$ that returns all the symbols that can be reached in one step (i.e. using only the first element of a rule). If the first element of the rule is a terminal, $first(\alpha)$ adds this terminal to the returned set (the set of reachable variables). Otherwise, if the element is a variable, it calls $first(\alpha)$ on the first element and then merges the returned set with the current one. Unfortunately, there is a special case : the epsilon-rule\footnote{a variable rule which is only composed of an epsilon ($\epsilon$)}. In fact, because $\epsilon$ is neither a variable or a terminal and is --- by definition --- not expected on the input, one must, when encountering an epsilon, apply the function $first(\alpha)$ on any element following an appearance of the variable that owns the epsilon-rule. The research of those elements is done by a function called $follow(\alpha)$.
       
     \subsubsection{Syntax checking}
-      Once one has an action table, checking the syntax of the input is possible through the use of a simple stack that will only contains variables and terminals. The mechanism used to check the syntax of the input works as follows. Firstly, one starts by pushing on the stack the initial variable of the grammar. Then, if the element on the top of the stack is a variable, one pops it and identifies using the action table which rule to apply given the variable and the look ahead. Once identified, we push the rule on the stack and we make sure that the left-most element is on the top of the stack. Otherwise, if the element on the top of the stack is a terminal, one pops it and compares it to the input. If it matches, one resumes, otherwise, it means that the syntax has not been respected.\\
-      In addition to that, for IMP, for add others rejecting or accepting conditions to our configuration. The IMP parser will rejects if there is no left character to read on the input and that the stack is not empty or is there are characters left on the input and that the stack is empty. The only accepting configuration is when the stack is empty and there is no character left on the input.\\
+      Once one has an action table, checking the syntax of the input is possible through the use of a simple stack that will only contain variables and terminals. The mechanism used to check the syntax of the input works as follows. Firstly, one starts by pushing on the stack the initial variable of the grammar. Then, if the element on the \textit{tos} (top of the stack) is a variable, one pops it and identifies, using the action table, which rule to apply given the variable and the look ahead. Once identified, we push the rule on the stack (with the left-most element on the tos). Otherwise, if the element on the tos is a terminal, one pops it and compares it to the input. If it matches, one resumes, otherwise, it means that the syntax has not been respected.\\
+      In addition to that, one can add new accepting or rejecting conditions based on the "state" of the stack and/or the input. For instance in the case of IMP, the parser will rejects if there is no character to read on the input and that the stack is not empty or is there are characters left on the input and that the stack is empty. The only accepting configuration is when the stack is empty and there is no character left on the input.\\
       For example, let's consider the final IMP grammar and the following input \verb|begin a := b end|, the sequence of used rules and the stack utilisation will be as in the fig.\ref{fig:simpleprogram}.
       \begin{figure}[h!]
         \input{SimpleProgStack.txt}
@@ -234,16 +234,16 @@ token: [x]                lexical unit: VARNAME
   
   \subsection{Tests and results}
     \label{sec:results}
-    As previously mentioned, being able to transform a non deterministic --- but yet rather simple to write --- grammar into a deterministic grammar that is implementation friendly, is something one wants to do when asked to implement a parser for this grammar. In our case, all the methods previously presented in the section \ref{grammartoll1methods} have been applied to the IMP grammar (which is available in the annex fig.\ref{fig:basicimpgrammar}) through the use of a package containing an implemented version of these methods.\\
-    The present section is composed of four subsections that each describes and analyses the different results obtained that constitute the version of the IMP grammar that is eventually used.\\
+    As previously mentioned, being able to transform a non deterministic --- but yet rather simple to write --- grammar into a implementable deterministic grammar, is something one wants to do when asked to implement a parser based on this grammar. In our case, all the methods previously presented in the section \ref{grammartoll1methods} have been applied to the IMP grammar (which is available in the annex fig.\ref{fig:basicimpgrammar}) through the use of a package containing an implemented version of these methods.\\
+    The present section is composed of six subsections. The four first subsections describe and analyse the steps of \textit{LL(1)} transformation whereas the two last subsections focus respectively on the action table generated by the implementation and the results of the syntax checker.\\
     \begin{tcolorbox}
       For a matter of readability, it has been decided to only display the modified part of the grammar. To see the full version of the modified IMP grammar one must used the process described in the subsection X.X.
     \end{tcolorbox}
+    
     \subsubsection{Ambiguity}
-      Following the assignment statement, identifying the rules where ambiguity occurs is rather simple. the two ambiguous part of the grammar involved both arithmetic expressions and conditions. For both the former and the latter, atomic rules have been identified and categorised as such/so. Then, two layers have been introduced in order to force the derivation.\\\\
-      In the case of arithmetic expression, the operator $-$ has been given the highest priority thus it has been introduced directly in the set of atomic rules (\verb|9| to \verb|12|). After that, the $*$ and $/$ operators were given the highest priority, this is why they are part of the first layer (\verb|5| to \verb|8|). Finally, the second and last layer (\verb|1| to \verb|4|) is composed of the rules involving the remaining of the operators.\\
+      Following the assignment statement, identifying the rules where ambiguity occurs is rather simple. The two ambiguous part of the grammar involved both arithmetic expressions and conditions. For both the former and the latter, atomic rules have been identified and categorised as such. Then, two layers have been introduced in order to force the derivation.\\
+      In the case of arithmetic expression, the operator $-$ has been given the highest priority. Thus it has been introduced directly in the set of atomic rules (\verb|9| to \verb|12|). After that, the $*$ and $/$ operators were given the highest priority, this is why they are part of the first layer (\verb|5| to \verb|8|). Finally, the second and last layer (\verb|1| to \verb|4|) is composed of the rules involving the remaining operators ($+$ and $-$).\\
       Notice that, even though it has not been explicitly specified in the assignment statement, any arithmetic expression surrounded by parenthesis has been considered as having a priority as high has the $-$ operator.
-      Arithmetic expressions~:
       \begin{lstlisting}
 <ExprArith>	     -> <ExprArith> <OpAdd> <ExprArithMul> 
 <ExprArith>	     -> <ExprArithMul> 
@@ -257,7 +257,7 @@ token: [x]                lexical unit: VARNAME
 <ExprArithAtom>	 -> [Number] 
 <ExprArithAtom>	 -> ( <ExprArith> ) 
 <ExprArithAtom>	 -> - <ExprArithAtom>\end{lstlisting}
-      Conditions~:
+      The same modifications have been applied on conditions than on arithmetic expressions.
       \begin{lstlisting}
 <Cond>	         -> <Cond> or <CondAnd> 
 <Cond>	         -> <CondAnd> 
@@ -274,12 +274,12 @@ token: [x]                lexical unit: VARNAME
 <Comp>	         -> <>\end{lstlisting}
 
     \subsubsection{Useless symbols removal}
-      The unambiguous IMP grammar does not contain any useless symbols. One can be easily convinced of the reachability by drawing a graph were every vertex represent the fact that the variable (a node) appears at least on one the rules of the other. One can also be convinced of the productiveness by observing that for each recursive rule, there is another that stops the recursivity. These intuitions were proved right by the implementation.
+      The unambiguous IMP grammar does not contain any useless symbols. One can be easily convinced of the reachability by drawing a graph were every variable is represented by a node and every edge represents the fact that a variable appears at least once in one the rules of the other. One can also be convinced of the grammar productiveness by observing that for each recursive rule, there is another that stops the recursivity. These intuitions were proved right by the implementation.
       
     \subsubsection{Left-recursion removal}
-      When one wants to remove the left-recursion, one knows following the definition given above ntat one has to look for rules where the left-hand side is also the first element of the right-hand side.\\
-      Doing so on the unambiguous and useless symbols free IMP grammar returns once again the arithmetic expressions and the conditions. But this is not surprising given the trick used to make the grammar unambiguous. in addition, why should one pays attention to not introduce left-recursion while the left-recursion removal step will be achieved afterwards ? This explains partly the order of which these steps are executed.\\
-      In both cases, there are the introduction of a suffixed U variable and a suffixed V variable. These variables respectively remove indirect left-recursion and transform the, then, direct left-recursion into a right-recursion. Notice that the introduced right-recursion are productive as the algorithm stipulates that the suffixed V variable needs a rule composed of an $\epsilon$.
+      When one wants to remove the left-recursion, one knows, following the definition given above, tat one has to look for rules where the left-hand side is also the first element of the right-hand side.\\
+      Doing so on the unambiguous and useless symbols free IMP grammar returns once again the arithmetic expressions and the conditions. But this is not surprising given the trick used to make the grammar unambiguous. This explains the reasons behind the order of the steps.\\
+      In both cases, there are the introduction of a suffixed U variable and a suffixed V variable. These variables respectively used to remove indirect left-recursion and to transform each direct left-recursion into a right-recursion. Notice that the introduced right-recursion are productive as the algorithm stipulates that the suffixed V variable must own an epsilon-rule\footnote{\label{epsilonrule}a variable rule which is only composed of an epsilon ($\epsilon$)}.
       \begin{lstlisting}
 <ExprArith>	     -> <ExprArithU> <ExprArithV>
 <ExprArithU>	   -> <ExprArithMul>
@@ -300,13 +300,13 @@ token: [x]                lexical unit: VARNAME
 <CondAndV>	     -> eps\end{lstlisting}
 
     \subsubsection{Factorisation}
-      Looking in a grammar for rules to factorise consists in identifying two or more rules of a given variable that share a common prefix (i.e. a same sequence of tokens/symbols). Theses rules are then modified following the mechanism explained in the subsection \ref{sec:factorisation}.\\
+      Looking in a grammar for rules to factorise consists in identifying variables that have two or more rules that share a common prefix (i.e. a same sequence of tokens). Theses rules are then modified following the mechanism explained in the subsection \ref{sec:factorisation}.\\
       In the case of the unambiguous, useless symbols free and left-recursion free IMP grammar, only three variables need to see their rules factorised : \verb|InstList|, \verb|If| and \verb|For| (respectively line 4, 22 and 37 in fig.\ref{fig:basicimpgrammar}).
       \begin{lstlisting}
 <InstList>	     -> <Instruction> <InstList'> 
 <InstList'>	     -> ; <InstList> 
 <InstList'>	     -> eps\end{lstlisting}
-      The factorisation of \verb|InstList| is an instance of the particular case mentioned in subsection \ref{sec:factorisation}. In fact, one of the rule to factorised does not really diverge as it is equal to the suffix. Thus a rule only composed of $\epsilon$ is introduced (rule 3).
+      The factorisation of \verb|InstList| is an instance of the particular case mentioned in subsection \ref{sec:factorisation}. In fact, one of the rule to factorised does not really diverge as it is equal to the suffix. Thus an epsilon-rule$^{\ref{epsilonrule}}$ is introduced (rule 3).
       \begin{lstlisting}
 <If>	           -> if <Cond> then <Code> <If'> 
 <If'>	           -> else <Code> endif 
@@ -315,7 +315,7 @@ token: [x]                lexical unit: VARNAME
 <For>	           -> for VarName from <ExprArith> <For'> 
 <For'>	         -> by <ExprArith> to <ExprArith> do <Code> done 
 <For'>	         -> to <ExprArith> do <Code> done\end{lstlisting}
-      The factorisation of \verb|If| and \verb|For| are quite mainstream as they present a real divergence. Thus after the prefix,  a new variable is introduced and associated to the remaining of the other common prefixed rules.
+      The factorisation of \verb|If| and \verb|For| are quite mainstream as they present a real divergence. Thus after the prefix,  a new variable is introduced and associated to the remaining of the common prefixed rules.
       
     \subsubsection{Resulting action table}
     
