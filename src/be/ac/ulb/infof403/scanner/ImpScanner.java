@@ -24,8 +24,10 @@ public class ImpScanner {
      * 
      * @param fileName name of the IMP file which must be scan
      * @param printResult True to print result
+     * @throws java.io.IOException exception if IMP file have a problem
+     * @throws be.ac.ulb.infof403.scanner.ImpSyntaxException error if there is a problem with a token
      */
-    public ImpScanner(final String fileName, final boolean printResult) {
+    public ImpScanner(final String fileName, final boolean printResult) throws IOException, ImpSyntaxException {
         this(fileName, "", printResult);
     }
     
@@ -35,18 +37,21 @@ public class ImpScanner {
      * @param fileName name of the IMP file which must be scan
      * @param testFileName file name of that contain the expected output
      * @param printResult print result or not
+     * @throws java.io.IOException exception if IMP file have a problem
+     * @throws be.ac.ulb.infof403.scanner.ImpSyntaxException error if there is a problem with a token
      */
-    public ImpScanner(final String fileName, final String testFileName, final boolean printResult) {
+    public ImpScanner(final String fileName, final String testFileName, final boolean printResult) 
+            throws IOException, ImpSyntaxException {
         _tokens = new TokenList();
         _table = new SymbolTable();
-        if(openAndInitScannerImpFile(fileName)) {
-            if(printResult) {
-                printResult();
-            }
+        
+        openAndInitScannerImpFile(fileName);
+        if(printResult) {
+            printResult();
+        }
 
-            if(!testFileName.isEmpty()) {
-                testOutput(testFileName);
-            }
+        if(!testFileName.isEmpty()) {
+            testOutput(testFileName);
         }
     }
     
@@ -55,27 +60,13 @@ public class ImpScanner {
      * Open and initialize the scanner of the IMP file
      * 
      * @param fileName the IMP filename
-     * @return True if all is ok, false if there are an error when file is opening
-     * or when a symbol is not good read
      */
-    private boolean openAndInitScannerImpFile(final String fileName) {
-        Boolean allOk = true;
+    private void openAndInitScannerImpFile(final String fileName) throws IOException, ImpSyntaxException {
         final FileReader file;
-        try {
-            file = new FileReader(fileName);
-            final Scanner scanner = new Scanner(file);
+        file = new FileReader(fileName);
+        final Scanner scanner = new Scanner(file);
 
-            readSymbol(scanner);
-
-        } catch (IOException exception) {
-            System.err.println("Error with file IMP: " + exception.getMessage());
-            allOk = false;
-        } catch(ImpSyntaxException exception) {
-            System.err.println("Error with a token: " + exception.getMessage());
-            allOk = false;
-        }
-        
-        return allOk;
+        readSymbol(scanner);
     }
     
     

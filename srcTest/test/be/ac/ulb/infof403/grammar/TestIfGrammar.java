@@ -1,4 +1,4 @@
-package test.be.ac.ulb.infof403;
+package test.be.ac.ulb.infof403.grammar;
 
 import be.ac.ulb.infof403.LexicalUnit;
 import be.ac.ulb.infof403.Symbol;
