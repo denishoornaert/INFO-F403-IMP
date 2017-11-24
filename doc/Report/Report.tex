@@ -212,6 +212,38 @@ token: [x]                lexical unit: VARNAME
     \subsubsection{Action table}
       An action table is a structure that emphasises the relation between a given variable and a terminal. Actually, it helps answering the following question : Which rule of a variable has to be applied if the next symbol to be read is x ?\\
       To construct this structure, one has to introduce the function $first(\alpha)$ that returns all the symbols that can be reached in one step (i.e. using only the first element of a rule). If the first element of the rule is a terminal, $first(\alpha)$ adds this terminal to the returned set (the set of reachable variables). Otherwise, if the element is a variable, it calls $first(\alpha)$ on the first element and then merges the returned set with the current one. Unfortunately, there is a special case : the epsilon-rule\footnote{a variable rule which is only composed of an epsilon ($\epsilon$)}. In fact, because $\epsilon$ is neither a variable or a terminal and is --- by definition --- not expected on the input, one must, when encountering an epsilon, apply the function $first(\alpha)$ on any element following an appearance of the variable that owns the epsilon-rule. The research of those elements is done by a function called $follow(\alpha)$.
+      \begin{figure}[h!]
+        \centering
+        \begin{subfigure}[b]{0.4\textwidth}
+            \centering
+            \begin{align}
+              S &\rightarrow aAcCa \\
+              A &\rightarrow Sc | \epsilon \\
+              C &\rightarrow c
+            \end{align}
+            \caption{Unmodified grammar}
+            \label{fig:unmodifiedgrammar1}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.4\textwidth}
+            \centering
+            \begin{tabular}{|c||c|c|c|}
+              \hline
+                & a & b & c \\
+              \hline
+              \hline
+              S & 1 &   &   \\
+              \hline
+              A & 3 & 3 & 4 \\
+              \hline
+              C &   &   & 5 \\
+              \hline
+            \end{tabular}
+            \caption{Unmodified grammar}
+            \label{fig:unmodifiedgrammar1}
+        \end{subfigure}
+        \caption{}
+        \label{}
+      \end{figure}
       
     \subsubsection{Syntax checking}
       Once one has an action table, checking the syntax of the input is possible through the use of a simple stack that will only contain variables and terminals. The mechanism used to check the syntax of the input works as follows. Firstly, one starts by pushing on the stack the initial variable of the grammar. Then, if the element on the \textit{tos} (top of the stack) is a variable, one pops it and identifies, using the action table, which rule to apply given the variable and the look ahead. Once identified, we push the rule on the stack (with the left-most element on the tos). Otherwise, if the element on the tos is a terminal, one pops it and compares it to the input. If it matches, one resumes, otherwise, it means that the syntax has not been respected.\\
