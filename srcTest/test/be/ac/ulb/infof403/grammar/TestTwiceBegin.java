@@ -5,6 +5,8 @@ import be.ac.ulb.infof403.grammar.Grammar;
 import be.ac.ulb.infof403.parser.Ll1;
 import be.ac.ulb.infof403.parser.UnexpectedCharacterException;
 import be.ac.ulb.infof403.scanner.ImpScanner;
+import be.ac.ulb.infof403.scanner.ImpSyntaxException;
+import java.io.IOException;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
@@ -19,7 +21,7 @@ public class TestTwiceBegin {
     public ExpectedException expected = ExpectedException.none();
     
     @Test
-    public void testTwiceBegin() throws UnexpectedCharacterException {
+    public void testTwiceBegin() throws UnexpectedCharacterException, IOException, ImpSyntaxException {
         final Grammar grammar = Grammar.openAndScanGrammar("./test/grammar/UnambiguousIMP.gram");
         final TokenList tokenList = new ImpScanner("./test/imp/TwiceBegin.imp", false).getTokenList();
         final Ll1 ll1 = new Ll1(grammar, tokenList);

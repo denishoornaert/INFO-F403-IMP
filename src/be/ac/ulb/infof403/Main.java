@@ -4,7 +4,9 @@ import be.ac.ulb.infof403.grammar.Grammar;
 import be.ac.ulb.infof403.parser.Ll1;
 import be.ac.ulb.infof403.parser.UnexpectedCharacterException;
 import be.ac.ulb.infof403.scanner.ImpScanner;
+import be.ac.ulb.infof403.scanner.ImpSyntaxException;
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Main class
@@ -119,7 +121,19 @@ public class Main {
             ++currentIndex;
         }
         
-        final TokenList tokenList = scan(impFile, testImpFile, printScanResult);
+        TokenList tokenList = null;
+        try {
+            tokenList = scan(impFile, testImpFile, printScanResult);
+        } catch (IOException exception) {
+            System.err.println("Error with file IMP: " + exception.getMessage());
+        } catch(ImpSyntaxException exception) {
+            System.err.println("Error with a token: " + exception.getMessage());
+        }
+        
+        if(tokenList == null) {
+            return;
+        }
+        
         final Grammar grammar = getGrammar(grammarFile);
         if(printTable) {
              grammar.printActionTable();
@@ -171,9 +185,11 @@ public class Main {
      * 
      * @param impFilename file with imp source code
      * @param testImpFile expeted output file for imp analyse
+     * @throws java.io.IOException exception if IMP file have a problem
+     * @throws be.ac.ulb.infof403.scanner.ImpSyntaxException error if there is a problem with a token
      */
     private static TokenList scan(final String impFilename, final String testOutputFile,
-            final boolean printResult) {
+            final boolean printResult) throws IOException, ImpSyntaxException {
         final ImpScanner impScanner;
         if(!testOutputFile.isEmpty()) {
             impScanner = new ImpScanner(impFilename, testOutputFile, printResult);
