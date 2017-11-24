@@ -161,6 +161,7 @@ token: [x]                lexical unit: VARNAME
     The most obvious and smartest way to implement it is to use a counter (i.e. a memory) that will be incremented for every opening statement encountered and decreased for every closing statement encountered. However, from a theoretical point of view, by using a memory the language cannot be considered as regular any more. In the present project, it is not a problem and \verb|jflex| allows us to implement such a language.
     
   \subsection{Tests and results}
+    \label{subsec:testscanner}
     In this section, the results of the implementation are analysed and tested throught three \textit{IMP} source codes~: one given in the assignment statements and the two others inspired by algorithms from the Syllabus of Thierry Massart\footnote{Thierry Massart, 2014. \textit{Programmation.} Release 3.3.3~.}. The aim of testing the \textit{lexical analyser} on these three tests is to ensure that a maximum of the \textit{keywords} and the \textit{variables} are recognized because the set of keywords in the \verb|Euclid.imp| (fig.\ref{code:euclid}) file does not cover every possibilities. This is why these two codes have been chosen. As explained above in the hypothesis subsection \ref{hypothesis}, the program in fig.\ref{code:sort} simply stops its execution as it encounters an undefined character at line 2 ('\verb|[|'). Unfortunately, it is difficult to cover all the different statements as finding interesting samples of code that do not use list(s) is hard.
     \begin{figure}[h!] % cacule réellement le gcd
       \lstinputlisting{../../test/imp/Euclid.imp}
@@ -170,6 +171,7 @@ token: [x]                lexical unit: VARNAME
     \begin{figure}[h!]
       \lstinputlisting{../../test/imp/Fibonacci.imp}
       \caption{Implementation of the Fibonacci \textit{"algorithm"} using \textit{IMP}}
+      \label{code:fibonacci}
     \end{figure}
     \begin{figure}[h!]
       \lstinputlisting{../../test/imp/Sort.imp}
@@ -182,11 +184,11 @@ token: [x]                lexical unit: VARNAME
   The outcome of the parser is a \textit{syntax tree} that will be used by the following phase (as shown in the fig.X). We distinguish two types of \textit{parsers} : the \textit{top-down} and the \textit{bottom-up}.\\
   As previously mentioned, \textit{parsers} uses a specific structure called \textit{grammar} which, similarly to spoken languages, aims to describe the allowed structures that a language can display.%  TODO is display used correctly ???
   The \textit{grammar} is composed of a set of variable to which are associated one or more rule(s). Typically, a programming language \textit{grammar} is written following a fixed convention (see fig.\ref{fig:unmodifiedgrammar1} or any other grammar). Generally, in the case of a programming language, \textit{context-free grammar} are used because of its user-friendly aspect and the fact that it allows the use of an iterative development. However, \textit{context-free} grammars are not adapted to implementation. Therefore, \textit{parser generators} usually transform them into \textit{LL(K)} grammars. In the assignment statement, it is asked to transform the IMP grammar into a \textit{LL(1)}.\\
-  A LL(1) grammar is a class of grammars that can be defined by a predictive top-down parser. Such grammars define context-free languages which can be recognised by push-down automaton (i.e. automaton that use a stack as memory). We define a predictive parser as a type of parser that has an access to the input. This access is characterised by the possibility to know what is the following character to be read (this is very different from reading on the input) in order to enable the parser to take deterministic decisions throughout its execution.\\
+  A LL(1) grammar is a class of grammars that can be defined by a predictive top-down parser. Such grammars define context-free languages which can be recognised by push-down automaton (i.e. automaton that use a stack as memory). We define a predictive parser as a type of parser that has an access to the input. This access is characterised by the possibility to know what is the following character to be read (this is very different from reading on the input) in order to enable the parser to take deterministic decisions throughout its execution.
   
   \begin{figure}[h!]
     \centering
-    \includegraphics[scale=0.5]{./img/phase_of_parsing.jpg}
+    \includegraphics[scale=0.45]{./img/phase_of_parsing.jpg}
     \caption{Phases of a parser generator}
     \label{fig:parsergeneratorphases}
   \end{figure}
@@ -218,11 +220,12 @@ token: [x]                lexical unit: VARNAME
             \centering
             \begin{align}
               S &\rightarrow aAcCa \\
-              A &\rightarrow Sc | \epsilon \\
+              A &\rightarrow Sc \\
+              A &\rightarrow \epsilon \\
               C &\rightarrow c
             \end{align}
-            \caption{Unmodified grammar}
-            \label{fig:unmodifiedgrammar1}
+            \caption{Grammar}
+            \label{fig:simplegrammar}
         \end{subfigure}
         \begin{subfigure}[b]{0.4\textwidth}
             \centering
@@ -238,10 +241,10 @@ token: [x]                lexical unit: VARNAME
               C &   &   & 5 \\
               \hline
             \end{tabular}
-            \caption{Unmodified grammar}
-            \label{fig:unmodifiedgrammar1}
+            \caption{Action table}
+            \label{fig:simplegrammaractiontable}
         \end{subfigure}
-        \caption{}
+        \caption{Simple grammar and its corresponding action table}
         \label{}
       \end{figure}
       
@@ -344,7 +347,18 @@ token: [x]                lexical unit: VARNAME
       
     \subsubsection{Resulting action table}
     
-    \subsubsection{Syntax checking result}  
+    \subsubsection{Syntax checking results}  
+      After having used three different sources codes to test the lexical analyser (subsection \ref{subsec:testscanner}), we use them to assess the parser.\\
+      Firstly, \verb|Euclid.imp| (fig.\ref{code:euclid}) totally respects the syntax defined by the final IMP grammar and requires 120 transitions (matches excluded).\\ % TODO transition correct ??
+      Secondly, \verb|Fibonacci.imp| (fig.\ref{code:fibonacci}) also respects the syntax and requires 85 transitions. During the very first test of the parser on \verb|Fibonacci.imp|, we encountered an error and then realised that the first version (written during the realisation of first part of the project) contained an error. In fact, the instruction line 11 ended with a semicolon and thus did not respect the grammar (more precisely the rule 52 of the final grammar). Despite being counter intuitive for a programmer, this rule helped us ensuring the well functioning of the parser.
+        \begin{verbatim}
+(line : 12 col :4)	Unexepected character 'done' of type DONE
+    The expected character is one of the following : while if print VarName for read
+        \end{verbatim}
+    Finally, as expected, \verb|Sort.imp| (fig.\ref{code:sort}) is not even parsed as an error during the scanning is raised. Hence, the compiler will display the following message~:
+      \begin{verbatim}
+Error with a token: Unknown symbol '[' (9 character at line 1)
+      \end{verbatim}
 
 \section{How to set up the project}
   In order to simplify the compilation and the support of external libraries, it has been decided to use a well known \textit{java} project manager named \textit{Maven}. Its configuration file (\verb|pom.xml|) defines the \verb|main| file, defines the source folder, manages the \textit{JFlex} library and the package that must be compiled with this library.
