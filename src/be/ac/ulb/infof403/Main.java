@@ -121,6 +121,12 @@ public class Main {
             ++currentIndex;
         }
         
+        if(stackParsing && (gojs || latex)) {
+            System.err.println("Could not generate parse tree if you parse with a stack (remove '-sp' argument)");
+            return;
+        }
+        
+        
         TokenList tokenList = null;
         try {
             tokenList = scan(impFile, testImpFile, printScanResult);
