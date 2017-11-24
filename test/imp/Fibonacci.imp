@@ -1,5 +1,5 @@
 (*
-    Algorithme to calcul Fibonacci
+    Algorithm to compute Fibonacci
 *)
 begin
     read(n) ;
@@ -8,7 +8,7 @@ begin
     for n from 0 to n do (* loop from 0 to n *)
         tmp := b ;
         b := a ;
-        a := tmp 
+        a := tmp
     done ;
     print(b)
 end
