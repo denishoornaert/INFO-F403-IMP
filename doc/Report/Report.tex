@@ -208,12 +208,16 @@ token: [x]                lexical unit: VARNAME
   
     \subsubsection{Transforming the grammar to LL(1) grammar}
       \label{grammartoll1methods}
-      % quick description of each step : factoring, left recursion removal, useless symbol removal and unambiguity
-      % subsubsection about our automation of those step and references to our annexe where relevant.
-      In order to transform a given grammar that can be either deterministic or non-deterministic into a LL(1) --- which is deterministic ---, one must apply four transformations on this grammar. These transformations are \textit{factorisation}, \textit{left-recursion removal}, \textit{useless symbol removal} and \textit{ambiguity removal}.
+      In order to transform a given grammar that can be either deterministic or non-deterministic into a LL(1) --- which is deterministic ---, one must apply four transformations on this grammar. These transformations aim to make the grammars deterministic and thus implementable.
+      \begin{description}
+        \item[Ambiguity removal~:] Consists of ensuring, by the introduction of rule layers, that for a same input only one interpretation/derivation is possible. It also allows to force and to fix the priority and the associativity of some terminals in the grammar. (Further explanations see annex~\ref{sec:ambiguity})
+        \item[Useless variable removal~:] Consists of removing every variable that does not appear in any other rule of the grammar (as they will never be called/used) and removing variable that does not contain a rule capable of stopping the recursion of the other rules of the same variable. (Further explanations see annex~\ref{sec:useless})
+        \item[Left-recursion removal~:] Consists of modifying every rules where the recursion occurs at the first element so that a grammar can still accept non-finite languages but becomes deterministic because the parser will eventually always encounter a terminal. (Further explanations see annex~\ref{sec:leftrecursion})
+        \item[Left-factorisation~:] Consists of finding every rules of a variable that have a common prefix (i.e. same sequence of tokens) and of modifying it in consequence so that the parser can take deterministic decision. For example~: which rule to choose between $S \rightarrow \alpha A$ and $S \rightarrow \alpha Z$ when the look ahead is $\alpha$. (Further explanations see annex~\ref{sec:factorisation})
+      \end{description}
   
     \subsubsection{Action table}
-      As mentioned, an action table is a structure that emphasises the relation between a given variable and a terminal. Actually, it helps answering the following question : Which rule of a variable has to be applied if the next symbol to be read is x ?\\
+      An action table is a structure that emphasises the relation between a given variable and a terminal. Actually, it helps answering the following question : Which rule of a variable has to be applied if the next symbol to be read is x ?\\
       To construct this structure, one has to introduce the function $first(\alpha)$ that returns all the symbols that can be reach in one step (i.e. using only the first element of a rule). If the first element of the rule is a terminal, $first(\alpha)$ add this terminal to the return set (the set of reachable variables). Otherwise, if the element is a variable, it calls $first(\alpha)$ on it and then merges the returned set with the current one. Unfortunately, there is a special case : the epsilon-rule\footnote{a variable rule which is only composed of an epsilon ($\epsilon$)}. In fact, because $\epsilon$ is neither a variable or a terminal and is --- by definition --- not expected on the input, one must, when encountering an epsilon, apply the function $first(\alpha)$ on any element following an appearance of the variable to which the epsilon-rule belongs. The research of those elements is done by a function called $follow(\alpha)$.
       
     \subsubsection{Syntax checking}
@@ -228,7 +232,7 @@ token: [x]                lexical unit: VARNAME
       
   \subsection{Resulting parser generator architecture}
   
-  \subsection{Results of simplifications on the IMP grammar}
+  \subsection{Tests and results}
     \label{sec:results}
     As previously mentioned, being able to transform a non deterministic --- but yet rather simple to write --- grammar into a deterministic grammar that is implementation friendly, is something one wants to do when asked to implement a parser for this grammar. In our case, all the methods previously presented in the section \ref{grammartoll1methods} have been applied to the IMP grammar (which is available in the annex fig.\ref{fig:basicimpgrammar}) through the use of a package containing an implemented version of these methods.\\
     The present section is composed of four subsections that each describes and analyses the different results obtained that constitute the version of the IMP grammar that is eventually used.\\
@@ -296,13 +300,13 @@ token: [x]                lexical unit: VARNAME
 <CondAndV>	     -> eps\end{lstlisting}
 
     \subsubsection{Factorisation}
-      Looking in a grammar for rules to factorise consists in identifying two or more rules of a given variable that share a common prefix (i.e. a same sequence of tokens/symbols). Theses rules are then modified following the mechanism explained in the subsection \ref{grammarfactorisation}.\\
+      Looking in a grammar for rules to factorise consists in identifying two or more rules of a given variable that share a common prefix (i.e. a same sequence of tokens/symbols). Theses rules are then modified following the mechanism explained in the subsection \ref{sec:factorisation}.\\
       In the case of the unambiguous, useless symbols free and left-recursion free IMP grammar, only three variables need to see their rules factorised : \verb|InstList|, \verb|If| and \verb|For| (respectively line 4, 22 and 37 in fig.\ref{fig:basicimpgrammar}).
       \begin{lstlisting}
 <InstList>	     -> <Instruction> <InstList'> 
 <InstList'>	     -> ; <InstList> 
 <InstList'>	     -> eps\end{lstlisting}
-      The factorisation of \verb|InstList| is an instance of the particular case mentioned in subsection \ref{grammarfactorisation}. In fact, one of the rule to factorised does not really diverge as it is equal to the suffix. Thus a rule only composed of $\epsilon$ is introduced (rule 3).
+      The factorisation of \verb|InstList| is an instance of the particular case mentioned in subsection \ref{sec:factorisation}. In fact, one of the rule to factorised does not really diverge as it is equal to the suffix. Thus a rule only composed of $\epsilon$ is introduced (rule 3).
       \begin{lstlisting}
 <If>	           -> if <Cond> then <Code> <If'> 
 <If'>	           -> else <Code> endif 
@@ -360,7 +364,7 @@ javadoc -d doc/javadoc/ -keywords -sourcepath src -subpackages be
 \section{Annexe}
 
   \subsection{Grammar factorisation}
-    \label{grammarfactorisation}
+    \label{sec:factorisation}
     This mechanism is applied every time a given variable has two (or more) rules that have a common prefix. The aim is to reduce the number of repetitions. To achieve this, each variable that has two (or more) rules with a common prefix sees these rules replaced by concatenation of the prefix and a new variable. This new variable has for rules the remaining of the factorized rules (i.e. the rules that have a common prefix without this prefix).
     \begin{figure}[h!]
         \centering
@@ -393,6 +397,7 @@ javadoc -d doc/javadoc/ -keywords -sourcepath src -subpackages be
     Such a technique is used to ensure that the parser will be deterministic. In our case, we want to implement a parser with a look ahead of one. Therefore, if a variable has two (or more) rules like $S \rightarrow fA$ and $S \rightarrow fZ$, the parser won't be able to decide which one to apply.
   
   \subsection{Removing left-recursion}
+    \label{sec:leftrecursion}
     Even though recursion is a main feature of grammars as it allows them to recognise non-finite language, it also introduce non-determinism when the recursion occurs at the very first element of the right-hand side. To make a grammar (and thus the parser) deterministic but keep the recursivity, one must execute to manipulations.
     \begin{figure}[h!]
       \centering
@@ -431,6 +436,7 @@ javadoc -d doc/javadoc/ -keywords -sourcepath src -subpackages be
   Secondly, one wants to transform every left-recursion by a right-recursion for determinism purpose (similar to factorisation). One can achieve it by introducing two new variables. The first variable will be associated to a set of rules each composed of the concatenation of a non-recursive rule and the newly created second variable. This second variable will be associated with a set of rules composed of every recursive rules where the first element (the recursive variable)has been removed concatenated with this exact second variable. Doing so transforms every left-recursion in a right-recursion. However, this right-recursion will never stops. This is why a rule composed of $\epsilon$ is associated to the second variable. % TODO the explanation is a bit ambiguous.
 
   \subsection{Removing useless variables}
+    \label{sec:useless}
     When speaking of \textit{useless} variables, we distinguish two types of variables~:
     \begin{description}
       \item[The \textit{unproductive} ones~:]
@@ -444,6 +450,7 @@ javadoc -d doc/javadoc/ -keywords -sourcepath src -subpackages be
     Retrieving the set of reachable symbols from a given grammar can be achieved by using a similar method to the one explained above. In fact, one must consider first a set containing only the initial variable of the grammar which is --- without lost of generality --- always considered as reachable. Then, for each variable of the grammar, one must check whether the variable is in the set of reachable symbols. If yes, one can then add all the symbols appearing in the rules of this variable.
     
   \subsection{Ambiguous grammar}
+    \label{sec:ambiguity}
     Ambiguity occurs when, for a given word/input, multiple interpretations (or trees) can be derived due to an \textit{ambiguity} in the rules the parser has to choose making it non-deterministic and thus in proper for any implementation. Unfortunately, there does not exist any algorithm resolving this issue as the given grammar gives little information. Henceforth, extra information only known by the language designer must be integrated. The most common example of ambiguity is the arithmetic priority (Reminder : the multiplication has an higher priority than the addition).
     \begin{figure}[h!]
       \centering
