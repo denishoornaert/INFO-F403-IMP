@@ -69,6 +69,7 @@ CloseComment    = "*)"
     <<EOF>>        {return new Symbol(LexicalUnit.EOS,       yyline, yycolumn);}
     "\n"           {return null;}
     " "            {return null;}
+    "\t"           {return null;}
     {OpenComment}  {yybegin(COMMENT);}
     [^]            {throw new ImpSyntaxException("Unknown symbol '" + yytext() + "' " +
                     "(" + yycolumn + " character at line " + yyline + ")");}
