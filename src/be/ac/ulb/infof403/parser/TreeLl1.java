@@ -17,12 +17,12 @@ public class TreeLl1 extends AbstractLl1 {
     }
     
     @Override
-    public void parse(final boolean debug) throws UnexpectedCharacterException {
+    public void parse(final boolean debug) throws UnexpectedSymbolException {
         _tree = new RuleTree(_grammar.getInitialvariable());
         analyseTree(_tree);
         
         if(_i.hasNext()) {
-            throw new UnexpectedCharacterException(_symb, "Expected end of file"); 
+            throw new UnexpectedSymbolException(_symb, "Expected end of file"); 
         }
     }
     
@@ -34,7 +34,7 @@ public class TreeLl1 extends AbstractLl1 {
         new GenerateLaTeXParseTree(_tree, latexOutputFile);
     }
     
-    private void analyseTree(final RuleTree currentRuleTree) throws UnexpectedCharacterException {
+    private void analyseTree(final RuleTree currentRuleTree) throws UnexpectedSymbolException {
         if(_i.hasNext() || _symb != null) {
             if(currentRuleTree.isGrammarVariable()) {
                 _transitions.add(currentRuleTree.addRuleForSymbol(_symb).toString());

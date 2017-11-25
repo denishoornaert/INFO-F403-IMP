@@ -36,6 +36,6 @@ public abstract class AbstractLl1 {
         System.out.println(result);
     }
     
-    public abstract void parse(boolean debug) throws UnexpectedCharacterException ;
+    public abstract void parse(boolean debug) throws UnexpectedSymbolException ;
     
 }

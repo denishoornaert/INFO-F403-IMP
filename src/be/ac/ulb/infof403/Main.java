@@ -4,7 +4,7 @@ import be.ac.ulb.infof403.grammar.Grammar;
 import be.ac.ulb.infof403.parser.AbstractLl1;
 import be.ac.ulb.infof403.parser.StackLl1;
 import be.ac.ulb.infof403.parser.TreeLl1;
-import be.ac.ulb.infof403.parser.UnexpectedCharacterException;
+import be.ac.ulb.infof403.parser.UnexpectedSymbolException;
 import be.ac.ulb.infof403.scanner.ImpScanner;
 import be.ac.ulb.infof403.scanner.ImpSyntaxException;
 import java.io.File;
@@ -159,7 +159,7 @@ public class Main {
         try {
             ll1.parse(_debug);
             validParsing = true;
-        } catch (UnexpectedCharacterException ex) {
+        } catch (UnexpectedSymbolException ex) {
             System.err.println(ex.getMessage());
         }
         

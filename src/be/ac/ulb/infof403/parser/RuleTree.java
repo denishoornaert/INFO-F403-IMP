@@ -29,9 +29,9 @@ public class RuleTree {
      * 
      * @param symb the next symbol
      * @return Symbol Id
-     * @throws UnexpectedCharacterException if there isn't any rule
+     * @throws UnexpectedSymbolException if there isn't any rule
      */
-    protected Integer addRuleForSymbol(final Symbol symb) throws UnexpectedCharacterException {
+    protected Integer addRuleForSymbol(final Symbol symb) throws UnexpectedSymbolException {
         if(!isGrammarVariable()) {
             return -1;
         }
@@ -40,7 +40,7 @@ public class RuleTree {
         _rule = grammarValue.getRuleThatLeadsToSymbol(symb);
         if(_rule == null) {
             // create custom error
-            throw new UnexpectedCharacterException(symb, grammarValue.getExpectedCharacters()); 
+            throw new UnexpectedSymbolException(symb, grammarValue.getExpectedCharacters()); 
         }
         else {
             for(final Elem elem : _rule) {

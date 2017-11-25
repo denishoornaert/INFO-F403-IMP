@@ -34,14 +34,14 @@ public class StackLl1 extends AbstractLl1 {
     
     // TODO what about replacing the 'if(r == null){...}' by a 'catch(nullPointerExeption) {...}' ?? more beautiful ??
     // No... With a "if" we show that a "normal" case when there is a problem :)
-    private void variableManagement(final Stack stack) throws UnexpectedCharacterException {
+    private void variableManagement(final Stack stack) throws UnexpectedSymbolException {
         final GrammarVariable var = (GrammarVariable)stack.tos();
         
         final Rule r = var.getRuleThatLeadsToSymbol(_symb);
         
         if(r == null) {
             // create custom error
-            throw new UnexpectedCharacterException(_symb, var.getExpectedCharacters()); 
+            throw new UnexpectedSymbolException(_symb, var.getExpectedCharacters()); 
         }
         else {
             _transitions.add(r.getId().toString());
@@ -52,7 +52,7 @@ public class StackLl1 extends AbstractLl1 {
     
     
     @Override
-    public void parse(final boolean debug) throws UnexpectedCharacterException {
+    public void parse(final boolean debug) throws UnexpectedSymbolException {
         final Stack stack = new Stack();
         stack.push(_grammar.getInitialvariable());
         while (!stack.isEmpty() && _symb != null) {
@@ -76,7 +76,7 @@ public class StackLl1 extends AbstractLl1 {
             
         } else if(_i.hasNext()) { // If code is not finish
             // TODO Denis: may be change the message of explanation
-            throw new UnexpectedCharacterException(_symb, "Expected end of file"); 
+            throw new UnexpectedSymbolException(_symb, "Expected end of file"); 
             
         }
     }
