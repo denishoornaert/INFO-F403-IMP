@@ -41,7 +41,7 @@ public class Grammar {
         }
     }
     
-    public GrammarVariable getInitialvariable() {
+    public GrammarVariable getInitialVariable() {
         return _initialState;
     }
     

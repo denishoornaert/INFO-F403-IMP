@@ -11,12 +11,12 @@ import java.util.ListIterator;
  * Specific stack used by the parser during the syntax verification and tree construction processes
  * 
  */
-public class Stack {
+public class CustomStack {
     
     // TODO Remy does creating an interface for both Symbol and GrammarVariable is a good idea ??
     private final ArrayList<Elem> _stack; 
     
-    public Stack() {
+    public CustomStack() {
         _stack = new ArrayList<>();
     }
     
@@ -42,7 +42,7 @@ public class Stack {
         return tmp;
     }
     
-    public Elem tos() { // abbreviatio of Top Of Stack
+    public Elem tos() { // abbreviatio of Top Of CustomStack
         final int lastElemIndex = _stack.size()-1;
         final Elem tmp = _stack.get(lastElemIndex);
         return tmp;
