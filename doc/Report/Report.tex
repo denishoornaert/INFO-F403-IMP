@@ -433,186 +433,189 @@ javadoc -d doc/javadoc/ -keywords -sourcepath src -subpackages be
     
 \newpage
 \appendix
+\addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
 
-\section{Grammar factorisation}
-  \label{sec:factorisation}
-  This mechanism is applied every time a given variable has two (or more) rules that have a common prefix. The aim is to reduce the number of repetitions. To achieve this, each variable that has two (or more) rules with a common prefix sees these rules replaced by concatenation of the prefix and a new variable. This new variable has for rules the remaining of the factorized rules (i.e. the rules that have a common prefix without this prefix).
-  \begin{figure}[h!]
+\section{Annex}
+  \subsection{Grammar factorisation}
+    \label{sec:factorisation}
+    This mechanism is applied every time a given variable has two (or more) rules that have a common prefix. The aim is to reduce the number of repetitions. To achieve this, each variable that has two (or more) rules with a common prefix sees these rules replaced by concatenation of the prefix and a new variable. This new variable has for rules the remaining of the factorized rules (i.e. the rules that have a common prefix without this prefix).
+    \begin{figure}[h!]
+	\centering
+	\begin{subfigure}[b]{0.4\textwidth}
+	    \centering
+	    \begin{align}
+	      S &\rightarrow friendship \\
+		&\rightarrow friend \\
+		&\rightarrow relationship \\
+		&\rightarrow friendly
+	    \end{align}
+	    \caption{Unmodified grammar}
+	    \label{fig:unmodifiedgrammar1}
+	\end{subfigure}%
+	\begin{subfigure}[b]{0.4\textwidth}
+	    \centering
+	    \begin{align}
+	      S  &\rightarrow relationship \\
+		  &\rightarrow friendS' \\
+	      S' &\rightarrow ship \\
+		  &\rightarrow ly \\
+		  &\rightarrow \epsilon
+	    \end{align}
+	    \caption{Factorisation outcome}
+	    \label{fig:resultinggrammar1}
+	\end{subfigure}
+	\caption{Caption place holder}
+    \end{figure}\\
+    For instance, in the fig.\ref{fig:unmodifiedgrammar1}, the rule (3) has no prefix whit the other rules whereas (1), (2) and (3) have a common prefix : '\textit{friend}'. Thus, following the mechanism explained above, we replace these three rules by a new one (rule (6)) composed of the prefix ('\textit{friend}') and the new variable (\textit{S'}). The variable \textit{S'} is then associated whit the remaining of each former rule with a common prefix of \textit{S}. Notice that the rule (2) is a particular case as it matches exactly the prefix. To overcome this issue, the created rule is formed of $\epsilon$ (rule (6)).\\\\
+    Such a technique is used to ensure that the parser will be deterministic. In our case, we want to implement a parser with a look ahead of one. Therefore, if a variable has two (or more) rules like $S \rightarrow fA$ and $S \rightarrow fZ$, the parser won't be able to decide which one to apply.
+
+  \subsection{Removing left-recursion}
+    \label{sec:leftrecursion}
+    Even though recursion is a main feature of grammars as it allows them to recognise non-finite language, it also introduce non-determinism when the recursion occurs at the very first element of the right-hand side. To make a grammar (and thus the parser) deterministic but keep the recursivity, one must execute to manipulations.
+    \begin{figure}[h!]
+      \centering
+      \begin{subfigure}[b]{0.33\textwidth}
+	  \centering
+	  \begin{align}
+	    S  &\rightarrow S'b \\
+	    S' &\rightarrow Sa \\
+		&\rightarrow \epsilon
+	  \end{align}
+	  \caption{Unmodified grammar}
+	  \label{fig:unmodifiedgrammar2}
+      \end{subfigure}%
+      \begin{subfigure}[b]{0.33\textwidth}
+	  \centering
+	  \begin{align}
+	    S  &\rightarrow Sab \\
+		&\rightarrow a
+	  \end{align}
+	  \caption{Indirect recursion removal}
+	  \label{fig:indirectremovalgrammar2}
+      \end{subfigure}
+      \begin{subfigure}[b]{0.33\textwidth}
+	  \centering
+	  \begin{align}
+	    V  &\rightarrow aV' \\
+	    V' &\rightarrow abV' \\
+		&\rightarrow \epsilon
+	  \end{align}
+	  \caption{Transformation to right-recursive}
+	  \label{fig:rightrecursivegrammar2}
+      \end{subfigure}
+      \caption{Caption place holder}
+    \end{figure}\\
+    First, one wants to transform every indirect left-recursion into direct left-recursion. Achieving that is quite simple as one only has to take a rule and replace every variable located at the very beginning of the left-hand side and replace it by all of its own rules. For instance, in fig.\ref{fig:unmodifiedgrammar2}, the grammar is indirectly recursive because \textit{S} call \textit{S'} which, when applying rule (11), call \textit{S}. The out come of this transformation (see fig.\ref{fig:indirectremovalgrammar2}) recognises the same language but is now directly left-recursive.\\
+    Secondly, one wants to transform every left-recursion by a right-recursion for determinism purpose (similar to factorisation). One can achieve it by introducing two new variables. The first variable will be associated to a set of rules each composed of the concatenation of a non-recursive rule and the newly created second variable. This second variable will be associated with a set of rules composed of every recursive rules where the first element (the recursive variable)has been removed concatenated with this exact second variable. Doing so transforms every left-recursion in a right-recursion. However, this right-recursion will never stops. This is why a rule composed of $\epsilon$ is associated to the second variable. % TODO the explanation is a bit ambiguous.
+
+  \subsection{Removing useless variables}
+    \label{sec:useless}
+    When speaking of \textit{useless} variables, we distinguish two types of variables~:
+    \begin{description}
+      \item[The \textit{unproductive} ones~:]
+	An unproductive variable is a variable that never leads to any formation of a word. Typically, such a variable does not have any non-recursive rule. Thus, forming a word using this variable leads to an infinite recursion.
+      \item[The \textit{unreachable} ones~:]
+	An unreachable variable is a variable that is not called by any other rule of the grammar in which it belongs.
+    \end{description}
+    So far, the best way to find both unproductive and unreachable variables is to look respectively for productive and reachable variables and remove them from the grammar afterwards. However, eventually, we are only interested in productive and reachable variables. Thus, once the former and the latter are found, we consider them as the final grammar.\\\\
+    Determining the set of productive symbols consists of first considering every terminal as productive. Then, for each variable, we look at each rule and add the variable to the set if and only if every symbols appearing in the rule are already in the set. The resulting set is the set of every reachable symbols of the given grammar.\\\\
+    % Add an example.
+    Retrieving the set of reachable symbols from a given grammar can be achieved by using a similar method to the one explained above. In fact, one must consider first a set containing only the initial variable of the grammar which is --- without lost of generality --- always considered as reachable. Then, for each variable of the grammar, one must check whether the variable is in the set of reachable symbols. If yes, one can then add all the symbols appearing in the rules of this variable.
+  
+  \subsection{Ambiguous grammar}
+    \label{sec:ambiguity}
+    Ambiguity occurs when, for a given word/input, multiple interpretations (or trees) can be derived due to an \textit{ambiguity} in the rules the parser has to choose making it non-deterministic and thus in proper for any implementation. Unfortunately, there does not exist any algorithm resolving this issue as the given grammar gives little information. Henceforth, extra information only known by the language designer must be integrated. The most common example of ambiguity is the arithmetic priority (Reminder : the multiplication has an higher priority than the addition).
+    \begin{figure}[h!]
       \centering
       \begin{subfigure}[b]{0.4\textwidth}
 	  \centering
 	  \begin{align}
-	    S &\rightarrow friendship \\
-	      &\rightarrow friend \\
-	      &\rightarrow relationship \\
-	      &\rightarrow friendly
+	    Exp &\rightarrow Exp+Exp \\
+		&\rightarrow Exp*Exp \\
+		&\rightarrow Cst \\
+		&\rightarrow Id
 	  \end{align}
-	  \caption{Unmodified grammar}
-	  \label{fig:unmodifiedgrammar1}
+	  \caption{Ambiguous grammar}
+	  \label{fig:unmodifiedgrammar3}
       \end{subfigure}%
       \begin{subfigure}[b]{0.4\textwidth}
 	  \centering
 	  \begin{align}
-	    S  &\rightarrow relationship \\
-		&\rightarrow friendS' \\
-	    S' &\rightarrow ship \\
-		&\rightarrow ly \\
-		&\rightarrow \epsilon
+	    Exp  &\rightarrow Exp+Prod \\
+		  &\rightarrow Prod \\
+	    Prod &\rightarrow Prod*Atom \\
+		  &\rightarrow Atom \\
+	    Atom &\rightarrow Cst \\
+		  &\rightarrow Id
 	  \end{align}
-	  \caption{Factorisation outcome}
-	  \label{fig:resultinggrammar1}
+	  \caption{Unambiguous grammar}
+	  \label{fig:unambiguousgrammar3}
       \end{subfigure}
       \caption{Caption place holder}
-  \end{figure}\\
-  For instance, in the fig.\ref{fig:unmodifiedgrammar1}, the rule (3) has no prefix whit the other rules whereas (1), (2) and (3) have a common prefix : '\textit{friend}'. Thus, following the mechanism explained above, we replace these three rules by a new one (rule (6)) composed of the prefix ('\textit{friend}') and the new variable (\textit{S'}). The variable \textit{S'} is then associated whit the remaining of each former rule with a common prefix of \textit{S}. Notice that the rule (2) is a particular case as it matches exactly the prefix. To overcome this issue, the created rule is formed of $\epsilon$ (rule (6)).\\\\
-  Such a technique is used to ensure that the parser will be deterministic. In our case, we want to implement a parser with a look ahead of one. Therefore, if a variable has two (or more) rules like $S \rightarrow fA$ and $S \rightarrow fZ$, the parser won't be able to decide which one to apply.
+    \end{figure}\\
+    For example, applying the grammar of fig.\ref{fig:unmodifiedgrammar3} on the word $id+id*id$ will result in two different interpretation as shown in Fig.\ref{fig:ambiguoustree1} and Fig.\ref{fig:ambiguoustree2}.
 
-\section{Removing left-recursion}
-  \label{sec:leftrecursion}
-  Even though recursion is a main feature of grammars as it allows them to recognise non-finite language, it also introduce non-determinism when the recursion occurs at the very first element of the right-hand side. To make a grammar (and thus the parser) deterministic but keep the recursivity, one must execute to manipulations.
   \begin{figure}[h!]
     \centering
-    \begin{subfigure}[b]{0.33\textwidth}
-	\centering
-	\begin{align}
-	  S  &\rightarrow S'b \\
-	  S' &\rightarrow Sa \\
-	      &\rightarrow \epsilon
-	\end{align}
-	\caption{Unmodified grammar}
-	\label{fig:unmodifiedgrammar2}
-    \end{subfigure}%
-    \begin{subfigure}[b]{0.33\textwidth}
-	\centering
-	\begin{align}
-	  S  &\rightarrow Sab \\
-	      &\rightarrow a
-	\end{align}
-	\caption{Indirect recursion removal}
-	\label{fig:indirectremovalgrammar2}
+    \begin{subfigure}[b]{0.4\textwidth}
+    \begin{tikzpicture}[tree]
+    \node {Exp}
+    child {
+      node {Exp}
+    child { node {Exp} 
+    child { node {id} }
+    }
+      child { node {+} }
+      child { 
+    node {Exp}
+    child { node {id} }
+      }
+    }
+    child { node {*} }
+    child { 
+      node {Exp}
+    child { node {id} }
+    };
+    \end{tikzpicture}
+    \caption{First possible derivation of the input.}
+    \label{fig:ambiguoustree1}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.4\textwidth}
+    \begin{tikzpicture}[tree]
+    \node {Exp}
+    child { 
+      node {Exp}
+    child { node {id} }
+    }
+    child { node {+} }
+    child {
+      node {Exp}
+    child { node {Exp} 
+    child { node {id} }
+    }
+      child { node {*} }
+      child { 
+    node {Exp}
+    child { node {id} }
+      }
+    };
+    \end{tikzpicture}
+    \caption{Second possible derivation of the input.}
+    \label{fig:ambiguoustree2}
     \end{subfigure}
-    \begin{subfigure}[b]{0.33\textwidth}
-	\centering
-	\begin{align}
-	  V  &\rightarrow aV' \\
-	  V' &\rightarrow abV' \\
-	      &\rightarrow \epsilon
-	\end{align}
-	\caption{Transformation to right-recursive}
-	\label{fig:rightrecursivegrammar2}
-    \end{subfigure}
-    \caption{Caption place holder}
-  \end{figure}\\
-  First, one wants to transform every indirect left-recursion into direct left-recursion. Achieving that is quite simple as one only has to take a rule and replace every variable located at the very beginning of the left-hand side and replace it by all of its own rules. For instance, in fig.\ref{fig:unmodifiedgrammar2}, the grammar is indirectly recursive because \textit{S} call \textit{S'} which, when applying rule (11), call \textit{S}. The out come of this transformation (see fig.\ref{fig:indirectremovalgrammar2}) recognises the same language but is now directly left-recursive.\\
-  Secondly, one wants to transform every left-recursion by a right-recursion for determinism purpose (similar to factorisation). One can achieve it by introducing two new variables. The first variable will be associated to a set of rules each composed of the concatenation of a non-recursive rule and the newly created second variable. This second variable will be associated with a set of rules composed of every recursive rules where the first element (the recursive variable)has been removed concatenated with this exact second variable. Doing so transforms every left-recursion in a right-recursion. However, this right-recursion will never stops. This is why a rule composed of $\epsilon$ is associated to the second variable. % TODO the explanation is a bit ambiguous.
-
-\section{Removing useless variables}
-  \label{sec:useless}
-  When speaking of \textit{useless} variables, we distinguish two types of variables~:
-  \begin{description}
-    \item[The \textit{unproductive} ones~:]
-      An unproductive variable is a variable that never leads to any formation of a word. Typically, such a variable does not have any non-recursive rule. Thus, forming a word using this variable leads to an infinite recursion.
-    \item[The \textit{unreachable} ones~:]
-      An unreachable variable is a variable that is not called by any other rule of the grammar in which it belongs.
-  \end{description}
-  So far, the best way to find both unproductive and unreachable variables is to look respectively for productive and reachable variables and remove them from the grammar afterwards. However, eventually, we are only interested in productive and reachable variables. Thus, once the former and the latter are found, we consider them as the final grammar.\\\\
-  Determining the set of productive symbols consists of first considering every terminal as productive. Then, for each variable, we look at each rule and add the variable to the set if and only if every symbols appearing in the rule are already in the set. The resulting set is the set of every reachable symbols of the given grammar.\\\\
-  % Add an example.
-  Retrieving the set of reachable symbols from a given grammar can be achieved by using a similar method to the one explained above. In fact, one must consider first a set containing only the initial variable of the grammar which is --- without lost of generality --- always considered as reachable. Then, for each variable of the grammar, one must check whether the variable is in the set of reachable symbols. If yes, one can then add all the symbols appearing in the rules of this variable.
+    \caption{Derivations of the input $id+id*id$ using the grammar in fig.\ref{fig:unmodifiedgrammar3}}
+  \end{figure}
   
-\section{Ambiguous grammar}
-  \label{sec:ambiguity}
-  Ambiguity occurs when, for a given word/input, multiple interpretations (or trees) can be derived due to an \textit{ambiguity} in the rules the parser has to choose making it non-deterministic and thus in proper for any implementation. Unfortunately, there does not exist any algorithm resolving this issue as the given grammar gives little information. Henceforth, extra information only known by the language designer must be integrated. The most common example of ambiguity is the arithmetic priority (Reminder : the multiplication has an higher priority than the addition).
-  \begin{figure}[h!]
-    \centering
-    \begin{subfigure}[b]{0.4\textwidth}
-	\centering
-	\begin{align}
-	  Exp &\rightarrow Exp+Exp \\
-	      &\rightarrow Exp*Exp \\
-	      &\rightarrow Cst \\
-	      &\rightarrow Id
-	\end{align}
-	\caption{Ambiguous grammar}
-	\label{fig:unmodifiedgrammar3}
-    \end{subfigure}%
-    \begin{subfigure}[b]{0.4\textwidth}
-	\centering
-	\begin{align}
-	  Exp  &\rightarrow Exp+Prod \\
-		&\rightarrow Prod \\
-	  Prod &\rightarrow Prod*Atom \\
-		&\rightarrow Atom \\
-	  Atom &\rightarrow Cst \\
-		&\rightarrow Id
-	\end{align}
-	\caption{Unambiguous grammar}
-	\label{fig:unambiguousgrammar3}
-    \end{subfigure}
-    \caption{Caption place holder}
-  \end{figure}\\
-  For example, applying the grammar of fig.\ref{fig:unmodifiedgrammar3} on the word $id+id*id$ will result in two different interpretation as shown in Fig.\ref{fig:ambiguoustree1} and Fig.\ref{fig:ambiguoustree2}.
+  To address this issue, the language designer must 'force' the derivation (and hence the priority) by introducing new variables that could be seen as extra layers. For instance, on fig.\ref{fig:unmodifiedgrammar3}, the grammar is composed of two \textit{atomic} terminals : \textit{Cst} and \textit{Id}. These terminals will be encapsulated in a new variable called \textit{Atom}. In addition, we decide --- based on the arithmetic priority --- that multiplication has an higher priority than addition. Therefore, as for atomic elements, we introduce a new variable called \textit{Prod} that has for rules a single atomic value (25) and the product of a multiplication and a atomic element (24). Finally, the same mechanism is once again applied to addition. Resulting in the rules (22) and (23).\\
+  \begin{tcolorbox}
+    As previously mentioned, there does not exist an algorithm that resolves grammar ambiguity. However, there exists many ambiguity detection algorithms with have their own proprieties as mentioned in this article\footnote{H.J.S. Basten, August 17, 2007. \textit{Ambiguity Detection Methods for Context-Free Grammars.} Master's Thesis, Universiteit Van Amsterdam.}. The reader is invited to read this document for further information.
+  \end{tcolorbox}
 
-\begin{figure}[h!]
-\centering
-\begin{subfigure}[b]{0.4\textwidth}
-\begin{tikzpicture}[tree]
-\node {Exp}
-child {
-  node {Exp}
-child { node {Exp} 
-child { node {id} }
-}
-  child { node {+} }
-  child { 
-node {Exp}
-child { node {id} }
-  }
-}
-child { node {*} }
-child { 
-  node {Exp}
-child { node {id} }
-};
-\end{tikzpicture}
-\caption{First possible derivation of the input.}
-\label{fig:ambiguoustree1}
-\end{subfigure}
-\hfill
-\begin{subfigure}[b]{0.4\textwidth}
-\begin{tikzpicture}[tree]
-\node {Exp}
-child { 
-  node {Exp}
-child { node {id} }
-}
-child { node {+} }
-child {
-  node {Exp}
-child { node {Exp} 
-child { node {id} }
-}
-  child { node {*} }
-  child { 
-node {Exp}
-child { node {id} }
-  }
-};
-\end{tikzpicture}
-\caption{Second possible derivation of the input.}
-\label{fig:ambiguoustree2}
-\end{subfigure}
-\caption{Derivations of the input $id+id*id$ using the grammar in fig.\ref{fig:unmodifiedgrammar3}}
-\end{figure}
-To address this issue, the language designer must 'force' the derivation (and hence the priority) by introducing new variables that could be seen as extra layers. For instance, on fig.\ref{fig:unmodifiedgrammar3}, the grammar is composed of two \textit{atomic} terminals : \textit{Cst} and \textit{Id}. These terminals will be encapsulated in a new variable called \textit{Atom}. In addition, we decide --- based on the arithmetic priority --- that multiplication has an higher priority than addition. Therefore, as for atomic elements, we introduce a new variable called \textit{Prod} that has for rules a single atomic value (25) and the product of a multiplication and a atomic element (24). Finally, the same mechanism is once again applied to addition. Resulting in the rules (22) and (23).\\
-\begin{tcolorbox}
-  As previously mentioned, there does not exist an algorithm that resolves grammar ambiguity. However, there exists many ambiguity detection algorithms with have their own proprieties as mentioned in this article\footnote{H.J.S. Basten, August 17, 2007. \textit{Ambiguity Detection Methods for Context-Free Grammars.} Master's Thesis, Universiteit Van Amsterdam.}. The reader is invited to read this document for further information.
-\end{tcolorbox}
-
-\section{Basic IMP grammar}
-  \begin{figure}[h!]
-    \centering
-    \begin{lstlisting}
+  \subsection{Basic IMP grammar}
+    \begin{figure}[h!]
+      \centering
+      \begin{lstlisting}
 <Program>       -> begin <Code> end
 <Code>          -> eps
 	      -> <InstList>
@@ -653,33 +656,33 @@ To address this issue, the language designer must 'force' the derivation (and he
 	      -> for [VarName] from <ExprArith> to <ExprArith> do <Code> done
 <Print>         -> print ( [VarName] )
 <Read>          -> read ( [VarName] )
-    \end{lstlisting}
-    \caption{The basic IMP grammar as given in the assignment statement.}
-    \label{fig:basicimpgrammar}
-  \end{figure}
+      \end{lstlisting}
+      \caption{The basic IMP grammar as given in the assignment statement.}
+      \label{fig:basicimpgrammar}
+    \end{figure}
   
-  \begin{figure}[h!]
-    \centering
-    \lstinputlisting{../../test/grammar/FinalIMP.gram}
-    \caption{The final IMP grammar after modifications.}
-    \label{fig:finalimpgrammar}
-  \end{figure}
+    \begin{figure}[h!]
+      \centering
+      \lstinputlisting{../../test/grammar/FinalIMP.gram}
+      \caption{The final IMP grammar after modifications.}
+      \label{fig:finalimpgrammar}
+    \end{figure}
   
-\section{Grammar architecture}
-  \begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{./img/class_grammar.png}
-    \caption{Architecture of the grammar}
-    \label{fig:grammararchitecture}
-  \end{figure}
-  
-\section{IMP action table}
-  \begin{sidewaystable} % <-- HERE
-    \centering
-    \input{ActionTable.txt}
-    \caption{IMP action table.}
-    \label{impactiontable}
-  \end{sidewaystable}
+  \subsection{Grammar architecture}
+    \begin{figure}
+      \centering
+      \includegraphics[width=\textwidth]{./img/class_grammar.png}
+      \caption{Architecture of the grammar}
+      \label{fig:grammararchitecture}
+    \end{figure}
+    
+  \subsection{IMP action table}
+    \begin{sidewaystable} % <-- HERE
+      \centering
+      \input{ActionTable.txt}
+      \caption{IMP action table.}
+      \label{impactiontable}
+    \end{sidewaystable}
     
 
 \end{document}
