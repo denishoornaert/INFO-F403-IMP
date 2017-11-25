@@ -180,11 +180,11 @@ token: [x]                lexical unit: VARNAME
     \end{figure}
     
 \section{Implementation of the syntax analyser}
-  The \textit{syntax analysis} (or \textit{parsing}) is the step of the \textit{analysis} phases that aims to verify the structure \textit{syntax} of the source code and then reporting the potential errors using both the list of tokens generated previously by the \textit{scanner} and a grammar (see definition later) given by the language designer.\\
-  The outcome of the parser is a \textit{syntax tree} that will be used by the following phase (as shown in the fig.X). We distinguish two types of \textit{parsers} : the \textit{top-down} and the \textit{bottom-up}.\\
+  The \textit{syntax analysis} (or \textit{parsing}) is the step of the \textit{analysis} phases (see fig.\ref{compilation_phases}) that aims to verify the \textit{syntax} of the source code (under the form of a list of tokens) and to report the potential errors using a grammar (see definition later) given by the language designer.\\
+  The outcome of the parser is a \textit{syntax tree} that will be used by the following phase (as shown in the fig.\ref{compilation_phases}). We distinguish two types of \textit{parsers} : the \textit{top-down} and the \textit{bottom-up}.\\
   As previously mentioned, \textit{parsers} uses a specific structure called \textit{grammar} which, similarly to spoken languages, aims to describe the allowed structures that a language can display.%  TODO is display used correctly ???
-  The \textit{grammar} is composed of a set of variable to which are associated one or more rule(s). Typically, a programming language \textit{grammar} is written following a fixed convention (see fig.\ref{fig:unmodifiedgrammar1} or any other grammar). Generally, in the case of a programming language, \textit{context-free grammar} are used because of its user-friendly aspect and the fact that it allows the use of an iterative development. However, \textit{context-free} grammars are not adapted to implementation. Therefore, \textit{parser generators} usually transform them into \textit{LL(K)} grammars. In the assignment statement, it is asked to transform the IMP grammar into a \textit{LL(1)}.\\
-  A LL(1) grammar is a class of grammars that can be defined by a predictive top-down parser. Such grammars define context-free languages which can be recognised by push-down automaton (i.e. automaton that use a stack as memory). We define a predictive parser as a type of parser that has an access to the input. This access is characterised by the possibility to know what is the following character to be read (this is very different from reading on the input) in order to enable the parser to take deterministic decisions throughout its execution.
+  The \textit{grammar} is composed of a set of variables to which are associated at least one rule. Typically, a \textit{grammar} is written following a fixed convention (see fig.\ref{fig:unmodifiedgrammar1} or any other grammar). Generally, in the case of a programming language, \textit{context-free grammar} are used because of its user-friendly aspect and the fact that it allows an iterative development. However, \textit{context-free} grammars are not adapted to implementation. Therefore, \textit{parser generators} usually transform them into \textit{LL(K)} grammars. In the assignment statement, it is asked to transform the IMP grammar into a \textit{LL(1)}.\\
+  A LL(1) grammar is a class of grammars that can be defined by a predictive top-down parser. Such grammars define context-free languages which can be recognised by push-down automaton (i.e. automaton that use a stack as memory). We define a predictive parser as a type of parser that has an access to the input (other than read). This access is characterised by the possibility to know what is the following character to be read (this is very different from reading on the input) in order to enable the parser to take deterministic decisions throughout its execution.
   
   \begin{figure}[h!]
     \centering
@@ -194,27 +194,27 @@ token: [x]                lexical unit: VARNAME
   \end{figure}
   
   \subsection{Use and implementation of a parser generator}
-  Nowadays, when designing a programming language, one might find convenient to use a program dedicated to the determinisation of the grammar and the syntax tree generation. Such programs are well known and have been developed a long time ago (yacc in the 1970's).\\
-  However, the assignment statement does not allow the use of such a program. Henceforth, it has been decided to implement a dedicated \textit{parser generator} so that the given grammar will be modified without suffering from human mistakes. All the steps that a \textit{parser generator} must achieved are shown in the fig.\ref{fig:parsergeneratorphases} and explained the section \ref{grammartoll1methods}.
+  Nowadays, when designing a programming language, one might find convenient to use a program dedicated to the determinisation of the grammar and the syntax tree generation. Such programs are well known and have been developed a long time ago (e.g. yacc in the 1970's).\\
+  However, the assignment statement does not allow the use of such a program. Henceforth, it has been decided to implement a dedicated \textit{parser generator} so that the given grammar will be modified without suffering from possible human mistakes. All the steps that a \textit{parser generator} must achieved are shown in the fig.\ref{fig:parsergeneratorphases} and explained the section \ref{grammartoll1methods}.
   
   \subsection{Parser phases}
-    The present section is divided in three sections each explaining the utility of the different mechanisms or sub-mechanisms used by a \textit{parser generator}. The first subsection concerns the transformation of a \textit{context-free} grammar into an \textit{LL(1)} grammar, the second subsection focuses on the creation of an \textit{action table} and the last subsection explains how to check the syntax of an input.\\
-    A reader aware of the mechanisms used can easily skip the present section and can directly read the results (section\ref{sec:results}).
+    The present section is divided in three subsections each explaining the utility of the different mechanisms that composes a \textit{parser generator}. The first subsection concerns the transformation of a \textit{context-free} grammar into an \textit{LL(1)} grammar, the second subsection focuses on the creation of an \textit{action table} and the last subsection explains how to check the syntax of an input.\\
+    A reader aware of the mechanisms used can easily skip the present section and resumes at the results section (\ref{sec:results}).
   
-    \subsubsection{Transforming the grammar to LL(1) grammar}
+    \subsubsection{Transforming the grammar into an LL(1) grammar}
       \label{grammartoll1methods}
       In order to transform a given grammar that can be either deterministic or non-deterministic into a LL(1) --- which is deterministic ---, one must apply four transformations on this grammar. These transformations aim to make the grammars deterministic and thus implementable.
       \begin{description}
-        \item[Ambiguity removal~:] Consists of ensuring, by the introduction of rule layers, that for a same input only one interpretation/derivation is possible. It also allows to force and to fix the priority and the associativity of some terminals in the grammar. (Further explanations see annex~\ref{sec:ambiguity})
-        \item[Useless variable removal~:] Consists of removing every variable that does not appear in any other rule of the grammar (as they will never be called/used) and removing variable that does not contain a rule capable of stopping the recursion of the other rules of the same variable. (Further explanations see annex~\ref{sec:useless})
-        \item[Left-recursion removal~:] Consists of modifying every rules where the recursion occurs at the first element so that a grammar can still accept non-finite languages but becomes deterministic because the parser will eventually always encounter a terminal. (Further explanations see annex~\ref{sec:leftrecursion})
-        \item[Left-factorisation~:] Consists of finding every rules of a variable that have a common prefix (i.e. same sequence of tokens) and of modifying it in consequence so that the parser can take deterministic decision. For example~: which rule to choose between $S \rightarrow \alpha A$ and $S \rightarrow \alpha Z$ when the look ahead is $\alpha$. (Further explanations see annex~\ref{sec:factorisation})
+        \item[Ambiguity removal~:] Consists of ensuring, by the introduction of rule layers, that for a same input only one interpretation/derivation is possible. It also allows to force and to fix the priority and the associativity of some terminals in the grammar. (For further explanations see annex~\ref{sec:ambiguity})
+        \item[Useless variable removal~:] Consists of removing every variable that does not appear in any other rule of the grammar (as they will never be called/used) and removing variable that does not contain a rule capable of stopping the recursion of the other rules of the same variable. (For further explanations see annex~\ref{sec:useless})
+        \item[Left-recursion removal~:] Consists of modifying every rules where the recursion occurs at the first element so that a grammar can still accept non-finite languages but becomes deterministic because the parser will eventually always encounter a terminal. (For further explanations see annex~\ref{sec:leftrecursion})
+        \item[Left-factorisation~:] Consists of finding every rules of a variable that have a common prefix (i.e. same sequence of tokens) and of modifying it in consequence so that the parser can take deterministic decision. For example~: which rule to choose between $S \rightarrow \alpha A$ and $S \rightarrow \alpha Z$ when the look ahead is $\alpha$. (For further explanations see annex~\ref{sec:factorisation})
       \end{description}
   
     \subsubsection{Action table}
       \label{subsubsec:actionTable}
       An action table is a structure that emphasises the relation between a given variable and a terminal. Actually, it helps answering the following question : Which rule of a variable has to be applied if the next symbol to be read is x ?\\
-      To construct this structure, one has to introduce the function $first(\alpha)$ that returns all the symbols that can be reached in one step (i.e. using only the first element of a rule). If the first element of the rule is a terminal, $first(\alpha)$ adds this terminal to the returned set (the set of reachable variables). Otherwise, if the element is a variable, it calls $first(\alpha)$ on the first element and then merges the returned set with the current one. Unfortunately, there is a special case : the epsilon-rule\footnote{a variable rule which is only composed of an epsilon ($\epsilon$)}. In fact, because $\epsilon$ is neither a variable or a terminal and is --- by definition --- not expected on the input, one must, when encountering an epsilon, apply the function $first(\alpha)$ on any element following an appearance of the variable that owns the epsilon-rule. The research of those elements is done by a function called $follow(\alpha)$.
+      To construct this structure, one has to introduce the function $first(\alpha)$ that returns all the symbols that can be reached in one step (i.e. using only the first element of a rule). If the first element of the rule is a terminal, $first(\alpha)$ adds this terminal to the returned set (the set of reachable variables). Otherwise, if the element is a variable, it calls $first(\alpha)$ on it and then merges the returned set with the current one. Unfortunately, there is a special case : the epsilon-rule\footnote{a variable rule which is only composed of an epsilon ($\epsilon$)}. In fact, because $\epsilon$ is neither a variable or a terminal and is --- by definition --- not expected on the input, one must, when encountering an epsilon, apply the function $first(\alpha)$ on any element following an appearance of the variable that owns the epsilon-rule. The research of those elements is done by a function called $follow(\alpha)$.
       \begin{figure}[h!]
         \centering
         \begin{subfigure}[b]{0.4\textwidth}
@@ -250,9 +250,10 @@ token: [x]                lexical unit: VARNAME
       \end{figure}
       
     \subsubsection{Syntax checking}
-      Once one has an action table, checking the syntax of the input is possible through the use of a simple stack that will only contain variables and terminals. The mechanism used to check the syntax of the input works as follows. Firstly, one starts by pushing on the stack the initial variable of the grammar. Then, if the element on the \textit{tos} (top of the stack) is a variable, one pops it and identifies, using the action table, which rule to apply given the variable and the look ahead. Once identified, we push the rule on the stack (with the left-most element on the tos). Otherwise, if the element on the tos is a terminal, one pops it and compares it to the input. If it matches, one resumes, otherwise, it means that the syntax has not been respected.\\
+      Once one has an action table, checking the syntax of the input is possible through the use of a simple stack that will only contain variables and terminals. The mechanism used to check the syntax of the input works as follows.\\
+      Firstly, one starts by pushing on the stack the initial variable of the grammar. Then, if the element on the \textit{tos} (top of the stack) is a variable, one pops it and identifies, using the action table, which rule to apply given the variable and the look ahead. Once the rule identified, we push it on the stack (with the left-most element on the tos). Otherwise, if the element on the \textit{tos} is a terminal, one pops it and compares it to the input. If it matches, one resumes by repeating the process. Otherwise, it means that the syntax has not been respected.\\
       In addition to that, one can add new accepting or rejecting conditions based on the "state" of the stack and/or the input. For instance in the case of IMP, the parser will rejects if there is no character to read on the input and that the stack is not empty or is there are characters left on the input and that the stack is empty. The only accepting configuration is when the stack is empty and there is no character left on the input.\\
-      For example, let's consider the final IMP grammar and the following input \verb|begin print(a) end|, the sequence of used rules and the stack utilisation will be as in the fig.\ref{fig:simpleprogram}.
+      For example, let's consider the final IMP grammar and the following input \verb|begin print(a) end|, the sequence of the rules used and the stack utilisation is as displayed in the fig.\ref{fig:simpleprogram}.
       \begin{figure}[h!]
         \input{SimpleProgStack.txt}
         \caption{Stack utilisation for a simple program.}
@@ -263,7 +264,7 @@ token: [x]                lexical unit: VARNAME
     There are two method to parse the IMP file, thus there are two classes:
     \begin{figure}[h!]
       \centering
-      \includegraphics[width=\textwidth]{./img/class_ll1.png}
+      \includegraphics[scale=0.275]{./img/class_ll1.png}
       \caption{Architecture of the LL1}
       \label{fig:architecturell1}
     \end{figure}
@@ -273,13 +274,13 @@ token: [x]                lexical unit: VARNAME
     As previously mentioned, being able to transform a non deterministic --- but yet rather simple to write --- grammar into a implementable deterministic grammar, is something one wants to do when asked to implement a parser based on this grammar. In our case, all the methods previously presented in the section \ref{grammartoll1methods} have been applied to the IMP grammar (which is available in the annex fig.\ref{fig:basicimpgrammar}) through the use of a package containing an implemented version of these methods.\\
     The present section is composed of six subsections. The four first subsections describe and analyse the steps of \textit{LL(1)} transformation whereas the two last subsections focus respectively on the action table generated by the implementation and the results of the syntax checker.\\
     \begin{tcolorbox}
-      For a matter of readability, it has been decided to only display the modified parts of the grammar. To see the full version of the modified IMP grammar one must used the process described in the annex fig.\ref{fig:finalimpgrammar}.
+      For a matter of readability, it has been decided to only display the modified parts of the grammar. To see the full version of the modified IMP grammar one must used the process described in the subsection \ref{} or must see annex fig.\ref{fig:finalimpgrammar}.
     \end{tcolorbox}
     
     \subsubsection{Ambiguity}
       Following the assignment statement, identifying the rules where ambiguity occurs is rather simple. The two ambiguous part of the grammar involved both arithmetic expressions and conditions. For both the former and the latter, atomic rules have been identified and categorised as such. Then, two layers have been introduced in order to force the derivation.\\
-      In the case of arithmetic expression, the operator $-$ has been given the highest priority. Thus it has been introduced directly in the set of atomic rules (\verb|9| to \verb|12|). After that, the $*$ and $/$ operators were given the highest priority, this is why they are part of the first layer (\verb|5| to \verb|8|). Finally, the second and last layer (\verb|1| to \verb|4|) is composed of the rules involving the remaining operators ($+$ and $-$).\\
-      Notice that, even though it has not been explicitly specified in the assignment statement, any arithmetic expression surrounded by parenthesis has been considered as having a priority as high has the $-$ operator.
+      In the case of arithmetic expressions, the operator $-$ has been given the highest priority. Thus it has been introduced directly in the set of atomic rules (\verb|9| to \verb|12|). After that, the $*$ and $/$ operators were given the highest priority, this is why they are part of the first layer (\verb|5| to \verb|8|). Finally, the second and last layer (\verb|1| to \verb|4|) is composed of the rules involving the remaining operators ($+$ and $-$).\\
+      Notice that, even though it has not been explicitly specified in the assignment statement, any arithmetic expressions surrounded by parenthesis has been considered as having a priority as high has the $-$ operator.
       \begin{lstlisting}
 <ExprArith>	     -> <ExprArith> <OpAdd> <ExprArithMul> 
 <ExprArith>	     -> <ExprArithMul> 
@@ -313,9 +314,9 @@ token: [x]                lexical unit: VARNAME
       The unambiguous IMP grammar does not contain any useless symbols. One can be easily convinced of the reachability by drawing a graph were every variable is represented by a node and every edge represents the fact that a variable appears at least once in one the rules of the other. One can also be convinced of the grammar productiveness by observing that for each recursive rule, there is another that stops the recursivity. These intuitions were proved right by the implementation.
       
     \subsubsection{Left-recursion removal}
-      When one wants to remove the left-recursion, one knows, following the definition given above, tat one has to look for rules where the left-hand side is also the first element of the right-hand side.\\
-      Doing so on the unambiguous and useless symbols free IMP grammar returns once again the arithmetic expressions and the conditions. But this is not surprising given the trick used to make the grammar unambiguous. This explains the reasons behind the order of the steps.\\
-      In both cases, there are the introduction of a suffixed U variable and a suffixed V variable. These variables respectively used to remove indirect left-recursion and to transform each direct left-recursion into a right-recursion. Notice that the introduced right-recursion are productive as the algorithm stipulates that the suffixed V variable must own an epsilon-rule\footnote{\label{epsilonrule}a variable rule which is only composed of an epsilon ($\epsilon$)}.
+      When one wants to remove the left-recursion, one knows, following the definition given above, that one has to look for rules where the left-hand side is also the first element of the right-hand side.\\
+      Doing so on the unambiguous and useless symbols free IMP grammar returns once again the arithmetic expressions and the conditions. But this is not surprising given the trick used to make the grammar unambiguous. This partly explains the reasons behind the order of the steps.\\
+      In both cases, there are the introduction of a suffixed U variable and a suffixed V variable. These variables are respectively used to remove indirect left-recursion and to transform each direct left-recursion into a right-recursion. Notice that the introduced right-recursion are productive as the algorithm stipulates that the suffixed V variable must own an epsilon-rule\footnote{\label{epsilonrule}a variable rule which is only composed of an epsilon ($\epsilon$)}. (see lines 4 and 8 of the following grammars)
       \begin{lstlisting}
 <ExprArith>	     -> <ExprArithU> <ExprArithV>
 <ExprArithU>	   -> <ExprArithMul>
@@ -342,7 +343,7 @@ token: [x]                lexical unit: VARNAME
 <InstList>	     -> <Instruction> <InstList'> 
 <InstList'>	     -> ; <InstList> 
 <InstList'>	     -> eps\end{lstlisting}
-      The factorisation of \verb|InstList| is an instance of the particular case mentioned in subsection \ref{sec:factorisation}. In fact, one of the rule to factorised does not really diverge as it is equal to the suffix. Thus an epsilon-rule$^{\ref{epsilonrule}}$ is introduced (rule 3).
+      The factorisation of \verb|InstList| is an instance of the particular case mentioned in subsection \ref{sec:factorisation}. In fact, one of the rules to be factorised does not really diverge as it equals the suffix. Thus an epsilon-rule$^{\ref{epsilonrule}}$ is introduced (rule 3).
       \begin{lstlisting}
 <If>	           -> if <Cond> then <Code> <If'> 
 <If'>	           -> else <Code> endif 
@@ -351,23 +352,23 @@ token: [x]                lexical unit: VARNAME
 <For>	           -> for VarName from <ExprArith> <For'> 
 <For'>	         -> by <ExprArith> to <ExprArith> do <Code> done 
 <For'>	         -> to <ExprArith> do <Code> done\end{lstlisting}
-      The factorisation of \verb|If| and \verb|For| are quite mainstream as they present a real divergence. Thus after the prefix,  a new variable is introduced and associated to the remaining of the common prefixed rules.
+      The factorisation of \verb|If| and \verb|For| is quite mainstream as they present a real divergence. Thus after the prefix,  a new variable is introduced and associated to the remaining of the common prefixed rules.
       
     \subsubsection{Resulting action table}
-      The last tool required before starting to check the syntax of the input is the action table. Based on the final grammar obtained using the implementation and the function $first(\alpha)$ and $follow(\alpha)$, we obtained the action displayed in the annexe \ref{impactiontable}. At the first look, the content of the action table might seems weird but every thing is logic.\\
+      The last tool required before starting to check the syntax of the input is the action table. Based on the final grammar obtained using the implementation and the function $first(\alpha)$ and $follow(\alpha)$, the action displayed in the annexe \ref{impactiontable} has been obtained. At the first look, the content of the action table might seems weird but every thing is logic.\\
       Firstly, the variables \textit{<Print>}, \textit{<Read>}, \textit{<Program>}, \textit{<Assign>}, \textit{<While>}, \textit{<If>} and \textit{<For>} have only one filled cell. This can easily be explained as they all own only one rule that starts with a terminal. Thus nothing else than this terminal can be observed during the parsing. In the case of \textit{<If>} and \textit{<For>}, it was expected as it was meant after the factorisation. Notice that, as expected regarding the results of the factorisation, the two derived variables \textit{<If'>} and \textit{<For'>} both have two cells filled. On the other hand, \textit{<InstList'>} has more than to two cells filled (actually five) due to the introduced $\epsilon$.\\
       Secondly, the terminals \textit{:=} and \textit{from} have no filled cells due to the place in which they appear in the grammar : never as the first element of a rule and always preceded by an other terminal (\textit{VarName} for both) which explains why even $follow(\alpha)$ cannot reach them.\\
       Finally, \textit{begin} is the only terminal that has one filled cell and it is not surprising as it only appears at the first element of the only rule of the initial variable of the grammar (cannot be reach by $follow(\alpha)$).
     
     \subsubsection{Syntax checking results}  
-      After having used three different sources codes to test the lexical analyser (subsection \ref{subsec:testscanner}), we use them to assess the parser.\\
+      After having used three different source codes to test the lexical analyser (subsection \ref{subsec:testscanner}), we use them to assess the parser.\\
       Firstly, \verb|Euclid.imp| (fig.\ref{code:euclid}) totally respects the syntax defined by the final IMP grammar and requires 120 transitions (matches excluded).\\ % TODO transition correct ??
-      Secondly, \verb|Fibonacci.imp| (fig.\ref{code:fibonacci}) also respects the syntax and requires 85 transitions. During the very first test of the parser on \verb|Fibonacci.imp|, we encountered an error and then realised that the first version (written during the realisation of first part of the project) contained an error. In fact, the instruction line 11 ended with a semicolon and thus did not respect the grammar (more precisely the rule 52 of the final grammar). Despite being counter intuitive for a programmer, this rule helped us ensuring the well functioning of the parser.
+      Secondly, \verb|Fibonacci.imp| (fig.\ref{code:fibonacci}) also respects the syntax and requires 85 transitions (matches excluded). During the very first test of the parser on \verb|Fibonacci.imp|, we encountered an error and then realised that the first version (written during the realisation of first part of the project) contained an error. In fact, the instruction line 11 ended with a semicolon and thus did not respect the grammar (more precisely the rule 52 of the final grammar (annex fig.\ref{fig:finalimpgrammar})). Despite being counter intuitive for a programmer, this rule helped us ensuring the well functioning of the parser.
         \begin{verbatim}
 (line : 12 col :4)	Unexepected character 'done' of type DONE
     The expected character is one of the following : while if print VarName for read
         \end{verbatim}
-    Finally, as expected, \verb|Sort.imp| (fig.\ref{code:sort}) is not even parsed as an error during the scanning is raised. Hence, the compiler will display the following message~:
+    Finally, as expected, \verb|Sort.imp| (fig.\ref{code:sort}) is not even parsed as an error occurs during the scanning. Hence, the compiler will display the following message~:
       \begin{verbatim}
 Error with a token: Unknown symbol '[' (9 character at line 1)
       \end{verbatim}
@@ -386,11 +387,11 @@ java -jar jflex-1.6.1.jar -d src/be/ac/ulb/infof403/grammar/ src/be/ac/ulb/infof
     \begin{verbatim}
 javac -d target $(find ./src/* | grep .java)
     \end{verbatim}
-    This command generates the corresponding \verb|.class| files and put them in the \verb|target/| folder. You must create the "target" folder if it does not currently exist. Finally, the \textit{jar} file can be generated by using the command~:
+    This command generates the corresponding \verb|.class| files and put them in the \verb|target/| folder. The user must create the "target" folder if it does not currently exist. Finally, the \textit{jar} file can be generated by using the command~:
     \begin{verbatim}
 jar cvfe dist/INFO-F403-IMP.jar be/ac/ulb/infof403/Main -C target/ .
     \end{verbatim}
-    Where \verb|INFO-F403-IMP.jar| is the name of the generated \textit{jar} file and \textit{target} is the folder where are located the \verb|.class| files.
+    Where \verb|INFO-F403-IMP.jar| is the name of the generated \textit{jar} file and \textit{target} is the folder where the \verb|.class| files are located.
     
   \subsection{Execution}
     To execute the resulting jar file, the user only has to type~:
@@ -401,33 +402,33 @@ java -jar dist/INFO-F403-IMP.jar <grammarFile> <IMPFile>
     
   \subsection{Test}
     \label{subsec:test}
-    Maven contains instruction to automatically make some test.  If you would execute these tests, you must to execute this command: \verb|mvn verify|.  You could execute tester with the compilation command: \verb|mvn verify clean compile|.\\
-    There are not lot of tests but it's easy to create more over.  Tests are located in the folder \verb|srcTest/|.
-      
-    It's also possible to test the scan of the IMP file.  Indeed, you could see the scan of the IMP file if you adding the argument \verb|--printscan| (or the alias \verb|-ps|) and compare this output with an existing ``\verb|.out|`` file.  For that, you just need to add the argument \verb|--testscan| (or the alias \verb|-ts|) followed by the expeted output file.\\
+    % TODO remy j'ai pas compris ce que tu veux dire en utilisant instruction
+    Maven contains instruction to automatically make some test.  If the user wants to execute these tests, he must execute this command: \verb|mvn verify|. The user can execute the tester using the compilation command~: \verb|mvn verify clean compile|.\\
+    There are not lot of tests but it's easy to create more. Tests are located in the folder \verb|srcTest/|. 
+    It's also possible to test the IMP scanner. Indeed, the user can see the outcome of the scanning of the IMP file by adding the argument \verb|--printscan| (or the alias \verb|-ps|) and can compare this output to an existing ``\verb|.out|`` file. To do so, the user needs to add the argument \verb|--testscan| (or the alias \verb|-ts|) followed by the expeted output file.\\
     To summarize, you could execute:
     \begin{verbatim}
 java -jar dist/INFO-F403-IMP.jar -ps -ts test/imp/Euclid.out\end{verbatim}
-    Note that if you do not specify the expected output file, the program will automatically load a file test based on the \textit{source file} name.
+    Note that if the user does not specify the expected output file, the program will automatically load a test file based on the \textit{source file} name.
     
   \subsection{Javadoc}
-    The javadoc is located in the \verb|doc/| folder. To generate the javadoc with Maven you must execute \verb|mvn javadoc:javadoc|.  If you do not want to user Maven, you could execute the following command~:
+    The javadoc is located in the \verb|doc/| folder. To generate the javadoc with Maven the user must execute \verb|mvn javadoc:javadoc|.  If he does not want to user Maven, he can execute the following command~:
     \begin{verbatim}
 javadoc -d doc/javadoc/ -keywords -sourcepath src -subpackages be
     \end{verbatim}
-    Where \verb|doc/javadoc/| is the output folder. The option \verb|-keywords| enable HTML in the javadoc.
+    Where \verb|doc/javadoc/| is the output folder. The option \verb|-keywords| enables HTML in the javadoc.
     
   \subsection{Parameters}
-    You could see all the parameters by adding the argument \verb|--help| (or the alias \verb|-h|).  If you will analyse a specific IMP file you \textbf{must} precise the grammar file first.  There are no order for the other arguments.  You will find bellow the list of possible arguments:
+    The user can see all the parameters by using the argument \verb|--help| (or the alias \verb|-h|).  If he wants to analyse a specific IMP file he \textbf{must} precise the grammar file first. There is no order for the other arguments. The user will find bellow the list of possible arguments:
     \begin{itemize}
-      \item \verb|-h/--help| View all arguments
-      \item \verb|-ta/--table| Print the action table (view point \ref{subsubsec:actionTable})
-      \item \verb|-ts/--testscan| Check that the result of the scan is the same that the expected output (view point \ref{subsec:test}).
-      \item \verb|-ps/--printscan| Print the scan result (used to compare with the ''.out`` file (if specified with previous argument)).
-      \item \verb|-sp/--stackparsing| Choose if you will parse with a stack or a tree (default), more informations on point \ref{}. % TODO add reference to tree parsing
-      \item \verb|-gojs/--gojstree| View the parse tree with GoJS library. (Note: don't work with argument ''-sp``).
-      \item \verb|-tex/--latex| View the parse tree with \LaTeX\ format. (Note: don't work with argument ''-sp``).  Be careful, this method use Tikz library and big tree could not be compiled.
-      \item \verb|-d/--debug| View lot of debug message (used to develop)
+      \item \verb|-h/--help| Displays all arguments
+      \item \verb|-ta/--table| Prints the action table (see point \ref{subsubsec:actionTable})
+      \item \verb|-ts/--testscan| Checks that the result of the scan is the same that the expected output (see point \ref{subsec:test}).
+      \item \verb|-ps/--printscan| Prints the scan result (used to compare with the ''.out`` file (if specified with previous argument)).
+      \item \verb|-sp/--stackparsing| Specifies whether the user wants to parse using a stack or a tree (default).
+      \item \verb|-gojs/--gojstree| Displays the parse tree using GoJS library. (Note: does not work with the argument ''-sp``).
+      \item \verb|-tex/--latex| Displays the parse tree in a \LaTeX\ format. (Note: does not work with the argument ''-sp``). Be careful : this method uses the Tikz library and big trees cannot be compiled.
+      \item \verb|-d/--debug| Displays a lot of debug messages (used to develop)
     \end{itemize}
     
 
