@@ -15,29 +15,27 @@ import java.util.Iterator;
  */
 public class Ll1 {
     
-    private final Stack _stack;
     private final Grammar _grammar;
     private final Iterator<Symbol> _i;
     private final ArrayList<String> _transitions;
     private Symbol _symb;
     
     public Ll1(final Grammar grammar, final TokenList tokenList) {
-        _stack = new Stack();
         _grammar = grammar;
         _i = tokenList.iterator();
         _transitions = new ArrayList<>();
         _symb = _i.next();
     }
     
-    private void symbolManagement() {
-        if(!_stack.tos().equals(_symb)) {
+    private void symbolManagement(final Stack stack) {
+        if(!stack.tos().equals(_symb)) {
             System.err.println("(line: " + _symb.getLine() + ") " + 
-                    _stack.tos().getValue()+" vs "+_symb.getValue());
+                    stack.tos().getValue()+" vs "+_symb.getValue());
             throw new IllegalArgumentException(); // TODO create custom error. Something like GrammarError.
         }
         else {
             _transitions.add("M");
-            _stack.pop();
+            stack.pop();
             if(_i.hasNext()) {
                 _symb = _i.next();
             } else {
@@ -48,8 +46,8 @@ public class Ll1 {
     
     // TODO what about replacing the 'if(r == null){...}' by a 'catch(nullPointerExeption) {...}' ?? more beautiful ??
     // No... With a "if" we show that a "normal" case when there is a problem :)
-    private void variableManagement() throws UnexpectedCharacterException {
-        final GrammarVariable var = (GrammarVariable)_stack.tos();
+    private void variableManagement(Stack stack) throws UnexpectedCharacterException {
+        final GrammarVariable var = (GrammarVariable)stack.tos();
         
         final Rule r = var.getRuleThatLeadsToSymbol(_symb);
         
@@ -59,30 +57,31 @@ public class Ll1 {
         }
         else {
             _transitions.add(r.getId().toString());
-            _stack.pop();
-            _stack.push(r);
+            stack.pop();
+            stack.push(r);
         }
     }
     
     public void stackParse(final boolean debug) throws UnexpectedCharacterException {
-        _stack.push(_grammar.getInitialvariable());
-        while (!_stack.isEmpty() && _symb != null) {
+        final Stack stack = new Stack();
+        stack.push(_grammar.getInitialvariable());
+        while (!stack.isEmpty() && _symb != null) {
             if(debug) {
-                System.out.println("Stack: " + _stack);
+                System.out.println("Stack: " + stack);
             }
             
-            if(_stack.tos() instanceof Symbol) {
-                this.symbolManagement();
+            if(stack.tos() instanceof Symbol) {
+                this.symbolManagement(stack);
             }
             // _stack.tos() instanceof GrammarVariable 
             // we can do that as we are sure only Symbol and GrammarVariable are stocked in the stack.
             else { 
-                this.variableManagement();
+                this.variableManagement(stack);
             }
         }
         
-        if(!_stack.isEmpty()) {
-            System.err.println("Missing some code to end file (" + _stack.toString() + ")");
+        if(!stack.isEmpty()) {
+            System.err.println("Missing some code to end file (" + stack.toString() + ")");
             throw new IllegalArgumentException();
             
         } else if(_i.hasNext()) { // If code is not finish
