@@ -1,13 +1,14 @@
 package be.ac.ulb.infof403.parser;
 
 import be.ac.ulb.infof403.Elem;
+import be.ac.ulb.infof403.Epsilon;
 import be.ac.ulb.infof403.Symbol;
 import be.ac.ulb.infof403.grammar.GrammarVariable;
 import be.ac.ulb.infof403.grammar.Rule;
 import java.util.ArrayList;
 
 /**
- * 
+ * Element of the Parsing Tree
  */
 public class RuleTree {
     
@@ -60,6 +61,19 @@ public class RuleTree {
     
     protected boolean equalsValue(final Elem elem) {
         return _value.equals(elem);
+    }
+
+    protected ArrayList<RuleTree> addChild(final Rule rule) {
+        final ArrayList<RuleTree> allRuleTreE = new ArrayList();
+        for(final Elem elem : rule) {
+            final RuleTree newRuleTree = new RuleTree(elem);
+            _children.add(newRuleTree);
+            if(!(elem instanceof Epsilon)) {
+                allRuleTreE.add(newRuleTree);
+            }
+        }
+        
+        return allRuleTreE;
     }
     
 }

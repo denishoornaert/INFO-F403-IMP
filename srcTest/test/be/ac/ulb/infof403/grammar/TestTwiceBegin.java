@@ -2,8 +2,7 @@ package test.be.ac.ulb.infof403.grammar;
 
 import be.ac.ulb.infof403.TokenList;
 import be.ac.ulb.infof403.grammar.Grammar;
-import be.ac.ulb.infof403.parser.StackLl1;
-import be.ac.ulb.infof403.parser.TreeLl1;
+import be.ac.ulb.infof403.parser.Ll1;
 import be.ac.ulb.infof403.parser.UnexpectedSymbolException;
 import be.ac.ulb.infof403.scanner.ImpScanner;
 import be.ac.ulb.infof403.scanner.ImpSyntaxException;
@@ -29,16 +28,7 @@ public class TestTwiceBegin {
     public void testTwiceBeginStackParsing() throws UnexpectedSymbolException, IOException, ImpSyntaxException {
         final Grammar grammar = Grammar.openAndScanGrammar(GRAMMAR_PATH);
         final TokenList tokenList = new ImpScanner(IMP_PATH, false).getTokenList();
-        final StackLl1 ll1 = new StackLl1(grammar, tokenList);
-        expected.expect(be.ac.ulb.infof403.parser.UnexpectedSymbolException.class);
-        ll1.parse(false);
-    }
-    
-    @Test
-    public void testTwiceBeginTreeParsing() throws UnexpectedSymbolException, IOException, ImpSyntaxException {
-        final Grammar grammar = Grammar.openAndScanGrammar(GRAMMAR_PATH);
-        final TokenList tokenList = new ImpScanner(IMP_PATH, false).getTokenList();
-        final TreeLl1 ll1 = new TreeLl1(grammar, tokenList);
+        final Ll1 ll1 = new Ll1(grammar, tokenList);
         expected.expect(be.ac.ulb.infof403.parser.UnexpectedSymbolException.class);
         ll1.parse(false);
     }

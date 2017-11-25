@@ -1,9 +1,7 @@
 package be.ac.ulb.infof403;
 
 import be.ac.ulb.infof403.grammar.Grammar;
-import be.ac.ulb.infof403.parser.AbstractLl1;
-import be.ac.ulb.infof403.parser.StackLl1;
-import be.ac.ulb.infof403.parser.TreeLl1;
+import be.ac.ulb.infof403.parser.Ll1;
 import be.ac.ulb.infof403.parser.UnexpectedSymbolException;
 import be.ac.ulb.infof403.scanner.ImpScanner;
 import be.ac.ulb.infof403.scanner.ImpSyntaxException;
@@ -56,7 +54,6 @@ public class Main {
         // Default arguments
         boolean gojs = false;
         String gojsOutputFile = DEFAULT_GOJS_FOLDER;
-        boolean stackParsing = false;
         boolean latex = false;
         String latexOutputFile = DEFAULT_LATEX_FOLDER;
         
@@ -82,11 +79,6 @@ public class Main {
                 case "-ps":
                 case "--printscan":
                     printScanResult = true;
-                    break;
-                    
-                case "-sp":
-                case "--stackparsing":
-                    stackParsing = true;
                     break;
                     
                 case "-gojs":
@@ -123,12 +115,6 @@ public class Main {
             ++currentIndex;
         }
         
-        if(stackParsing && (gojs || latex)) {
-            System.err.println("Could not generate parse tree if you parse with a stack (remove '-sp' argument)");
-            return;
-        }
-        
-        
         TokenList tokenList = null;
         try {
             tokenList = scan(impFile, testImpFile, printScanResult);
@@ -148,14 +134,8 @@ public class Main {
         }
         
         boolean validParsing = false;
-        final AbstractLl1 ll1;
-        
-        if(stackParsing) {
-            ll1 = new StackLl1(grammar, tokenList);
-        } else {
-            ll1 = new TreeLl1(grammar, tokenList);
-        }
-        
+        final Ll1 ll1 = new Ll1(grammar, tokenList);
+
         try {
             ll1.parse(_debug);
             validParsing = true;
@@ -164,18 +144,13 @@ public class Main {
         }
         
         if(validParsing) {
-            
             // Generate View
-            if(ll1 instanceof TreeLl1) {
-                final TreeLl1 treeLl1 = (TreeLl1) ll1;
+            if(latex) {
+                ll1.generateLaTexParseTree(latexOutputFile);
+            }
 
-                if(latex) {
-                    treeLl1.generateLaTexParseTree(latexOutputFile);
-                }
-
-                if(gojs) {
-                    treeLl1.generateGojsParseTree(gojsOutputFile);
-                }
+            if(gojs) {
+                ll1.generateGojsParseTree(gojsOutputFile);
             }
             
             System.out.println("Syntax respected !");
@@ -275,7 +250,6 @@ public class Main {
         System.out.println("  -ta/--table\t\t\tPrint the action table");
         System.out.println("  -ts/--testscan [filePath]\tTest that the scanner have the good output");
         System.out.println("  -ps/--printscan\t\tPrint the scan result (like first part of this project)");
-        System.out.println("  -sp/--stackparsing\t\tParse IMP file with stack (and not a tree)");
         System.out.println("  -gojs/--gojstree [outputFile]\tView Gojs parse tree (output file is store in " + 
                 DEFAULT_GOJS_FOLDER + ")");
         System.out.println("  -tex/--latex [outputFile]\tView LaTeX parse tree (output file is store in " + 
