@@ -6,7 +6,7 @@ skinparam classAttributeIconSize 0
 skinparam shadowing false
 
 'taille de l'image
-skinparam dpi 100
+skinparam dpi 150
 
 'couleurs
 skinparam class {
@@ -16,29 +16,39 @@ skinparam class {
 }
 skinparam stereotypeCBackgroundColor OldLace
 
-class Grammar {
-- HashSet<GrammarVariable>
-- HashSet<Symbol>
+package "be.ac.ulb.infof403.grammar" {
+    class Grammar {
+    - HashSet<GrammarVariable>
+    - HashSet<Symbol>
+    }
+    
+    class GrammarScanner {
+    
+    }
+    
+    class Node {
+    - Arraylist<Node>
+    }
+    
+    class Rule <ArrayList<Elem>> {
+        
+    }
+    
+    class GrammarVariable {
+    - HashSet<Rule>
+    }
+    
+    class Stree {
+    - Arraylist<Node>
+    }
+
 }
 
-class GrammarScanner {
-
-}
-
-class GrammarVariable {
-- HashSet<Rule>
-}
-
-class Rule <ArrayList<Elem>> {
-
-}
-
-class Stree {
-- Arraylist<Node>
-}
-
-class Node {
-- Arraylist<Node>
+package "be.ac.ulb.infof403" {
+    class Epsilon
+    class Symbol
+    interface Elem
+    abstract Terminal
 }
 
 Grammar --- GrammarScanner
@@ -47,8 +57,8 @@ Grammar --- Stree
 Stree *-- Node
 Node *-- Node
 GrammarVariable o-- Rule
-Elem <|-down Terminal
-Elem <|-down GrammarVariable
-Terminal <|-down Epsilon
-Terminal <|-down Symbol
+Elem <|-down- Terminal
+Elem <|-down- GrammarVariable
+Terminal <|-down- Epsilon
+Terminal <|-down- Symbol
 @enduml
