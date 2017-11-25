@@ -31,11 +31,7 @@ package "be.ac.ulb.infof403.grammar" {
 }
 
 package "be.ac.ulb.infof403.parser" {
-    abstract class AbstractLl1 {
-    
-    }
-    
-    class Stack {
+    class ParseStack<extends Stack<RuleTree>> {
     
     }
     
@@ -43,20 +39,16 @@ package "be.ac.ulb.infof403.parser" {
     
     }
     
-    class StackLl1 {
+    class Ll1 {
     
     }
-    
-    class TreeLl1 {
-    
-    }
+
 }
 
 
-StackLl1 *-down- Stack
-TreeLl1 *-down- RuleTree
-Grammar --* AbstractLl1
-TokenList --* AbstractLl1
-StackLl1 -up-|> AbstractLl1
-TreeLl1 -up-|> AbstractLl1
+Ll1 *-down- ParseStack
+Ll1 *-down- RuleTree
+RuleTree o-- RuleTree
+Grammar --* Ll1
+TokenList --* Ll1
 @enduml
