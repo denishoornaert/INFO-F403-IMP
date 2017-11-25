@@ -1,5 +1,6 @@
 \scalebox{0.7}{
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
 & (  & <=  & begin & if & do & -  & read & while & and & then & := & VarName & )  & else & end & done & not & by & from & >= & <>  & to & print & for & or & +  & [Number] & ;  & =  & /  & *  & <  & endif & >  \\
 \hline
 If              &    &     &       & 47 &    &    &      &       &     &      &    &         &    &      &     &      &     &    &      &    &     &    &       &     &    &    &          &    &    &    &    &    &       &    \\
