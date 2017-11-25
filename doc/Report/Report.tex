@@ -436,7 +436,7 @@ javadoc -d doc/javadoc/ -keywords -sourcepath src -subpackages be
 
 \section{Grammar factorisation}
   \label{sec:factorisation}
-  This mechanism is applied every time a given variable has two (or more) rules that have a common prefix. The aim is to reduce the number of repetitions. To achieve this, each variable that has two (or more) rules with a common prefix sees these rules replaced by concatenation of the prefix and a new variable. This new variable has for rules the remaining of the factorized rules (i.e. the rules that have a common prefix without this prefix).
+  This mechanism is applied every time a given variable has two (or more) rules with a common prefix. The aim is to reduce the number of repetitions. To achieve this, each variable that has two (or more) rules with a common prefix sees these rules replaced by concatenation of the prefix and a new variable. This new variable has for rules the remaining of the factorized rules (i.e. the rules that have a common prefix without this prefix).
   \begin{figure}[h!]
       \centering
       \begin{subfigure}[b]{0.4\textwidth}
@@ -464,12 +464,12 @@ javadoc -d doc/javadoc/ -keywords -sourcepath src -subpackages be
       \end{subfigure}
       \caption{Caption place holder}
   \end{figure}\\
-  For instance, in the fig.\ref{fig:unmodifiedgrammar1}, the rule (3) has no prefix whit the other rules whereas (1), (2) and (3) have a common prefix : '\textit{friend}'. Thus, following the mechanism explained above, we replace these three rules by a new one (rule (6)) composed of the prefix ('\textit{friend}') and the new variable (\textit{S'}). The variable \textit{S'} is then associated whit the remaining of each former rule with a common prefix of \textit{S}. Notice that the rule (2) is a particular case as it matches exactly the prefix. To overcome this issue, the created rule is formed of $\epsilon$ (rule (6)).\\\\
+  For instance, in the fig.\ref{fig:unmodifiedgrammar1}, the rule (7) has no prefix whit the other rules whereas (5), (6) and (8) have a common prefix : '\textit{friend}'. Thus, following the mechanism explained above, we replace these three rules by a new one (rule (10)) composed of the prefix ('\textit{friend}') and the new variable (\textit{S'}). The variable \textit{S'} is then associated whit the remaining of each former rule with a common prefix of \textit{S}. Notice that the rule (6) is a particular case as it matches exactly the prefix. To overcome this issue, the created rule is formed of $\epsilon$ (rule (13)).\\\\
   Such a technique is used to ensure that the parser will be deterministic. In our case, we want to implement a parser with a look ahead of one. Therefore, if a variable has two (or more) rules like $S \rightarrow fA$ and $S \rightarrow fZ$, the parser won't be able to decide which one to apply.
 
 \section{Removing left-recursion}
   \label{sec:leftrecursion}
-  Even though recursion is a main feature of grammars as it allows them to recognise non-finite language, it also introduce non-determinism when the recursion occurs at the very first element of the right-hand side. To make a grammar (and thus the parser) deterministic but keep the recursivity, one must execute to manipulations.
+  Even though recursion is a main feature of grammars as it allows them to recognise non-finite languages, it also introduces non-determinism when the recursion occurs at the very first element of the right-hand side. To make a grammar (and thus the parser) deterministic while keeping the recursivity, one must execute to manipulations.
   \begin{figure}[h!]
     \centering
     \begin{subfigure}[b]{0.33\textwidth}
@@ -503,8 +503,8 @@ javadoc -d doc/javadoc/ -keywords -sourcepath src -subpackages be
     \end{subfigure}
     \caption{Caption place holder}
   \end{figure}\\
-  First, one wants to transform every indirect left-recursion into direct left-recursion. Achieving that is quite simple as one only has to take a rule and replace every variable located at the very beginning of the left-hand side and replace it by all of its own rules. For instance, in fig.\ref{fig:unmodifiedgrammar2}, the grammar is indirectly recursive because \textit{S} call \textit{S'} which, when applying rule (11), call \textit{S}. The out come of this transformation (see fig.\ref{fig:indirectremovalgrammar2}) recognises the same language but is now directly left-recursive.\\
-  Secondly, one wants to transform every left-recursion by a right-recursion for determinism purpose (similar to factorisation). One can achieve it by introducing two new variables. The first variable will be associated to a set of rules each composed of the concatenation of a non-recursive rule and the newly created second variable. This second variable will be associated with a set of rules composed of every recursive rules where the first element (the recursive variable)has been removed concatenated with this exact second variable. Doing so transforms every left-recursion in a right-recursion. However, this right-recursion will never stops. This is why a rule composed of $\epsilon$ is associated to the second variable. % TODO the explanation is a bit ambiguous.
+  First, one wants to transform every indirect left-recursion into direct left-recursion. Achieving that is quite simple as one only has to take a rule and replace the variable located at the very beginning of the left-hand side and replace it by all of its own rules. For instance, in fig.\ref{fig:unmodifiedgrammar2}, the grammar is indirectly recursive because \textit{S} calls \textit{S'} which, when applying rule (15), calls \textit{S}. The out come of this transformation (see fig.\ref{fig:indirectremovalgrammar2}) recognises the same language but is now directly left-recursive.\\
+  Secondly, one wants to transform every left-recursion by a right-recursion for determinism purpose (similar to factorisation). One can achieve it by introducing two new variables. The first variable will be associated to a set of rules each composed of the concatenation of a non-recursive rule and the newly created second variable. This second variable will be associated with a set of rules composed of every recursive rules where the first element (the recursive variable)has been removed concatenated with this exact second variable. Doing so transforms every left-recursion in a right-recursion. However, this right-recursion will never stops. This is why a rule composed of $\epsilon$ is associated to the second variable.
 
 \section{Removing useless variables}
   \label{sec:useless}
@@ -522,7 +522,7 @@ javadoc -d doc/javadoc/ -keywords -sourcepath src -subpackages be
   
 \section{Ambiguous grammar}
   \label{sec:ambiguity}
-  Ambiguity occurs when, for a given word/input, multiple interpretations (or trees) can be derived due to an \textit{ambiguity} in the rules the parser has to choose making it non-deterministic and thus in proper for any implementation. Unfortunately, there does not exist any algorithm resolving this issue as the given grammar gives little information. Henceforth, extra information only known by the language designer must be integrated. The most common example of ambiguity is the arithmetic priority (Reminder : the multiplication has an higher priority than the addition).
+  Ambiguity occurs when, for a given word/input, multiple interpretations (or trees) can be derived due to a multiple choice of rules, leading the parser to take a non-deterministic choice and thus make it not adapted for implementation. Unfortunately, there does not exist any algorithm resolving this issue as the given grammar gives little information. Henceforth, extra information only known by the language designer must be integrated. The most common example of ambiguity is the arithmetic priority (Reminder : the multiplication has an higher priority than the addition).
   \begin{figure}[h!]
     \centering
     \begin{subfigure}[b]{0.4\textwidth}
@@ -604,9 +604,9 @@ child { node {id} }
 \end{subfigure}
 \caption{Derivations of the input $id+id*id$ using the grammar in fig.\ref{fig:unmodifiedgrammar3}}
 \end{figure}
-To address this issue, the language designer must 'force' the derivation (and hence the priority) by introducing new variables that could be seen as extra layers. For instance, on fig.\ref{fig:unmodifiedgrammar3}, the grammar is composed of two \textit{atomic} terminals : \textit{Cst} and \textit{Id}. These terminals will be encapsulated in a new variable called \textit{Atom}. In addition, we decide --- based on the arithmetic priority --- that multiplication has an higher priority than addition. Therefore, as for atomic elements, we introduce a new variable called \textit{Prod} that has for rules a single atomic value (25) and the product of a multiplication and a atomic element (24). Finally, the same mechanism is once again applied to addition. Resulting in the rules (22) and (23).\\
+To address this issue, the language designer must 'force' the derivation (and hence the priority) by introducing new variables that could be seen as extra layers. For instance, on fig.\ref{fig:unmodifiedgrammar3}, the grammar is composed of two \textit{atomic} terminals : \textit{Cst} and \textit{Id}. These terminals will be encapsulated in a new variable called \textit{Atom}. In addition, we decide --- based on the arithmetic priority --- that multiplication has an higher priority than addition. Therefore, as for atomic elements, we introduce a new variable called \textit{Prod} that has for rules a single atomic value (29) and the product of a multiplication and a atomic element (28). Finally, the same mechanism is once again applied to addition. Resulting in the rules (26) and (27).\\
 \begin{tcolorbox}
-  As previously mentioned, there does not exist an algorithm that resolves grammar ambiguity. However, there exists many ambiguity detection algorithms with have their own proprieties as mentioned in this article\footnote{H.J.S. Basten, August 17, 2007. \textit{Ambiguity Detection Methods for Context-Free Grammars.} Master's Thesis, Universiteit Van Amsterdam.}. The reader is invited to read this document for further information.
+  As previously mentioned, there does not exist an algorithm that resolves grammar ambiguity. However, there exists many ambiguity detection algorithms that have their own proprieties as listed in this article\footnote{H.J.S. Basten, August 17, 2007. \textit{Ambiguity Detection Methods for Context-Free Grammars.} Master's Thesis, Universiteit Van Amsterdam.}. The reader is invited to read this document for further information.
 \end{tcolorbox}
 
 \section{Basic IMP grammar}
