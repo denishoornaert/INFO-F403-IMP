@@ -30,7 +30,7 @@
  END\\ \hline
 \end{tabular}}
 \vspace{0.1cm}
-\hspace{0.35cm}$\xrightarrow[]{4}$\hspace{0.35cm}
+\hspace{0.35cm}$\xrightarrow[]{3}$\hspace{0.35cm}
 \scalebox{0.5}{
 \begin{tabular}{|p{2.5cm}|}
  \\ \hline
@@ -41,7 +41,7 @@
  END\\ \hline
 \end{tabular}}
 \vspace{0.1cm}
-\hspace{0.35cm}$\xrightarrow[]{73}$\hspace{0.35cm}
+\hspace{0.35cm}$\xrightarrow[]{50}$\hspace{0.35cm}
 \scalebox{0.5}{
 \begin{tabular}{|p{2.5cm}|}
  \\ \hline
@@ -52,7 +52,7 @@
  END\\ \hline
 \end{tabular}}
 \vspace{0.1cm}
-\hspace{0.35cm}$\xrightarrow[]{11}$\hspace{0.35cm}
+\hspace{0.35cm}$\xrightarrow[]{8}$\hspace{0.35cm}
 \scalebox{0.5}{
 \begin{tabular}{|p{2.5cm}|}
  \\ \hline
@@ -63,7 +63,7 @@
  END\\ \hline
 \end{tabular}}
 \vspace{0.1cm}
-\hspace{0.35cm}$\xrightarrow[]{44}$\hspace{0.35cm}
+\hspace{0.35cm}$\xrightarrow[]{29}$\hspace{0.35cm}
 \scalebox{0.5}{
 \begin{tabular}{|p{2.5cm}|}
  PRINT\\ \hline
@@ -118,7 +118,7 @@
  END\\ \hline
 \end{tabular}}
 \vspace{0.1cm}
-\hspace{0.35cm}$\xrightarrow[]{77}$\hspace{0.35cm}
+\hspace{0.35cm}$\xrightarrow[]{52}$\hspace{0.35cm}
 \scalebox{0.5}{
 \begin{tabular}{|p{2.5cm}|}
  \\ \hline
