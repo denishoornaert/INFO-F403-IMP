@@ -6,7 +6,7 @@ skinparam classAttributeIconSize 0
 skinparam shadowing false
 
 'taille de l'image
-skinparam dpi 100
+skinparam dpi 150
 
 'couleurs
 skinparam class {
@@ -16,23 +16,47 @@ skinparam class {
 }
 skinparam stereotypeCBackgroundColor OldLace
 
-class Grammar {
+package "be.ac.ulb.infof403" {
+    class TokenList<ArrayList<Symbol>> {
+    
+    }
+}
+
+package "be.ac.ulb.infof403.grammar" {
+
+    class Grammar {
+    
+    }
 
 }
 
-class LL1 {
-
+package "be.ac.ulb.infof403.parser" {
+    abstract class AbstractLl1 {
+    
+    }
+    
+    class Stack {
+    
+    }
+    
+    class RuleTree {
+    
+    }
+    
+    class StackLl1 {
+    
+    }
+    
+    class TreeLl1 {
+    
+    }
 }
 
-class Stack {
 
-}
-
-class RuleTree {
-
-}
-
-LL1 *-- Stack
-Grammar --* LL1
-RuleTree --- LL1
+StackLl1 *-down- Stack
+TreeLl1 *-down- RuleTree
+Grammar --* AbstractLl1
+TokenList --* AbstractLl1
+StackLl1 -up-|> AbstractLl1
+TreeLl1 -up-|> AbstractLl1
 @enduml
