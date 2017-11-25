@@ -1,7 +1,9 @@
 package be.ac.ulb.infof403;
 
 import be.ac.ulb.infof403.grammar.Grammar;
-import be.ac.ulb.infof403.parser.Ll1;
+import be.ac.ulb.infof403.parser.AbstractLl1;
+import be.ac.ulb.infof403.parser.StackLl1;
+import be.ac.ulb.infof403.parser.TreeLl1;
 import be.ac.ulb.infof403.parser.UnexpectedCharacterException;
 import be.ac.ulb.infof403.scanner.ImpScanner;
 import be.ac.ulb.infof403.scanner.ImpSyntaxException;
@@ -146,25 +148,42 @@ public class Main {
         }
         
         boolean validParsing = false;
-        final Ll1 l = new Ll1(grammar, tokenList);
+        final AbstractLl1 ll1;
+        
+        if(stackParsing) {
+            ll1 = new StackLl1(grammar, tokenList);
+        } else {
+            ll1 = new TreeLl1(grammar, tokenList);
+        }
+        
         try {
-            if(stackParsing) {
-                l.stackParse(_debug);
-            } else {
-                l.treeParse(gojs, gojsOutputFile, latex, latexOutputFile);
-            }
+            ll1.parse(_debug);
             validParsing = true;
         } catch (UnexpectedCharacterException ex) {
             System.err.println(ex.getMessage());
         }
         
         if(validParsing) {
+            
+            // Generate View
+            if(ll1 instanceof TreeLl1) {
+                final TreeLl1 treeLl1 = (TreeLl1) ll1;
+
+                if(latex) {
+                    treeLl1.generateLaTexParseTree(latexOutputFile);
+                }
+
+                if(gojs) {
+                    treeLl1.generateGojsParseTree(gojsOutputFile);
+                }
+            }
+            
             System.out.println("Syntax respected !");
             System.out.println("");
             System.out.println("Grammar: ");
             System.out.println(grammar);
             System.out.println("");
-            l.printTransitions();
+            ll1.printTransitions();
         }
         
     }
