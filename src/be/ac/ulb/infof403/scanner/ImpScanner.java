@@ -51,7 +51,9 @@ public class ImpScanner {
         }
 
         if(!testFileName.isEmpty()) {
-            testOutput(testFileName);
+            if(!testOutput(testFileName)) {
+                throw new ImpSyntaxException("The expected output is not equals to the current output");
+            }
         }
     }
     
@@ -106,19 +108,23 @@ public class ImpScanner {
      * Open an output file and compare with the current result
      * 
      * @param testFile the filename that contains the expeted output
+     * @return True if the output is the same
      */
-    private void testOutput(final String testFile) {
+    public boolean testOutput(final String testFile) {
+        boolean validOutput = false;
         final File file;
         try {
             file = new File(testFile);
             final List<String> allLines = Files.readAllLines(file.toPath(), Charset.forName("UTF-8"));
             if(checkSameOutput(allLines)) {
                 System.out.println("The output is equivalent to the test file: " + testFile);
+                validOutput = true;
             }
 
         } catch (IOException exception) {
             System.err.println("Error with test file: " + exception.getMessage());
         }
+        return validOutput;
     }
     
     /**
@@ -142,6 +148,10 @@ public class ImpScanner {
         final String[] strSplitToken = _tokens.toString().split("\n");
         int i = 0;
         for(final String tokenLine : strSplitToken) {
+            if(i >= testLineStr.size()-1) {
+                allOk = false;
+                break;
+            }
             final String goodResult = testLineStr.get(i++);
             
             final String noTabTokenLine = removeTabAndSpaces(tokenLine);

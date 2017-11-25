@@ -1,0 +1,45 @@
+token: begin    lexical unit: BEGIN
+token: read     lexical unit: READ
+token: (        lexical unit: LPAREN
+token: n        lexical unit: VARNAME
+token: )        lexical unit: RPAREN
+token: ;        lexical unit: SEMICOLON
+token: a        lexical unit: VARNAME
+token: :=       lexical unit: ASSIGN
+token: 0        lexical unit: NUMBER
+token: ;        lexical unit: SEMICOLON
+token: b        lexical unit: VARNAME
+token: :=       lexical unit: ASSIGN
+token: 0        lexical unit: NUMBER
+token: ;        lexical unit: SEMICOLON
+token: for      lexical unit: FOR
+token: n        lexical unit: VARNAME
+token: from     lexical unit: FROM
+token: 0        lexical unit: NUMBER
+token: to       lexical unit: TO
+token: n        lexical unit: VARNAME
+token: do       lexical unit: DO
+token: tmp      lexical unit: VARNAME
+token: :=       lexical unit: ASSIGN
+token: b        lexical unit: VARNAME
+token: ;        lexical unit: SEMICOLON
+token: b        lexical unit: VARNAME
+token: :=       lexical unit: ASSIGN
+token: a        lexical unit: VARNAME
+token: ;        lexical unit: SEMICOLON
+token: a        lexical unit: VARNAME
+token: :=       lexical unit: ASSIGN
+token: tmp      lexical unit: VARNAME
+token: done     lexical unit: DONE
+token: ;        lexical unit: SEMICOLON
+token: print    lexical unit: PRINT
+token: (        lexical unit: LPAREN
+token: b        lexical unit: VARNAME
+token: )        lexical unit: RPAREN
+token: end      lexical unit: END
+
+Identifiers
+a   6
+b   7
+tmp 9
+n   5

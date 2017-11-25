@@ -212,6 +212,7 @@ token: [x]                lexical unit: VARNAME
       \end{description}
   
     \subsubsection{Action table}
+      \label{subsubsec:actionTable}
       An action table is a structure that emphasises the relation between a given variable and a terminal. Actually, it helps answering the following question : Which rule of a variable has to be applied if the next symbol to be read is x ?\\
       To construct this structure, one has to introduce the function $first(\alpha)$ that returns all the symbols that can be reached in one step (i.e. using only the first element of a rule). If the first element of the rule is a terminal, $first(\alpha)$ adds this terminal to the returned set (the set of reachable variables). Otherwise, if the element is a variable, it calls $first(\alpha)$ on the first element and then merges the returned set with the current one. Unfortunately, there is a special case : the epsilon-rule\footnote{a variable rule which is only composed of an epsilon ($\epsilon$)}. In fact, because $\epsilon$ is neither a variable or a terminal and is --- by definition --- not expected on the input, one must, when encountering an epsilon, apply the function $first(\alpha)$ on any element following an appearance of the variable that owns the epsilon-rule. The research of those elements is done by a function called $follow(\alpha)$.
       \begin{figure}[h!]
@@ -360,7 +361,7 @@ token: [x]                lexical unit: VARNAME
 Error with a token: Unknown symbol '[' (9 character at line 1)
       \end{verbatim}
 
-\section{How to set up the project}à
+\section{How to set up the project}
   In order to simplify the compilation and the support of external libraries, it has been decided to use a well known \textit{java} project manager named \textit{Maven}. Its configuration file (\verb|pom.xml|) defines the \verb|main| file, defines the source folder, manages the \textit{JFlex} library and the package that must be compiled with this library.
   \subsection{Compilation}
     Compiling the project with \textit{Maven} is easy as the user only needs to execute~: \verb|mvn clean compile|. However, at the first execution, the user needs to execute \verb|mvn install| so that \textit{Maven} can install the required library.\\
@@ -388,6 +389,7 @@ java -jar dist/INFO-F403-IMP.jar <grammarFile> <IMPFile>
     Where \verb|<IMPFile>| is the path to the IMP file (by default: \verb|./test/imp/Euclid.imp|) and \verb|<grammarFile>| is the path to the Grammar used to parse IMP file (by default: \verb|./test/grammar/UnambiguousIMP.gram|).
     
   \subsection{Test}
+    \label{subsec:test}
     Maven contains instruction to automatically make some test.  If you would execute these tests, you must to execute this command: \verb|mvn verify|.  You could execute tester with the compilation command: \verb|mvn verify clean compile|.\\
     There are not lot of tests but it's easy to create more over.  Tests are located in the folder \verb|srcTest/|.
       
@@ -403,6 +405,20 @@ java -jar dist/INFO-F403-IMP.jar -ps -ts test/imp/Euclid.out\end{verbatim}
 javadoc -d doc/javadoc/ -keywords -sourcepath src -subpackages be
     \end{verbatim}
     Where \verb|doc/javadoc/| is the output folder. The option \verb|-keywords| enable HTML in the javadoc.
+    
+  \subsection{Parameters}
+    You could see all the parameters by adding the argument \verb|--help| (or the alias \verb|-h|).  If you will analyse a specific IMP file you \textbf{must} precise the grammar file first.  There are no order for the other arguments.  You will find bellow the list of possible arguments:
+    \begin{itemize}
+      \item \verb|-h/--help| View all arguments
+      \item \verb|-ta/--table| Print the action table (view point \ref{subsubsec:actionTable})
+      \item \verb|-ts/--testscan| Check that the result of the scan is the same that the expected output (view point \ref{subsec:test}).
+      \item \verb|-ps/--printscan| Print the scan result (used to compare with the ''.out`` file (if specified with previous argument)).
+      \item \verb|-sp/--stackparsing| Choose if you will parse with a stack or a tree (default), more informations on point \ref{}. % TODO add reference to tree parsing
+      \item \verb|-gojs/--gojstree| View the parse tree with GoJS library. (Note: don't work with argument ''-sp``).
+      \item \verb|-tex/--latex| View the parse tree with \LaTeX\ format. (Note: don't work with argument ''-sp``).  Be careful, this method use Tikz library and big tree could not be compiled.
+      \item \verb|-d/--debug| View lot of debug message (used to develop)
+    \end{itemize}
+    
 
 \section{Annexe}
 
