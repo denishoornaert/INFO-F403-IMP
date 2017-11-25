@@ -18,7 +18,7 @@ public class TreeLl1 extends AbstractLl1 {
     
     @Override
     public void parse(final boolean debug) throws UnexpectedSymbolException {
-        _tree = new RuleTree(_grammar.getInitialvariable());
+        _tree = new RuleTree(_grammar.getInitialVariable());
         analyseTree(_tree);
         
         if(_i.hasNext()) {
