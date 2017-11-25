@@ -433,39 +433,39 @@ javadoc -d doc/javadoc/ -keywords -sourcepath src -subpackages be
     
 \newpage
 \appendix
+\addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
 
 \section{Grammar factorisation}
   \label{sec:factorisation}
   This mechanism is applied every time a given variable has two (or more) rules with a common prefix. The aim is to reduce the number of repetitions. To achieve this, each variable that has two (or more) rules with a common prefix sees these rules replaced by concatenation of the prefix and a new variable. This new variable has for rules the remaining of the factorized rules (i.e. the rules that have a common prefix without this prefix).
   \begin{figure}[h!]
-      \centering
-      \begin{subfigure}[b]{0.4\textwidth}
-	  \centering
-	  \begin{align}
-	    S &\rightarrow friendship \\
-	      &\rightarrow friend \\
-	      &\rightarrow relationship \\
-	      &\rightarrow friendly
-	  \end{align}
-	  \caption{Unmodified grammar}
-	  \label{fig:unmodifiedgrammar1}
-      \end{subfigure}%
-      \begin{subfigure}[b]{0.4\textwidth}
-	  \centering
-	  \begin{align}
-	    S  &\rightarrow relationship \\
-		&\rightarrow friendS' \\
-	    S' &\rightarrow ship \\
-		&\rightarrow ly \\
-		&\rightarrow \epsilon
-	  \end{align}
-	  \caption{Factorisation outcome}
-	  \label{fig:resultinggrammar1}
-      \end{subfigure}
-      \caption{Caption place holder}
-  \end{figure}\\
-  For instance, in the fig.\ref{fig:unmodifiedgrammar1}, the rule (7) has no prefix whit the other rules whereas (5), (6) and (8) have a common prefix : '\textit{friend}'. Thus, following the mechanism explained above, we replace these three rules by a new one (rule (10)) composed of the prefix ('\textit{friend}') and the new variable (\textit{S'}). The variable \textit{S'} is then associated whit the remaining of each former rule with a common prefix of \textit{S}. Notice that the rule (6) is a particular case as it matches exactly the prefix. To overcome this issue, the created rule is formed of $\epsilon$ (rule (13)).\\\\
-  Such a technique is used to ensure that the parser will be deterministic. In our case, we want to implement a parser with a look ahead of one. Therefore, if a variable has two (or more) rules like $S \rightarrow fA$ and $S \rightarrow fZ$, the parser won't be able to decide which one to apply.
+	\begin{subfigure}[b]{0.4\textwidth}
+	    \centering
+	    \begin{align}
+	      S &\rightarrow friendship \\
+		&\rightarrow friend \\
+		&\rightarrow relationship \\
+		&\rightarrow friendly
+	    \end{align}
+	    \caption{Unmodified grammar}
+	    \label{fig:unmodifiedgrammar1}
+	\end{subfigure}%
+	\begin{subfigure}[b]{0.4\textwidth}
+	    \centering
+	    \begin{align}
+	      S  &\rightarrow relationship \\
+		  &\rightarrow friendS' \\
+	      S' &\rightarrow ship \\
+		  &\rightarrow ly \\
+		  &\rightarrow \epsilon
+	    \end{align}
+	    \caption{Factorisation outcome}
+	    \label{fig:resultinggrammar1}
+	\end{subfigure}
+	\caption{Caption place holder}
+    \end{figure}\\
+    For instance, in the fig.\ref{fig:unmodifiedgrammar1}, the rule (7) has no prefix whit the other rules whereas (5), (6) and (8) have a common prefix : '\textit{friend}'. Thus, following the mechanism explained above, we replace these three rules by a new one (rule (10)) composed of the prefix ('\textit{friend}') and the new variable (\textit{S'}). The variable \textit{S'} is then associated whit the remaining of each former rule with a common prefix of \textit{S}. Notice that the rule (6) is a particular case as it matches exactly the prefix. To overcome this issue, the created rule is formed of $\epsilon$ (rule (13)).\\\\
+    Such a technique is used to ensure that the parser will be deterministic. In our case, we want to implement a parser with a look ahead of one. Therefore, if a variable has two (or more) rules like $S \rightarrow fA$ and $S \rightarrow fZ$, the parser won't be able to decide which one to apply.
 
 \section{Removing left-recursion}
   \label{sec:leftrecursion}
@@ -511,9 +511,9 @@ javadoc -d doc/javadoc/ -keywords -sourcepath src -subpackages be
   When speaking of \textit{useless} variables, we distinguish two types of variables~:
   \begin{description}
     \item[The \textit{unproductive} ones~:]
-      An unproductive variable is a variable that never leads to any formation of a word. Typically, such a variable does not have any non-recursive rule. Thus, forming a word using this variable leads to an infinite recursion.
+An unproductive variable is a variable that never leads to any formation of a word. Typically, such a variable does not have any non-recursive rule. Thus, forming a word using this variable leads to an infinite recursion.
     \item[The \textit{unreachable} ones~:]
-      An unreachable variable is a variable that is not called by any other rule of the grammar in which it belongs.
+An unreachable variable is a variable that is not called by any other rule of the grammar in which it belongs.
   \end{description}
   So far, the best way to find both unproductive and unreachable variables is to look respectively for productive and reachable variables and remove them from the grammar afterwards. However, eventually, we are only interested in productive and reachable variables. Thus, once the former and the latter are found, we consider them as the final grammar.\\\\
   Determining the set of productive symbols consists of first considering every terminal as productive. Then, for each variable, we look at each rule and add the variable to the set if and only if every symbols appearing in the rule are already in the set. The resulting set is the set of every reachable symbols of the given grammar.\\\\
@@ -523,33 +523,33 @@ javadoc -d doc/javadoc/ -keywords -sourcepath src -subpackages be
 \section{Ambiguous grammar}
   \label{sec:ambiguity}
   Ambiguity occurs when, for a given word/input, multiple interpretations (or trees) can be derived due to a multiple choice of rules, leading the parser to take a non-deterministic choice and thus make it not adapted for implementation. Unfortunately, there does not exist any algorithm resolving this issue as the given grammar gives little information. Henceforth, extra information only known by the language designer must be integrated. The most common example of ambiguity is the arithmetic priority (Reminder : the multiplication has an higher priority than the addition).
-  \begin{figure}[h!]
-    \centering
-    \begin{subfigure}[b]{0.4\textwidth}
-	\centering
-	\begin{align}
-	  Exp &\rightarrow Exp+Exp \\
-	      &\rightarrow Exp*Exp \\
-	      &\rightarrow Cst \\
-	      &\rightarrow Id
-	\end{align}
-	\caption{Ambiguous grammar}
-	\label{fig:unmodifiedgrammar3}
-    \end{subfigure}%
-    \begin{subfigure}[b]{0.4\textwidth}
-	\centering
-	\begin{align}
-	  Exp  &\rightarrow Exp+Prod \\
-		&\rightarrow Prod \\
-	  Prod &\rightarrow Prod*Atom \\
-		&\rightarrow Atom \\
-	  Atom &\rightarrow Cst \\
+    \begin{figure}[h!]
+      \centering
+      \begin{subfigure}[b]{0.4\textwidth}
+	  \centering
+	  \begin{align}
+	    Exp &\rightarrow Exp+Exp \\
+		&\rightarrow Exp*Exp \\
+		&\rightarrow Cst \\
 		&\rightarrow Id
-	\end{align}
-	\caption{Unambiguous grammar}
-	\label{fig:unambiguousgrammar3}
-    \end{subfigure}
-    \caption{Caption place holder}
+	  \end{align}
+	  \caption{Ambiguous grammar}
+	  \label{fig:unmodifiedgrammar3}
+      \end{subfigure}%
+      \begin{subfigure}[b]{0.4\textwidth}
+	  \centering
+	  \begin{align}
+	    Exp  &\rightarrow Exp+Prod \\
+		  &\rightarrow Prod \\
+	    Prod &\rightarrow Prod*Atom \\
+		  &\rightarrow Atom \\
+	    Atom &\rightarrow Cst \\
+		  &\rightarrow Id
+	  \end{align}
+	  \caption{Unambiguous grammar}
+	  \label{fig:unambiguousgrammar3}
+      \end{subfigure}
+      \caption{Caption place holder}
   \end{figure}\\
   For example, applying the grammar of fig.\ref{fig:unmodifiedgrammar3} on the word $id+id*id$ will result in two different interpretation as shown in Fig.\ref{fig:ambiguoustree1} and Fig.\ref{fig:ambiguoustree2}.
 
@@ -609,10 +609,10 @@ To address this issue, the language designer must 'force' the derivation (and he
   As previously mentioned, there does not exist an algorithm that resolves grammar ambiguity. However, there exists many ambiguity detection algorithms that have their own proprieties as listed in this article\footnote{H.J.S. Basten, August 17, 2007. \textit{Ambiguity Detection Methods for Context-Free Grammars.} Master's Thesis, Universiteit Van Amsterdam.}. The reader is invited to read this document for further information.
 \end{tcolorbox}
 
-\section{Basic IMP grammar}
-  \begin{figure}[h!]
-    \centering
-    \begin{lstlisting}
+  \subsection{Basic IMP grammar}
+    \begin{figure}[h!]
+      \centering
+      \begin{lstlisting}
 <Program>       -> begin <Code> end
 <Code>          -> eps
 	      -> <InstList>
@@ -653,33 +653,33 @@ To address this issue, the language designer must 'force' the derivation (and he
 	      -> for [VarName] from <ExprArith> to <ExprArith> do <Code> done
 <Print>         -> print ( [VarName] )
 <Read>          -> read ( [VarName] )
-    \end{lstlisting}
-    \caption{The basic IMP grammar as given in the assignment statement.}
-    \label{fig:basicimpgrammar}
-  \end{figure}
+      \end{lstlisting}
+      \caption{The basic IMP grammar as given in the assignment statement.}
+      \label{fig:basicimpgrammar}
+    \end{figure}
   
-  \begin{figure}[h!]
-    \centering
-    \lstinputlisting{../../test/grammar/FinalIMP.gram}
-    \caption{The final IMP grammar after modifications.}
-    \label{fig:finalimpgrammar}
-  \end{figure}
+    \begin{figure}[h!]
+      \centering
+      \lstinputlisting{../../test/grammar/FinalIMP.gram}
+      \caption{The final IMP grammar after modifications.}
+      \label{fig:finalimpgrammar}
+    \end{figure}
   
-\section{Grammar architecture}
-  \begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{./img/class_grammar.png}
-    \caption{Architecture of the grammar}
-    \label{fig:grammararchitecture}
-  \end{figure}
-  
-\section{IMP action table}
-  \begin{sidewaystable} % <-- HERE
-    \centering
-    \input{ActionTable.txt}
-    \caption{IMP action table.}
-    \label{impactiontable}
-  \end{sidewaystable}
+  \subsection{Grammar architecture}
+    \begin{figure}
+      \centering
+      \includegraphics[width=\textwidth]{./img/class_grammar.png}
+      \caption{Architecture of the grammar}
+      \label{fig:grammararchitecture}
+    \end{figure}
+    
+  \subsection{IMP action table}
+    \begin{sidewaystable} % <-- HERE
+      \centering
+      \input{ActionTable.txt}
+      \caption{IMP action table.}
+      \label{impactiontable}
+    \end{sidewaystable}
     
 
 \end{document}
