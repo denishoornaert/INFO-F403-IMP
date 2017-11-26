@@ -14,14 +14,14 @@ import java.util.Iterator;
 
 
 /**
- *
+ * Parse TokenList and Grammar with LL(1)
  */
 public class Ll1 {
     
-    protected final Grammar _grammar;
-    protected final Iterator<Symbol> _i;
-    protected final ArrayList<String> _transitions;
-    protected Symbol _symb;
+    private final Grammar _grammar;
+    private final Iterator<Symbol> _i;
+    private final ArrayList<String> _transitions;
+    private Symbol _symb;
     private RuleTree _tree;
     
     public Ll1(final Grammar grammar, final TokenList tokenList) {
