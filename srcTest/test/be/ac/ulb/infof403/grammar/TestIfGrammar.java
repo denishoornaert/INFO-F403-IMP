@@ -10,9 +10,11 @@ import org.junit.Test;
 
 public class TestIfGrammar {
     
+    private static final String IF_TEST_GRAMMAR = "./test/grammar/IfTest.gram";
+    
     @Test
     public void testIfTestGrammar() {
-        final Grammar grammar = Grammar.openAndScanGrammar("./test/grammar/IfTest.gram");
+        final Grammar grammar = Grammar.openAndScanGrammar(IF_TEST_GRAMMAR);
         optimiseGrammar(grammar);
         assertEquals(grammar.toString(), createIfTestGrammar().toString());
     }
