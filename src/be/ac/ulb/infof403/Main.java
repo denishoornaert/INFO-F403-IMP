@@ -15,8 +15,8 @@ public class Main {
     
     private static final String DEFAULT_IMP_FILE = "./test/imp/Euclid.imp";
     private static final String DEFAULT_GRAMMAR_FILE = "./test/grammar/UnambiguousIMP.gram";
-    private static final String DEFAULT_GOJS_FOLDER = "./test/html/";
-    private static final String DEFAULT_LATEX_FOLDER = "./test/tex/";
+    private static final String DEFAULT_GOJS_FOLDER = "test/html/";
+    private static final String DEFAULT_LATEX_FOLDER = "test/tex/";
     
     private static boolean _debug = false;
     
