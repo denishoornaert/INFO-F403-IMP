@@ -38,7 +38,7 @@ public class Ll1 {
         if(!currentElem.equals(_symb)) {
             System.err.println("(line: " + _symb.getLine() + ") " + 
                     currentElem.getValue() + " vs " + _symb.getValue());
-            throw new IllegalArgumentException(); // TODO create custom error. Something like GrammarError.
+            throw new IllegalArgumentException();
         }
         else {
             _transitions.add("M");
