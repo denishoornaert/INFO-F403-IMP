@@ -465,7 +465,7 @@ javadoc -d doc/javadoc/ -keywords -sourcepath src -subpackages be
 	      \caption{Factorisation outcome}
 	      \label{fig:resultinggrammar1}
 	  \end{subfigure}
-	  \caption{Caption place holder}
+	  \caption{Left-factorisation example}
       \end{figure}\\
       For instance, in the fig.\ref{fig:unmodifiedgrammar1}, the rule (7) has no prefix whit the other rules whereas (5), (6) and (8) have a common prefix : '\textit{friend}'. Thus, following the mechanism explained above, we replace these three rules by a new one (rule (10)) composed of the prefix ('\textit{friend}') and the new variable (\textit{S'}). The variable \textit{S'} is then associated whit the remaining of each former rule with a common prefix of \textit{S}. Notice that the rule (6) is a particular case as it matches exactly the prefix. To overcome this issue, the created rule is formed of $\epsilon$ (rule (13)).\\\\
       Such a technique is used to ensure that the parser will be deterministic. In our case, we want to implement a parser with a look ahead of one. Therefore, if a variable has two (or more) rules like $S \rightarrow fA$ and $S \rightarrow fZ$, the parser won't be able to decide which one to apply.
@@ -504,7 +504,7 @@ javadoc -d doc/javadoc/ -keywords -sourcepath src -subpackages be
 	  \caption{Transformation to right-recursive}
 	  \label{fig:rightrecursivegrammar2}
       \end{subfigure}
-      \caption{Caption place holder}
+      \caption{Left-recursion removal example}
     \end{figure}\\
     First, one wants to transform every indirect left-recursion into direct left-recursion. Achieving that is quite simple as one only has to take a rule and replace the variable located at the very beginning of the left-hand side and replace it by all of its own rules. For instance, in fig.\ref{fig:unmodifiedgrammar2}, the grammar is indirectly recursive because \textit{S} calls \textit{S'} which, when applying rule (15), calls \textit{S}. The out come of this transformation (see fig.\ref{fig:indirectremovalgrammar2}) recognises the same language but is now directly left-recursive.\\
     Secondly, one wants to transform every left-recursion by a right-recursion for determinism purpose (similar to factorisation). One can achieve it by introducing two new variables. The first variable will be associated to a set of rules each composed of the concatenation of a non-recursive rule and the newly created second variable. This second variable will be associated with a set of rules composed of every recursive rules where the first element (the recursive variable)has been removed concatenated with this exact second variable. Doing so transforms every left-recursion in a right-recursion. However, this right-recursion will never stops. This is why a rule composed of $\epsilon$ is associated to the second variable.
@@ -552,7 +552,7 @@ javadoc -d doc/javadoc/ -keywords -sourcepath src -subpackages be
 	    \caption{Unambiguous grammar}
 	    \label{fig:unambiguousgrammar3}
 	\end{subfigure}
-	\caption{Caption place holder}
+	\caption{Unambiguity mechanism example}
     \end{figure}\\
     For example, applying the grammar of fig.\ref{fig:unmodifiedgrammar3} on the word $id+id*id$ will result in two different interpretation as shown in Fig.\ref{fig:ambiguoustree1} and Fig.\ref{fig:ambiguoustree2}.
 
