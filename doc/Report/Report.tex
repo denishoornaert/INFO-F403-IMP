@@ -63,6 +63,8 @@
 \maketitle
 \tableofcontents
 
+\newpage
+
 \section{Introduction}
 
   The aim of project is to implement a compiler for a 'simple' imperative language named \textit{IMP}. Like any imperative programming language, \textit{IMP} is composed of mainstream features such as \textit{keywords} (\verb|if|, \verb|while|, ... statements), \textit{variables}, \textit{numbers} and \textit{comments}.
@@ -554,8 +556,7 @@ javadoc -d doc/javadoc/ -keywords -sourcepath src -subpackages be
 	\end{subfigure}
 	\caption{Unambiguity mechanism example}
     \end{figure}\\
-    For example, applying the grammar of fig.\ref{fig:unmodifiedgrammar3} on the word $id+id*id$ will result in two different interpretation as shown in Fig.\ref{fig:ambiguoustree1} and Fig.\ref{fig:ambiguoustree2}.
-
+    For example, applying the grammar of fig.\ref{fig:unmodifiedgrammar3} on the word $id+id*id$ will result in two different interpretation as shown in Fig.\ref{fig:ambiguoustree1} and Fig.\ref{fig:ambiguoustree2}.\\
   \begin{figure}[h!]
     \centering
     \begin{subfigure}[b]{0.4\textwidth}
@@ -612,7 +613,6 @@ javadoc -d doc/javadoc/ -keywords -sourcepath src -subpackages be
     As previously mentioned, there does not exist an algorithm that resolves grammar ambiguity. However, there exists many ambiguity detection algorithms that have their own proprieties as listed in this article\footnote{H.J.S. Basten, August 17, 2007. \textit{Ambiguity Detection Methods for Context-Free Grammars.} Master's Thesis, Universiteit Van Amsterdam.}. The reader is invited to read this document for further information.
   \end{tcolorbox}
 
-  \subsection{Basic IMP grammar}
     \begin{figure}[h!]
       \centering
       \begin{lstlisting}
@@ -661,28 +661,26 @@ javadoc -d doc/javadoc/ -keywords -sourcepath src -subpackages be
       \label{fig:basicimpgrammar}
     \end{figure}
   
-    \begin{figure}[h!]
-      \centering
-      \lstinputlisting{../../test/grammar/FinalIMP.gram}
-      \caption{The final IMP grammar after modifications.}
-      \label{fig:finalimpgrammar}
-    \end{figure}
+  \begin{figure}[h!]
+    \centering
+    \lstinputlisting{../../test/grammar/FinalIMP.gram}
+    \caption{The final IMP grammar after modifications.}
+    \label{fig:finalimpgrammar}
+  \end{figure}
+
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{./img/class_grammar.png}
+    \caption{Architecture of the grammar}
+    \label{fig:grammararchitecture}
+  \end{figure}
   
-  \subsection{Grammar architecture}
-    \begin{figure}
-      \centering
-      \includegraphics[width=\textwidth]{./img/class_grammar.png}
-      \caption{Architecture of the grammar}
-      \label{fig:grammararchitecture}
-    \end{figure}
-    
-  \subsection{IMP action table}
-    \begin{sidewaystable} % <-- HERE
-      \centering
-      \input{ActionTable.txt}
-      \caption{IMP action table.}
-      \label{impactiontable}
-    \end{sidewaystable}
+  \begin{sidewaystable} % <-- HERE
+    \centering
+    \input{ActionTable.txt}
+    \caption{IMP action table.}
+    \label{impactiontable}
+  \end{sidewaystable}
       
 
 \end{document}
