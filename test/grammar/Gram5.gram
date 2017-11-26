@@ -1,4 +1,0 @@
-<init> -> if <cond> then <code> endif
-       -> if <cond> then <code> else <code> endif
-<code> -> a
-<cond> -> b
