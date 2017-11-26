@@ -233,7 +233,7 @@ public class Grammar {
         final HashSet<Symbol> syms = getAllSymbol();
         
         int maxLenVarName = 0;
-        for(final GrammarVariable var : _variables) {
+        for(final GrammarVariable var : getOrdonedGrammarVariable()) {
             if(maxLenVarName < var.getValue().length()) {
                 maxLenVarName = var.getValue().length();
             }
@@ -254,7 +254,7 @@ public class Grammar {
         System.out.println("");
         
         // Table
-        for (final GrammarVariable var : _variables) {
+        for (final GrammarVariable var : getOrdonedGrammarVariable()) {
             final String varName = var.getVarName();
             
             int colonne = 0;
