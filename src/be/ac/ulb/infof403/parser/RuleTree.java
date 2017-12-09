@@ -13,6 +13,7 @@ public class RuleTree {
     
     private final Elem _value;
     private final ArrayList<RuleTree> _children;
+    private Integer _ruleUsed;
     
     public RuleTree(final Elem value) {
         _value = value;
@@ -31,7 +32,12 @@ public class RuleTree {
         return _value;
     }
     
+    public Integer getRuleUsed() {
+        return _ruleUsed;
+    }
+    
     protected ArrayList<RuleTree> addChild(final Rule rule) {
+        _ruleUsed = rule.getId();
         final ArrayList<RuleTree> allRuleTreE = new ArrayList();
         for(final Elem elem : rule) {
             final RuleTree newRuleTree = new RuleTree(elem);
