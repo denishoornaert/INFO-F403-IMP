@@ -11,11 +11,14 @@ import java.util.ArrayList;
  */
 public class RuleTree {
     
+    private static Integer _id = 0;
+    
     private final Elem _value;
     private final ArrayList<RuleTree> _children;
     private Integer _ruleUsed;
     
     public RuleTree(final Elem value) {
+        _id++;
         _value = value;
         _children = new ArrayList<>();
     }
@@ -34,6 +37,10 @@ public class RuleTree {
     
     public Integer getRuleUsed() {
         return _ruleUsed;
+    }
+    
+    public Integer getId() {
+        return _id;
     }
     
     protected ArrayList<RuleTree> addChild(final Rule rule) {
