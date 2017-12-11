@@ -161,6 +161,9 @@ public class Main {
             ll1.printTransitions();
         }
         
+        final String result = ll1.produiceCode();
+        System.out.println("Résult:\n" + result);
+        
     }
     
     private static String getFileName(final String filePath) {

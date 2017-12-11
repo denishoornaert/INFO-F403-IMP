@@ -76,7 +76,7 @@ public class Ll1 {
     
     public void parse(final boolean debug) throws UnexpectedSymbolException {
         final GrammarVariable grammarInitialVariable = _grammar.getInitialVariable();
-        _tree = new RuleTree(grammarInitialVariable);
+        _tree = RuleTreeFactory.getRuleTree(grammarInitialVariable);
         final ParseStack stack = new ParseStack(_tree);
         
         while (!stack.isEmpty() && _symb != null) {
@@ -101,6 +101,11 @@ public class Ll1 {
         }
         
     }
+    
+    public String produiceCode() {
+        return _tree.getRepresentation();
+    }
+    
     
     public void generateGojsParseTree(final String gojsOutputFile) {
         new GenerateGojsParseTree(_tree, gojsOutputFile);

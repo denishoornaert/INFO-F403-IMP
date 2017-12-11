@@ -3,15 +3,15 @@ package be.ac.ulb.infof403.impVariableTypes;
 import be.ac.ulb.infof403.Elem;
 import be.ac.ulb.infof403.parser.RuleTree;
 
-public class Print extends RuleTree {
-
-    public Print(final Elem value) {
-        super(value);
+public class VarName extends RuleTree {
+    
+    public VarName(final Elem elem) {
+        super(elem);
     }
-
+    
     @Override
     public String getRepresentation() {
-        return " afficher [" + this._children.get(2).getRepresentation() + "]"; // TODO
+        return (this._value != null ? this._value.toString() : "null");
     }
-
+    
 }

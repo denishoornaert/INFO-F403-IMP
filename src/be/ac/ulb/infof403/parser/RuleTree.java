@@ -9,15 +9,15 @@ import java.util.ArrayList;
 /**
  * Element of the Parsing Tree
  */
-public class RuleTree {
+public abstract class RuleTree {
     
     private static Integer _id = 0;
     
-    private final Elem _value;
-    private final ArrayList<RuleTree> _children;
+    protected final Elem _value;
+    protected final ArrayList<RuleTree> _children;
     private Integer _ruleUsed;
     
-    public RuleTree(final Elem value) {
+    protected RuleTree(final Elem value) {
         _id++;
         _value = value;
         _children = new ArrayList<>();
@@ -47,7 +47,7 @@ public class RuleTree {
         _ruleUsed = rule.getId();
         final ArrayList<RuleTree> allRuleTreE = new ArrayList();
         for(final Elem elem : rule) {
-            final RuleTree newRuleTree = new RuleTree(elem);
+            final RuleTree newRuleTree = RuleTreeFactory.getRuleTree(elem);
             _children.add(newRuleTree);
             if(!(elem instanceof Epsilon)) {
                 allRuleTreE.add(newRuleTree);
@@ -56,5 +56,7 @@ public class RuleTree {
         
         return allRuleTreE;
     }
+    
+    public String getRepresentation() { return ""; }
     
 }
