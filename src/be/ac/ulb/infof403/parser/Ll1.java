@@ -99,13 +99,11 @@ public class Ll1 {
         } else if(_i.hasNext()) { // If code is not finish
             throw new UnexpectedSymbolException(_symb, "Expected end of file"); 
         }
-        
     }
     
     public String produiceCode() {
         return _tree.getRepresentation();
     }
-    
     
     public void generateGojsParseTree(final String gojsOutputFile) {
         new GenerateGojsParseTree(_tree, gojsOutputFile);

@@ -11,9 +11,11 @@ public class Program extends RuleTree {
 
     @Override
     public String getRepresentation() {
-        // TODO create main ect
         // begin <Code> end 
-        return "main() {\n" + this._children.get(1).getRepresentation() + "\n}";
+        String result = "define i32 @main() {\n";
+        result += this._children.get(1).getRepresentation();
+        result += "ret i32 0\n}";
+        return result;
     }
     
 }

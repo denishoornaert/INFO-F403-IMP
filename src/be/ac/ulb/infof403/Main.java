@@ -1,6 +1,7 @@
 package be.ac.ulb.infof403;
 
 import be.ac.ulb.infof403.grammar.Grammar;
+import be.ac.ulb.infof403.llvm.LlvmFactory;
 import be.ac.ulb.infof403.parser.Ll1;
 import be.ac.ulb.infof403.parser.UnexpectedSymbolException;
 import be.ac.ulb.infof403.scanner.ImpScanner;
@@ -161,7 +162,9 @@ public class Main {
             ll1.printTransitions();
         }
         
-        final String result = ll1.produiceCode();
+        String result = LlvmFactory.getReadIntMethod();
+        result += LlvmFactory.getPrintMethod();
+        result += ll1.produiceCode();
         System.out.println("Résult:\n" + result);
         
     }

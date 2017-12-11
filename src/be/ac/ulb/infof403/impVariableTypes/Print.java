@@ -11,7 +11,9 @@ public class Print extends RuleTree {
 
     @Override
     public String getRepresentation() {
-        return " afficher [" + this._children.get(2).getRepresentation() + "]"; // TODO
+        String result = this._children.get(2).getRepresentation() + "\n";
+        result += "call void @println(i32 " + getLastVariable() +")";
+        return result;
     }
 
 }
