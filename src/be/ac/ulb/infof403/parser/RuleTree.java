@@ -12,14 +12,15 @@ import java.util.ArrayList;
 public abstract class RuleTree {
     
     private static Integer _varIndex = 0;
-    private static Integer _id = 0;
+    private static Integer _globalId = 0;
     
+    protected final Integer _id;
     protected final Elem _value;
     protected final ArrayList<RuleTree> _children;
     private Integer _ruleUsed;
     
     protected RuleTree(final Elem value) {
-        _id++;
+        _id = ++_globalId;
         _value = value;
         _children = new ArrayList<>();
     }
