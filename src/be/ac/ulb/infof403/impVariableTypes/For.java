@@ -33,10 +33,9 @@ public class For extends RuleTree {
         
 //        String strOutput = "startfor"+id + ":\n";
         String strOutput = "%tmpinc"+id + " = alloca i32\n";
-        strOutput += "store i32 " + countVar + ", i32* %tmpinc"+id+"\n";
         strOutput += "br label %startloop"+id+"\n";
         strOutput += "startloop"+id+":\n";
-        _generalOutput = strOutput;
+        _generalOutput += strOutput;
         
         final RuleTree forBis = this._children.get(4);
         final Integer condElem;
@@ -49,13 +48,13 @@ public class For extends RuleTree {
         condVar = forBis.getChildren().get(condElem).getResultVar();
         
         // Note the "="
-        strOutput = "%i = load i32, i32* %tmpinc"+id+"\n";
-        strOutput += countVar + " = icmp slt i32 %i"+id+", " + condVar + "\n";
-        strOutput += "br i1 " + countVar + ", label %loop"+id+", label %endloop"+id+"\n";
+        strOutput = countVar + " = load i32, i32* %tmpinc"+id+"\n";
+        strOutput += "%coundRes" + id + " = icmp slt i32 "+countVar+", " + condVar + "\n";
+        strOutput += "br i1 %coundRes" + id + ", label %loop"+id+", label %endloop"+id+"\n";
         strOutput += "loop"+id+":\n";
         _generalOutput += strOutput;
         
-        this._children.get(4).getResultVar(); // Evaluate but not save
+        forBis.getResultVar(countVar); // Evaluate but not save
         
         return "";
     }

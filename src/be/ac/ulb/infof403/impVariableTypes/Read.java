@@ -11,7 +11,7 @@ public class Read extends RuleTree {
     
     @Override
     public String getResultVar() {
-        final String strOutput = this._children.get(2).getResultVar() + " = call void @readInt()\n";
+        final String strOutput = this._children.get(2).getResultVar() + " = call i32 @readInt()\n";
         _generalOutput += strOutput;
         return "";
     }

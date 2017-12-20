@@ -17,7 +17,7 @@ public class IfBis extends RuleTree {
             this._children.get(1).getResultVar();
             String strOutput = "br label %endelse"+id+"\n";
             strOutput += "endelse"+id+":\n";
-            _generalOutput = strOutput;
+            _generalOutput += strOutput;
         }
         return "";
     }

@@ -32,7 +32,7 @@ public class If extends RuleTree {
         this._children.get(3).getResultVar();
         strOutput += "br label %endif"+id+"\n";
         strOutput += "endif"+id+":\n";
-        _generalOutput = strOutput;
+        _generalOutput += strOutput;
         this._children.get(4).getResultVar();
         
         return "";

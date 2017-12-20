@@ -12,7 +12,9 @@ public class Assign extends RuleTree {
     @Override
     public String getResultVar() {
         System.out.println("[DEBUG] Result: Assign");
-        String tmpOutput = this._children.get(0).getResultVar() + " = add " + this._children.get(2).getResultVar() + ", 0\n";
+        // TODO store and load
+        final String tmpOutput = this._children.get(0).getResultVar() + " = add i32 " + 
+                this._children.get(2).getResultVar() + ", 0\n";
         _generalOutput += tmpOutput;
         return "";
     }

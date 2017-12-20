@@ -24,7 +24,7 @@ public class ForBis extends RuleTree {
 //    }
     
     @Override
-    public String getResultVar() {
+    public String getResultVar(String param) {
         final Integer id = this.getId();
         
         final String inc;
@@ -40,7 +40,7 @@ public class ForBis extends RuleTree {
         
 //        _generalOutput += "startfor"+id+":\n";
         this._children.get(instructionBlockOffset).getResultVar();
-        String strOutput = "%inc = add i32 %i"+id+", "+inc+"\n";
+        String strOutput = "%inc" + id + " = add i32 "+param+", "+inc+"\n";
         strOutput += "store i32 %inc"+id+", i32* %tmpinc"+id+"\n";
         strOutput += "br label %startloop"+id+"\n";
         strOutput += "endloop"+id+":\n";

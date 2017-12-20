@@ -46,11 +46,6 @@ public abstract class RuleTree {
         return _id;
     }
     
-    // just for ensure the convention is respected
-    public String getLocalVariable() {
-        return "r"+_id;
-    }
-    
     protected ArrayList<RuleTree> addChild(final Rule rule) {
         _ruleUsed = rule.getId();
         final ArrayList<RuleTree> allRuleTree = new ArrayList();
@@ -65,7 +60,9 @@ public abstract class RuleTree {
         return allRuleTree;
     }
     
-    public String getResultVar() { return ""; }
+    public String getResultVar(String param) { return ""; }
+    
+    public String getResultVar() { return getResultVar(""); }
     
     protected static String getNextVariable() {
         return "%" + (++_varIndex);

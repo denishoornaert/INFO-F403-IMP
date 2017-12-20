@@ -5,7 +5,7 @@ begin
     read(n) ;
     a := 0 ;
     b := 0 ;
-    for n from 0 to n do (* loop from 0 to n *)
+    for i from 0 to n do (* loop from 0 to n *)
         tmp := b ;
         b := a ;
         a := tmp
