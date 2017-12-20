@@ -9,22 +9,16 @@ public class While extends RuleTree {
         super(value);
     }
 
-//    @Override
-//    public String getRepresentation() {
-//        Integer id = this.getId();
-//        String varname = this._children.get(1).getLocalVariable();
-//        String result = this._children.get(1).getRepresentation() + "\n";
-//        result += "br i1 %"+varname+", label %if"+id+", label %endif"+id+"\n";
-//        result += "if"+id+":\n";
-//        result += this._children.get(3).getRepresentation() + "\n";
-//        result += "br label %endif"+id+"\n";
-//        result += "endif"+id+":\n";
-//        return result;
-//    }
-    
     @Override
     public String getResultVar() {
-        final Integer id = this.getId();
+        _generalOutput += "br label %startloop\n";
+        _generalOutput += "startloop:\n";
+        String condVar = this._children.get(1).getResultVar();
+        _generalOutput += "br i1 "+condVar+", label %loop, label %endloop\n";
+        _generalOutput += "loop:\n";
+        this._children.get(3).getResultVar();
+        _generalOutput += "br label %startloop\n";
+        _generalOutput += "endloop:\n";
         return "";
     }
     
