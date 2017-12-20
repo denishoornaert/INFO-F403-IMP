@@ -35,7 +35,7 @@ public class For extends RuleTree {
         
 //        String strOutput = "startfor"+id + ":\n";
         String strOutput = "%tmpinc"+id + " = alloca i32\n";
-        _generalOutput += strOutput;
+        CodeFactory.write(strOutput);
         
         final String startValue = this._children.get(3).getResultVar();
         
