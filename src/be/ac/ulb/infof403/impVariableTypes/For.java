@@ -28,16 +28,22 @@ public class For extends RuleTree {
     
     @Override
     public String getResultVar() {
-        final Integer id = this._children.get(1).getId();
+        final RuleTree forBis = this._children.get(4);
+        final Integer id = forBis.getId();
         final String countVar = this._children.get(1).getResultVar();
         
 //        String strOutput = "startfor"+id + ":\n";
         String strOutput = "%tmpinc"+id + " = alloca i32\n";
+        _generalOutput += strOutput;
+        
+        final String startValue = this._children.get(3).getResultVar();
+        
+        strOutput = "store i32 " + startValue +", i32* %tmpinc"+id + "\n";
         strOutput += "br label %startloop"+id+"\n";
         strOutput += "startloop"+id+":\n";
         _generalOutput += strOutput;
         
-        final RuleTree forBis = this._children.get(4);
+        
         final Integer condElem;
         final String condVar;
         if(forBis.getChildren().size() == 7) {

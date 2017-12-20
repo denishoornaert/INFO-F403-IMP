@@ -1,7 +1,10 @@
 begin
     read(n) ;
-    a := 0 ;
-    for i from 0 to n do (* loop from 0 to n *)
+    for i from 0 to 5 do (* loop from 0 to n *)
         print(i)
+    done;
+
+    for j from 1 to 7 do (* loop from 0 to n *)
+        print(j)
     done
 end
