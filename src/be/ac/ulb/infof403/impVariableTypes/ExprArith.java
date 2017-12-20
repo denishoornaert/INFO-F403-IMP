@@ -27,6 +27,4 @@ public class ExprArith extends RuleTree {
         return resultVar;
     }
     
-    
 }
-

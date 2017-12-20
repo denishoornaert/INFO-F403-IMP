@@ -5,16 +5,15 @@ import be.ac.ulb.infof403.parser.RuleTree;
 
 public class Read extends RuleTree {
 
-    public Read(Elem value) {
+    public Read(final Elem value) {
         super(value);
     }
-
+    
     @Override
-    public String getRepresentation() {
-        String targetVariable = this._children.get(2).getLocalVariable();
-        String result = targetVariable+" = call void @readInt()";
-        return result;
+    public String getResultVar() {
+        final String strOutput = this._children.get(2).getResultVar() + " = call void @readInt()";
+        _generalOutput += strOutput;
+        return "";
     }
     
 }
-

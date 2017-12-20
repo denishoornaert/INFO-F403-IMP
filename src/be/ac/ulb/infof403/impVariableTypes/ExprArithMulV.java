@@ -13,16 +13,20 @@ public class ExprArithMulV extends RuleTree {
     public String getResultVar() {
         System.out.println("[DEBUG] Result: ExprArithMulV");
         final String resultVar;
-        final RuleTree exprArithMulV = this._children.get(2);
-        final String operator = exprArithMulV.getChildren().get(0).getResultVar();
-        if(!operator.isEmpty()) {
-            final String strOutput = " = " + operator + 
-                    " i32 " + this._children.get(1).getResultVar() + ", " + exprArithMulV.getResultVar() + "\n";
-            resultVar = getNextVariable();
-            _generalOutput += resultVar + strOutput;
-            
+        if(this._children.size() > 1) {
+            final RuleTree exprArithMulV = this._children.get(2);
+            final String operator = exprArithMulV.getChildren().get(0).getResultVar();
+            if(!operator.isEmpty()) {
+                final String strOutput = " = " + operator + 
+                        " i32 " + this._children.get(1).getResultVar() + ", " + exprArithMulV.getResultVar() + "\n";
+                resultVar = getNextVariable();
+                _generalOutput += resultVar + strOutput;
+                
+            } else {
+                resultVar = this._children.get(1).getResultVar();
+            }
         } else {
-            resultVar = this._children.get(1).getResultVar();
+            resultVar = "";
         }
         
         return resultVar;

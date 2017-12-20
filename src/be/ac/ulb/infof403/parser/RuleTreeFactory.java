@@ -14,6 +14,10 @@ import be.ac.ulb.infof403.impVariableTypes.ExprArithMulU;
 import be.ac.ulb.infof403.impVariableTypes.ExprArithMulV;
 import be.ac.ulb.infof403.impVariableTypes.ExprArithU;
 import be.ac.ulb.infof403.impVariableTypes.ExprArithV;
+import be.ac.ulb.infof403.impVariableTypes.For;
+import be.ac.ulb.infof403.impVariableTypes.ForBis;
+import be.ac.ulb.infof403.impVariableTypes.If;
+import be.ac.ulb.infof403.impVariableTypes.IfBis;
 import be.ac.ulb.infof403.impVariableTypes.InstList;
 import be.ac.ulb.infof403.impVariableTypes.InstListBis;
 import be.ac.ulb.infof403.impVariableTypes.Instruction;
@@ -22,6 +26,7 @@ import be.ac.ulb.infof403.impVariableTypes.OpMul;
 import be.ac.ulb.infof403.impVariableTypes.Print;
 import be.ac.ulb.infof403.impVariableTypes.Program;
 import be.ac.ulb.infof403.impVariableTypes.VarName;
+import be.ac.ulb.infof403.impVariableTypes.While;
 
 /**
  * Factory
@@ -85,6 +90,26 @@ public class RuleTreeFactory {
                 
             case "<OpMul>":
                 result = new OpMul(elem);
+                break;
+                
+            case "<If>":
+                result = new If(elem);
+                break;
+                
+            case "<If'>":
+                result = new IfBis(elem);
+                break;
+                
+            case "<For>":
+                result = new For(elem);
+                break;
+                
+            case "<For'>":
+                result = new ForBis(elem);
+                break;
+                
+            case "<While>":
+                result = new While(elem);
                 break;
                 
             case "<Program>":

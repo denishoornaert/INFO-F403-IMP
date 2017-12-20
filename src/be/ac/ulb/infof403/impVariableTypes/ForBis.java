@@ -5,13 +5,13 @@ import be.ac.ulb.infof403.parser.RuleTree;
 
 public class ForBis extends RuleTree {
 
-    public ForBis(Elem value) {
+    public ForBis(final Elem value) {
         super(value);
     }
 
     @Override
     public String getRepresentation() {
-        Integer id = this.getId(); // TODO get parent id
+        Integer id = this.getId();
         String inc = (this._children.size() == 7) ? this._children.get(1).getLocalVariable() : "1";
         Integer instructionBlockOffset = (this._children.size() == 7) ? 5 : 3;
         String result = "startfor"+id+"\n";
@@ -23,5 +23,9 @@ public class ForBis extends RuleTree {
         return result;
     }
     
+    @Override
+    public String getResultVar() {
+        
+    }
+    
 }
-
