@@ -1,6 +1,7 @@
 package be.ac.ulb.infof403.parser;
 
 import be.ac.ulb.infof403.Elem;
+import be.ac.ulb.infof403.LexicalUnit;
 import be.ac.ulb.infof403.Symbol;
 import be.ac.ulb.infof403.TokenList;
 import be.ac.ulb.infof403.grammar.Grammar;
@@ -41,6 +42,10 @@ public class Ll1 {
             throw new IllegalArgumentException();
         }
         else {
+            if(_symb.getType().equals(LexicalUnit.VARNAME) || _symb.getType().equals(LexicalUnit.NUMBER)) {
+                ((Symbol) currentElem).setValue(_symb.getValue());
+            }
+            
             _transitions.add("M");
             if(_i.hasNext()) {
                 _symb = _i.next();
