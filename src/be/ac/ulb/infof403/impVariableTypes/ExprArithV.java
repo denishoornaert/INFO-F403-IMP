@@ -15,13 +15,18 @@ public class ExprArithV extends RuleTree {
         final String resultVar;
         if(this._children.size() > 1) {
             final RuleTree exprArithV = this._children.get(2);
-            String strOutput = " = " + exprArithV.getChildren().get(0).getResultVar() + 
-                    "i32 " + this._children.get(0).getResultVar() + ", " + exprArithV.getResultVar() + "\n";
-            resultVar = getNextVariable();
-            _generalOutput += resultVar + strOutput;
-            
+            final String operator = exprArithV.getChildren().get(0).getResultVar();
+            if(!operator.isEmpty()) {
+                final String strOutput = " = " + operator + 
+                        " i32 " + this._children.get(1).getResultVar() + ", " + exprArithV.getResultVar() + "\n";
+                resultVar = getNextVariable();
+                _generalOutput += resultVar + strOutput;
+                
+            } else {
+                resultVar = this._children.get(1).getResultVar();
+            }
         } else {
-            resultVar = this._children.get(0).getResultVar();
+            resultVar = "";
         }
         
         return resultVar;

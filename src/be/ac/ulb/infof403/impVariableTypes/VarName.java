@@ -20,7 +20,7 @@ public class VarName extends RuleTree {
                 
                 case NUMBER:
                     result = getNextVariable();
-                    _generalOutput += result + " = add i32 %" + this._value.getValue().toString() + ", 0\n";
+                    _generalOutput += result + " = add i32 " + this._value.getValue().toString() + ", 0\n";
                     break;
                     
                 case VARNAME:
