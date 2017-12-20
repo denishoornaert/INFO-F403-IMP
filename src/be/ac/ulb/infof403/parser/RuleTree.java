@@ -44,6 +44,11 @@ public abstract class RuleTree {
         return _id;
     }
     
+    // just for ensure the convention is respected
+    public String getLocalVariable() {
+        return "r"+_id;
+    }
+    
     protected ArrayList<RuleTree> addChild(final Rule rule) {
         _ruleUsed = rule.getId();
         final ArrayList<RuleTree> allRuleTreE = new ArrayList();

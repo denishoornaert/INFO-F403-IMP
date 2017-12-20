@@ -3,9 +3,9 @@ package be.ac.ulb.infof403.impVariableTypes;
 import be.ac.ulb.infof403.Elem;
 import be.ac.ulb.infof403.parser.RuleTree;
 
-public class While extends RuleTree {
-
-    public While(Elem value) {
+public class If extends RuleTree {
+    
+    public If(Elem value) {
         super(value);
     }
 
@@ -16,11 +16,11 @@ public class While extends RuleTree {
         String result = this._children.get(1).getRepresentation() + "\n";
         result += "br i1 %"+varname+", label %if"+id+", label %endif"+id+"\n";
         result += "if"+id+":\n";
-        result += this._children.get(3).getRepresentation() + "\n";
+        result += this._children.get(3).getRepresentation()+"\n";
         result += "br label %endif"+id+"\n";
         result += "endif"+id+":\n";
+        result += this._children.get(4).getRepresentation();
         return result;
     }
     
 }
-
