@@ -1,6 +1,7 @@
 package be.ac.ulb.infof403.impVariableTypes;
 
 import be.ac.ulb.infof403.Elem;
+import be.ac.ulb.infof403.codeGenerator.CodeFactory;
 import be.ac.ulb.infof403.parser.RuleTree;
 
 public class If extends RuleTree {
@@ -32,7 +33,7 @@ public class If extends RuleTree {
         this._children.get(3).getResultVar();
         strOutput += "br label %endif"+id+"\n";
         strOutput += "endif"+id+":\n";
-        _generalOutput += strOutput;
+        CodeFactory.write(strOutput);
         this._children.get(4).getResultVar();
         
         return "";

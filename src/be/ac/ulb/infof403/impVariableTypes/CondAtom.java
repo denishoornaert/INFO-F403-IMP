@@ -8,6 +8,8 @@ public class CondAtom extends RuleTree {
     public CondAtom(Elem value) {
         super(value);
     }
+    
+    // %false = add i1 %true, 1
 
 }
 

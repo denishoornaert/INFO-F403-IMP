@@ -1,6 +1,7 @@
 package be.ac.ulb.infof403.impVariableTypes;
 
 import be.ac.ulb.infof403.Elem;
+import be.ac.ulb.infof403.codeGenerator.CodeFactory;
 import be.ac.ulb.infof403.parser.RuleTree;
 
 public class ExprArith extends RuleTree {
@@ -19,7 +20,7 @@ public class ExprArith extends RuleTree {
             final String outputResult = " = " + exprArithV.getChildren().get(0).getResultVar() + 
                     " i32 " + this._children.get(0).getResultVar() + ", " + exprArithVResult + "\n";
             resultVar = getNextVariable();
-            _generalOutput += resultVar + outputResult;
+            CodeFactory.write(resultVar + outputResult);
             
         } else {
             resultVar = this._children.get(0).getResultVar();

@@ -1,6 +1,7 @@
 package be.ac.ulb.infof403.impVariableTypes;
 
 import be.ac.ulb.infof403.Elem;
+import be.ac.ulb.infof403.codeGenerator.CodeFactory;
 import be.ac.ulb.infof403.parser.RuleTree;
 
 public class Read extends RuleTree {
@@ -12,7 +13,7 @@ public class Read extends RuleTree {
     @Override
     public String getResultVar() {
         final String strOutput = this._children.get(2).getResultVar() + " = call i32 @readInt()\n";
-        _generalOutput += strOutput;
+        CodeFactory.write(strOutput);
         return "";
     }
     

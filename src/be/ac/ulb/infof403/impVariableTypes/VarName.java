@@ -2,6 +2,7 @@ package be.ac.ulb.infof403.impVariableTypes;
 
 import be.ac.ulb.infof403.Elem;
 import be.ac.ulb.infof403.Symbol;
+import be.ac.ulb.infof403.codeGenerator.CodeFactory;
 import be.ac.ulb.infof403.parser.RuleTree;
 
 public class VarName extends RuleTree {
@@ -20,7 +21,7 @@ public class VarName extends RuleTree {
                 
                 case NUMBER:
                     result = getNextVariable();
-                    _generalOutput += result + " = add i32 " + this._value.getValue().toString() + ", 0\n";
+                    CodeFactory.write(result + " = add i32 " + this._value.getValue().toString() + ", 0\n");
                     break;
                     
                 case VARNAME:

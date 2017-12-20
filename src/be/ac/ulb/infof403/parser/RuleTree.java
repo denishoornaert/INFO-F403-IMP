@@ -11,8 +11,6 @@ import java.util.ArrayList;
  */
 public abstract class RuleTree {
     
-    protected static String _generalOutput = "";
-    
     private static Integer _varIndex = 0;
     private static Integer _id = 0;
     
@@ -70,14 +68,6 @@ public abstract class RuleTree {
     
     protected static String getLastVariable() {
         return "%" + _varIndex;
-    }
-    
-    /**
-     * TODO debug
-     * @return 
-     */
-    public static String getGeneralOuput() {
-        return _generalOutput;
     }
     
 }

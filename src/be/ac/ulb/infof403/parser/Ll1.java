@@ -4,6 +4,7 @@ import be.ac.ulb.infof403.Elem;
 import be.ac.ulb.infof403.LexicalUnit;
 import be.ac.ulb.infof403.Symbol;
 import be.ac.ulb.infof403.TokenList;
+import be.ac.ulb.infof403.codeGenerator.CodeFactory;
 import be.ac.ulb.infof403.grammar.Grammar;
 import be.ac.ulb.infof403.grammar.GrammarVariable;
 import be.ac.ulb.infof403.grammar.Rule;
@@ -108,7 +109,7 @@ public class Ll1 {
     
     public String produiceCode() {
         _tree.getResultVar();
-        return RuleTree.getGeneralOuput();
+        return CodeFactory.getGeneralOutput();
     }
     
     public void generateGojsParseTree(final String gojsOutputFile) {

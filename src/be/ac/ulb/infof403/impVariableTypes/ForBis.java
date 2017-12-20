@@ -1,6 +1,7 @@
 package be.ac.ulb.infof403.impVariableTypes;
 
 import be.ac.ulb.infof403.Elem;
+import be.ac.ulb.infof403.codeGenerator.CodeFactory;
 import be.ac.ulb.infof403.parser.RuleTree;
 
 public class ForBis extends RuleTree {
@@ -44,7 +45,7 @@ public class ForBis extends RuleTree {
         strOutput += "store i32 %inc"+id+", i32* %tmpinc"+id+"\n";
         strOutput += "br label %startloop"+id+"\n";
         strOutput += "endloop"+id+":\n";
-        _generalOutput += strOutput;
+        CodeFactory.write(strOutput);
         
         return "";
     }

@@ -1,6 +1,7 @@
 package be.ac.ulb.infof403.impVariableTypes;
 
 import be.ac.ulb.infof403.Elem;
+import be.ac.ulb.infof403.codeGenerator.CodeFactory;
 import be.ac.ulb.infof403.parser.RuleTree;
 
 public class For extends RuleTree {
@@ -35,7 +36,7 @@ public class For extends RuleTree {
         String strOutput = "%tmpinc"+id + " = alloca i32\n";
         strOutput += "br label %startloop"+id+"\n";
         strOutput += "startloop"+id+":\n";
-        _generalOutput += strOutput;
+        CodeFactory.write(strOutput);
         
         final RuleTree forBis = this._children.get(4);
         final Integer condElem;
@@ -52,7 +53,7 @@ public class For extends RuleTree {
         strOutput += "%coundRes" + id + " = icmp slt i32 "+countVar+", " + condVar + "\n";
         strOutput += "br i1 %coundRes" + id + ", label %loop"+id+", label %endloop"+id+"\n";
         strOutput += "loop"+id+":\n";
-        _generalOutput += strOutput;
+        CodeFactory.write(strOutput);
         
         forBis.getResultVar(countVar); // Evaluate but not save
         

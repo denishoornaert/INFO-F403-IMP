@@ -1,6 +1,7 @@
 package be.ac.ulb.infof403.impVariableTypes;
 
 import be.ac.ulb.infof403.Elem;
+import be.ac.ulb.infof403.codeGenerator.CodeFactory;
 import be.ac.ulb.infof403.parser.RuleTree;
 
 public class Print extends RuleTree {
@@ -11,7 +12,7 @@ public class Print extends RuleTree {
     
     @Override
     public String getResultVar() {
-        _generalOutput += "call void @println(i32 " + this._children.get(2).getResultVar() + ")\n";
+        CodeFactory.write("call void @println(i32 " + this._children.get(2).getResultVar() + ")\n");
         return "";
     }
     

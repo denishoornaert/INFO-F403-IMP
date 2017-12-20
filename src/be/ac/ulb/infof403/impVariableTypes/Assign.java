@@ -1,6 +1,7 @@
 package be.ac.ulb.infof403.impVariableTypes;
 
 import be.ac.ulb.infof403.Elem;
+import be.ac.ulb.infof403.codeGenerator.CodeFactory;
 import be.ac.ulb.infof403.parser.RuleTree;
 
 public class Assign extends RuleTree {
@@ -15,7 +16,7 @@ public class Assign extends RuleTree {
         // TODO store and load
         final String tmpOutput = this._children.get(0).getResultVar() + " = add i32 " + 
                 this._children.get(2).getResultVar() + ", 0\n";
-        _generalOutput += tmpOutput;
+        CodeFactory.write(tmpOutput);
         return "";
     }
     

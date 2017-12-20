@@ -1,6 +1,7 @@
 package be.ac.ulb.infof403.impVariableTypes;
 
 import be.ac.ulb.infof403.Elem;
+import be.ac.ulb.infof403.codeGenerator.CodeFactory;
 import be.ac.ulb.infof403.parser.RuleTree;
 
 public class While extends RuleTree {
@@ -11,14 +12,14 @@ public class While extends RuleTree {
 
     @Override
     public String getResultVar() {
-        _generalOutput += "br label %startloop\n";
-        _generalOutput += "startloop:\n";
+        CodeFactory.write("br label %startloop\n");
+        CodeFactory.write("startloop:\n");
         String condVar = this._children.get(1).getResultVar();
-        _generalOutput += "br i1 "+condVar+", label %loop, label %endloop\n";
-        _generalOutput += "loop:\n";
+        CodeFactory.write("br i1 "+condVar+", label %loop, label %endloop\n");
+        CodeFactory.write("loop:\n");
         this._children.get(3).getResultVar();
-        _generalOutput += "br label %startloop\n";
-        _generalOutput += "endloop:\n";
+        CodeFactory.write("br label %startloop\n");
+        CodeFactory.write("endloop:\n");
         return "";
     }
     
