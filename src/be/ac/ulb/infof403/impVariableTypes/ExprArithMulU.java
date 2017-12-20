@@ -5,9 +5,14 @@ import be.ac.ulb.infof403.parser.RuleTree;
 
 public class ExprArithMulU extends RuleTree {
 
-    public ExprArithMulU(Elem value) {
+    public ExprArithMulU(final Elem value) {
         super(value);
     }
-
+    
+    @Override
+    public String getResultVar() {
+        System.out.println("[DEBUG] Result: ExprArithMulU");
+        return this._children.get(0).getResultVar();
+    }
+    
 }
-

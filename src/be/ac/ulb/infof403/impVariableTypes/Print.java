@@ -8,12 +8,11 @@ public class Print extends RuleTree {
     public Print(final Elem value) {
         super(value);
     }
-
+    
     @Override
-    public String getRepresentation() {
-        String result = this._children.get(2).getRepresentation() + "\n";
-        result += "call void @println(i32 " + getLastVariable() +")";
-        return result;
+    public String getResultVar() {
+        _generalOutput += "call void @println(i32 " + this._children.get(2).getResultVar() + ")\n";
+        return "";
     }
-
+    
 }

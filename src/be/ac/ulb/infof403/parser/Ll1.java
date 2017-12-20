@@ -107,7 +107,8 @@ public class Ll1 {
     }
     
     public String produiceCode() {
-        return _tree.getRepresentation();
+        _tree.getResultVar();
+        return RuleTree.getGeneralOuput();
     }
     
     public void generateGojsParseTree(final String gojsOutputFile) {

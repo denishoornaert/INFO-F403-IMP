@@ -10,10 +10,11 @@ public class Assign extends RuleTree {
     }
     
     @Override
-    public String getRepresentation() {
-        String result = getNextVariable() + " = add i32 " + ", 0\n"; // TODO
-        result += "%" + this.getValue().getValue().toString() + " = add i32 " + getLastVariable() + ", 0";
-        
-        return result;
+    public String getResultVar() {
+        System.out.println("[DEBUG] Result: Assign");
+        String tmpOutput = this._children.get(0).getResultVar() + " = add " + this._children.get(2).getResultVar() + ", 0\n";
+        _generalOutput += tmpOutput;
+        return "";
     }
+    
 }

@@ -10,8 +10,26 @@ public class OpMul extends RuleTree {
     }
     
     @Override
-    public String getRepresentation() {
-        return "mul"; // TODO division
+    public String getResultVar() {
+        final String result;
+        
+        final String operator = this._children.get(0).getValue().getValue().toString();
+        switch(operator) {
+            case "*":
+                result = "mul";
+                break;
+                
+            case "/":
+                result = "div";
+                break;
+                
+            default:
+                System.err.println("[ERR] Unknown operator " + operator + " for 'OpMul'"); // TODO create custom error
+                result = "";
+                break;
+        }
+        
+        return result;
     }
     
 }

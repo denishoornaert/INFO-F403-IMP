@@ -10,8 +10,26 @@ public class OpAdd extends RuleTree {
     }
     
     @Override
-    public String getRepresentation() {
-        return "add"; // TODO soustraction
+    public String getResultVar() {
+        final String result;
+        
+        final String operator = this._children.get(0).getValue().getValue().toString();
+        switch(operator) {
+            case "+":
+                result = "add";
+                break;
+                
+            case "-":
+                result = "sub";
+                break;
+                
+            default:
+                System.err.println("[ERR] Unknown operator " + operator + " for 'OpAdd'"); // TODO create custom error
+                result = "";
+                break;
+        }
+        
+        return result;
     }
 
 }

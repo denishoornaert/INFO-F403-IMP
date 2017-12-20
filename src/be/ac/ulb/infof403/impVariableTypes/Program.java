@@ -8,14 +8,14 @@ public class Program extends RuleTree {
     public Program(final Elem value) {
         super(value);
     }
-
+    
     @Override
-    public String getRepresentation() {
-        // begin <Code> end 
-        String result = "define i32 @main() {\n";
-        result += this._children.get(1).getRepresentation();
-        result += "ret i32 0\n}";
-        return result;
+    public String getResultVar() {
+        System.out.println("[DEBUG] Result: Program");
+        _generalOutput += "define i32 @main() {\n";
+        this._children.get(1).getResultVar();
+        _generalOutput += "ret i32 0\n}";
+        return "";
     }
     
 }

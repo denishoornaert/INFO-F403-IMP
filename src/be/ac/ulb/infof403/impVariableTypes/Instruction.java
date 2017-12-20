@@ -8,10 +8,12 @@ public class Instruction extends RuleTree {
     public Instruction(final Elem value) {
         super(value);
     }
-
+    
     @Override
-    public String getRepresentation() {
-        return this._children.get(0).getRepresentation();
+    public String getResultVar() {
+        System.out.println("[DEBUG] Result: Instruction");
+        this._children.get(0).getResultVar(); // Compute but not store
+        return "";
     }
     
 }

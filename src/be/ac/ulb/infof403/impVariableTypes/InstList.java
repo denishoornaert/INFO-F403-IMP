@@ -8,12 +8,14 @@ public class InstList extends RuleTree {
     public InstList(final Elem value) {
         super(value);
     }
-
+    
     @Override
-    public String getRepresentation() {
-        // <Instruction> <InstList'> 
-        return this._children.get(0).getRepresentation() + this._children.get(1).getRepresentation();
+    public String getResultVar() {
+        System.out.println("[DEBUG] Result: InstList");
+        // Compute but no result
+        this._children.get(0).getResultVar();
+        this._children.get(1).getResultVar();
+        return "";
     }
-
+    
 }
-
