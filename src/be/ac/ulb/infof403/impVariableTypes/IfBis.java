@@ -10,16 +10,16 @@ public class IfBis extends RuleTree {
     }
 
     @Override
-    public String getRepresentation() {
-        Integer id = 0; //getFather id TODO
-        String result = "";
+    public String getResultVar() {
         if(this._children.size() == 3) {
             // else <Code> endif
-            result += this._children.get(1).getRepresentation()+"\n";
-            result += "br label %endelse"+id+"\n";
-            result += "endelse"+id+":\n";
+            final Integer id = getId();
+            this._children.get(1).getResultVar();
+            String strOutput = "br label %endelse"+id+"\n";
+            strOutput += "endelse"+id+":\n";
+            _generalOutput = strOutput;
         }
-        return result;
+        return "";
     }
     
 }
