@@ -5,8 +5,13 @@ import be.ac.ulb.infof403.parser.RuleTree;
 
 public class OpAdd extends RuleTree {
 
-    public OpAdd(Elem value) {
+    public OpAdd(final Elem value) {
         super(value);
+    }
+    
+    @Override
+    public String getRepresentation() {
+        return "add"; // TODO soustraction
     }
 
 }

@@ -8,7 +8,7 @@ public class Symbol extends Terminal {
     public static final Object NO_VALUE = null;
     
     private final LexicalUnit type;
-    private final Object value;
+    private Object value;
     private final int line,column;
     
     public Symbol(final LexicalUnit unit, final int line, final int column,
@@ -52,6 +52,10 @@ public class Symbol extends Terminal {
         return this.value;
     }
     
+    public void setValue(final Object object) {
+        this.value = object;
+    }
+    
     public int getLine(){
         return this.line;
     }
@@ -64,7 +68,7 @@ public class Symbol extends Terminal {
     public int hashCode(){
         final String value = (this.value != null ? this.value.toString() : "null");
         final String type = (this.type != null ? this.type.toString() : "null");
-        return new String(value+"_"+type).hashCode();
+        return (value+"_"+type).hashCode();
     }
     
     @Override
@@ -75,6 +79,11 @@ public class Symbol extends Terminal {
             return "token: "+value+"\tlexical unit: "+type;
         }
         return "Non-terminal symbol";
+    }
+    
+    @Override
+    public Object clone() {
+        return new Symbol(type, line-1, column, value);
     }
     
     @Override

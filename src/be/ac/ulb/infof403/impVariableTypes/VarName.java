@@ -11,7 +11,7 @@ public class VarName extends RuleTree {
     
     @Override
     public String getRepresentation() {
-        return (this._value != null ? getNextVariable() + " = add i32 " + this._value.getValue().toString() + ", 0" : "");
+        return (this._value != null ? getNextVariable() + " = add i32 %" + this._value.getValue().toString() + ", 0" : "");
     }
     
 }

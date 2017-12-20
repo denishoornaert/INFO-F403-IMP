@@ -46,16 +46,16 @@ public abstract class RuleTree {
     
     protected ArrayList<RuleTree> addChild(final Rule rule) {
         _ruleUsed = rule.getId();
-        final ArrayList<RuleTree> allRuleTreE = new ArrayList();
+        final ArrayList<RuleTree> allRuleTree = new ArrayList();
         for(final Elem elem : rule) {
             final RuleTree newRuleTree = RuleTreeFactory.getRuleTree(elem);
             _children.add(newRuleTree);
             if(!(elem instanceof Epsilon)) {
-                allRuleTreE.add(newRuleTree);
+                allRuleTree.add(newRuleTree);
             }
         }
         
-        return allRuleTreE;
+        return allRuleTree;
     }
     
     public String getRepresentation() { return ""; }
