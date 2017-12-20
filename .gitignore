@@ -30,3 +30,6 @@ nbactions.xml
 /test/tex/*.out
 /test/tex/*.toc
 /test/tex/*.pdf
+
+# LLVM Code
+*.bc
