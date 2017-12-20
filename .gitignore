@@ -33,3 +33,6 @@ nbactions.xml
 
 # LLVM Code
 *.bc
+
+# Jar file
+dist/*.jar
