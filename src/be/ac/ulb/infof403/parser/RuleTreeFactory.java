@@ -25,6 +25,7 @@ import be.ac.ulb.infof403.impVariableTypes.OpAdd;
 import be.ac.ulb.infof403.impVariableTypes.OpMul;
 import be.ac.ulb.infof403.impVariableTypes.Print;
 import be.ac.ulb.infof403.impVariableTypes.Program;
+import be.ac.ulb.infof403.impVariableTypes.Read;
 import be.ac.ulb.infof403.impVariableTypes.VarName;
 import be.ac.ulb.infof403.impVariableTypes.While;
 
@@ -112,6 +113,10 @@ public class RuleTreeFactory {
                 result = new While(elem);
                 break;
                 
+            case "<Read>":
+                result = new Read(elem);
+                break;
+                
             case "<Program>":
                 result = new Program(elem);
                 break;
@@ -155,7 +160,5 @@ public class RuleTreeFactory {
         
         return result;
     }
-    
-    
     
 }
