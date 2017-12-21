@@ -165,7 +165,7 @@ public class Main {
         String result = LlvmFactory.getReadIntMethod();
         result += LlvmFactory.getPrintMethod();
         result += ll1.produiceCode();
-        System.out.println("Résult:\n" + result);
+        System.out.println("Result:\n" + result);
         
     }
     
