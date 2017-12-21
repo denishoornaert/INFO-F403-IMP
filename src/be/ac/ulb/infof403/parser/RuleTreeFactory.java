@@ -4,30 +4,8 @@ import be.ac.ulb.infof403.Elem;
 import be.ac.ulb.infof403.Epsilon;
 import be.ac.ulb.infof403.Symbol;
 import be.ac.ulb.infof403.grammar.GrammarVariable;
-import be.ac.ulb.infof403.impVariableTypes.Assign;
-import be.ac.ulb.infof403.impVariableTypes.Code;
-import be.ac.ulb.infof403.impVariableTypes.EpsilonVar;
-import be.ac.ulb.infof403.impVariableTypes.ExprArith;
-import be.ac.ulb.infof403.impVariableTypes.ExprArithAtom;
-import be.ac.ulb.infof403.impVariableTypes.ExprArithMul;
-import be.ac.ulb.infof403.impVariableTypes.ExprArithMulU;
-import be.ac.ulb.infof403.impVariableTypes.ExprArithMulV;
-import be.ac.ulb.infof403.impVariableTypes.ExprArithU;
-import be.ac.ulb.infof403.impVariableTypes.ExprArithV;
-import be.ac.ulb.infof403.impVariableTypes.For;
-import be.ac.ulb.infof403.impVariableTypes.ForBis;
-import be.ac.ulb.infof403.impVariableTypes.If;
-import be.ac.ulb.infof403.impVariableTypes.IfBis;
-import be.ac.ulb.infof403.impVariableTypes.InstList;
-import be.ac.ulb.infof403.impVariableTypes.InstListBis;
-import be.ac.ulb.infof403.impVariableTypes.Instruction;
-import be.ac.ulb.infof403.impVariableTypes.OpAdd;
-import be.ac.ulb.infof403.impVariableTypes.OpMul;
-import be.ac.ulb.infof403.impVariableTypes.Print;
-import be.ac.ulb.infof403.impVariableTypes.Program;
-import be.ac.ulb.infof403.impVariableTypes.Read;
-import be.ac.ulb.infof403.impVariableTypes.VarName;
-import be.ac.ulb.infof403.impVariableTypes.While;
+import be.ac.ulb.infof403.impVariableTypes.*;
+
 
 /**
  * Factory
@@ -115,6 +93,34 @@ public class RuleTreeFactory {
                 
             case "<Read>":
                 result = new Read(elem);
+                break;
+                
+            case "<Cond>":
+                result = new Cond(elem);
+                break;
+                
+            case "<CondV>":
+                result = new CondV(elem);
+                break;
+                
+            case "<CondU>":
+                result = new CondU(elem);
+                break;
+                
+            case "<CondAnd>":
+                result = new CondAnd(elem);
+                break;
+                
+            case "<CondAndV>":
+                result = new CondAndV(elem);
+                break;
+                
+            case "<CondAndU>":
+                result = new CondAndU(elem);
+                break;
+                
+            case "<Comp>":
+                result = new Comp(elem);
                 break;
                 
             case "<Program>":
