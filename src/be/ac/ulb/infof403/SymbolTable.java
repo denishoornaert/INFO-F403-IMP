@@ -24,6 +24,13 @@ public class SymbolTable extends HashMap<Object, Integer> {
     }
     
     /**
+     * <b>Only for Test</b>
+     */
+    public static void reset() {
+        _instance = null;
+    }
+    
+    /**
      * The method checks whether the value of the symbol is already on the HashMap.<br>
      * If so, the position (line number) is not updated as we only want to know
      * where the token has been encountered for the first time.
