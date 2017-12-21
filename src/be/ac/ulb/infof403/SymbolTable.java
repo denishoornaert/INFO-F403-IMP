@@ -7,11 +7,20 @@ import java.util.HashMap;
  */
 public class SymbolTable extends HashMap<Object, Integer> {
     
+    private static SymbolTable _instance = null;
+    
     /**
      * Default constructor
      */
-    public SymbolTable() {
+    private SymbolTable() {
         super();
+    }
+    
+    public static SymbolTable getInstance() {
+        if(_instance == null) {
+            _instance = new SymbolTable();
+        }
+        return _instance;
     }
     
     /**

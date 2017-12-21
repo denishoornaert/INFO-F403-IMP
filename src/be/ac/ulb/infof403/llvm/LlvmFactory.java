@@ -34,4 +34,8 @@ public class LlvmFactory {
                 "declare i32 @__isoc99_scanf(i8*, ...)\n";
     }
     
+    public static String getVariablesAllocation() {
+        return "";
+    }
+    
 }
