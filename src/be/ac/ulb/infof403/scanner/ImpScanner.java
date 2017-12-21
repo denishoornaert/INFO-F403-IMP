@@ -43,7 +43,7 @@ public class ImpScanner {
     public ImpScanner(final String fileName, final String testFileName, final boolean printResult) 
             throws IOException, ImpSyntaxException {
         _tokens = new TokenList();
-        _table = new SymbolTable();
+        _table = SymbolTable.getInstance();
         
         openAndInitScannerImpFile(fileName);
         if(printResult) {
