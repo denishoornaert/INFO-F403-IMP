@@ -1,5 +1,7 @@
 package be.ac.ulb.infof403.llvm;
 
+import be.ac.ulb.infof403.SymbolTable;
+
 /**
  * 
  */
@@ -35,7 +37,16 @@ public class LlvmFactory {
     }
     
     public static String getVariablesAllocation() {
-        return "";
+        String out = "";
+        SymbolTable table = SymbolTable.getInstance();
+        for (Object object : table.keySet()) {
+            String var = (String)object;
+            out += "; --- Allocation of "+var+" ---\n";
+            out += "%tmp"+var+" = alloca i32\n";
+            out += "store i32 0, i32* %tmp"+var+"\n";
+            out += "%"+var+" = load i32, i32* %tmp"+var+"\n";
+        }
+        return out;
     }
     
 }
