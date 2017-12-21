@@ -6,7 +6,7 @@ import be.ac.ulb.infof403.parser.RuleTree;
 
 public class IfBis extends RuleTree {
     
-    public IfBis(Elem value) {
+    public IfBis(final Elem value) {
         super(value);
     }
 

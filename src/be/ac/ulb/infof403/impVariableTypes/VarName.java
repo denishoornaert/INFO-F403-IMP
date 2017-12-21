@@ -2,7 +2,6 @@ package be.ac.ulb.infof403.impVariableTypes;
 
 import be.ac.ulb.infof403.Elem;
 import be.ac.ulb.infof403.Symbol;
-import be.ac.ulb.infof403.codeGenerator.CodeFactory;
 import be.ac.ulb.infof403.parser.RuleTree;
 
 public class VarName extends RuleTree {
@@ -20,8 +19,9 @@ public class VarName extends RuleTree {
             switch (symbValue.getType()) {
                 
                 case NUMBER:
-                    result = getNextVariable();
-                    CodeFactory.write(result + " = add i32 " + this._value.getValue().toString() + ", 0\n");
+//                    result = getNextVariable();
+//                    CodeFactory.write(result + " = add i32 " + this._value.getValue().toString() + ", 0\n");
+                    result = this._value.getValue().toString();
                     break;
                     
                 case VARNAME:
