@@ -14,8 +14,13 @@ public class Assign extends RuleTree {
     public String getResultVar() {
         System.out.println("[DEBUG] Result: Assign");
         // TODO store and load
-        final String tmpOutput = this._children.get(0).getResultVar() + " = add i32 " + 
-                this._children.get(2).getResultVar() + ", 0\n";
+        final String resultToAsign = this._children.get(2).getResultVar();
+        final String tmpOutput = "store i32 " + resultToAsign + ", i32* " + this._children.get(0).getResultVar() + "\n";
+        /*
+        store i32 %0, i32* %a
+        %2 = load i32, i32* %a
+        */
+        
         CodeFactory.write(tmpOutput);
         return "";
     }

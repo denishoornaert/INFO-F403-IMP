@@ -12,7 +12,10 @@ public class Read extends RuleTree {
     
     @Override
     public String getResultVar() {
-        final String strOutput = this._children.get(2).getResultVar() + " = call i32 @readInt()\n";
+        final String newVariable = getNextVariable();
+        String strOutput = newVariable + " = call i32 @readInt()\n";
+        strOutput += "store i32 " + newVariable + ", i32* " + this._children.get(2).getResultVar() + "\n";
+        
         CodeFactory.write(strOutput);
         return "";
     }
