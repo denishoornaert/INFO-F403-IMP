@@ -123,6 +123,14 @@ public class RuleTreeFactory {
                 result = new Comp(elem);
                 break;
                 
+            case "<CondAtom>":
+                result = new CondAtom(elem);
+                break;
+                
+            case "<SimpleCond>":
+                result = new SimpleCond(elem);
+                break;
+                
             case "<Program>":
                 result = new Program(elem);
                 break;
