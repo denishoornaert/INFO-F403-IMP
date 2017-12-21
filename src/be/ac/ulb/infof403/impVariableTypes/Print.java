@@ -12,7 +12,11 @@ public class Print extends RuleTree {
     
     @Override
     public String getResultVar() {
-        CodeFactory.write("call void @println(i32 " + this._children.get(2).getResultVar() + ")\n");
+        final String tmpVar = getNextVariable();
+        // %2 = load i32, i32* %a
+        String strOutput = tmpVar + " = load i32, i32* " + this._children.get(2).getResultVar() + "\n";
+        strOutput += "call void @println(i32 " + tmpVar + ")\n";
+        CodeFactory.write(strOutput);
         return "";
     }
     
