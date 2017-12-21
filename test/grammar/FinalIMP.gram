@@ -22,9 +22,9 @@
 <Comp>              -> = 
 <Comp>              -> >= 
 <Comp>              -> >  
-<Comp>              -> <=  
-<Comp>              -> <  
-<Comp>              -> <>  
+<Comp>              -> <= 
+<Comp>              -> < 
+<Comp>              -> <> 
 <While>             -> while <Cond> do <Code> done 
 <Print>             -> print ( VarName ) 
 <Read>              -> read ( VarName ) 

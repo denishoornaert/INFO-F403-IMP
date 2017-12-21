@@ -3,6 +3,4 @@ begin
     if n > 12 then 
         print(n)
     endif
-    a := 0;
-    print(a)
 end
