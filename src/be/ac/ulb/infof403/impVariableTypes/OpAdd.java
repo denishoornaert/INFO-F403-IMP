@@ -24,7 +24,7 @@ public class OpAdd extends RuleTree {
                 break;
                 
             default:
-                System.err.println("[ERR] Unknown operator " + operator + " for 'OpAdd'"); // TODO create custom error
+                System.err.println("[ERR] Unknown operator '" + operator + "' for 'OpAdd'"); // TODO create custom error
                 result = "";
                 break;
         }
@@ -33,4 +33,3 @@ public class OpAdd extends RuleTree {
     }
 
 }
-

@@ -1,10 +1,70 @@
+(* Résultat attendu:
+Boucle 0 & 1
+0
+    1
+    2
+    3
+    4
+    5
+    6
+1
+    1
+    2
+    3
+    4
+    5
+    6
+2
+    1
+    2
+    3
+    4
+    5
+    6
+3
+    1
+    2
+    3
+    4
+    5
+    6
+4
+    1
+    2
+    3
+    4
+    5
+    6
+
+Boucle 2
+    4
+    6
+    8
+
+Boucle 3
+    10
+    11
+*)
 begin
-    read(n) ;
-    for i from 0 to 5 do (* loop from 0 to n *)
-        print(i)
+    for i from 0 to 5 do
+        print(i);
+        for j from 1 to 7 do
+            print(j)
+        done
     done;
 
-    for j from 1 to 7 do (* loop from 0 to n *)
-        print(j)
+    b := 0;
+    print(b);
+
+    for k from 4 by 2 to 10 do
+        print(k)
+    done;
+
+    c := 0;
+    print(c);
+
+    for l from 10 to 12 do
+        print(l)
     done
 end
+

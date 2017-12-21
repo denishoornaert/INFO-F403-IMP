@@ -9,6 +9,4 @@ public class EpsilonVar extends RuleTree {
         super(elem);
     }
     
-    
-    
 }

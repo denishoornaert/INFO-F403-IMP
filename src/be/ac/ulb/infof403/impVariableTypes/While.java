@@ -12,14 +12,20 @@ public class While extends RuleTree {
 
     @Override
     public String getResultVar() {
-        CodeFactory.write("br label %startloop\n");
-        CodeFactory.write("startloop:\n");
-        String condVar = this._children.get(1).getResultVar();
-        CodeFactory.write("br i1 "+condVar+", label %loop, label %endloop\n");
-        CodeFactory.write("loop:\n");
+        final Integer id = getId();
+        String strOutput = "br label %startloop" + id + "\n";
+        strOutput += "startloop" + id + ":\n";
+        CodeFactory.write(strOutput);
+        
+        final String condVar = this._children.get(1).getResultVar();
+        strOutput = "br i1 "+condVar+", label %loop, label %endloop" + id +"\n";
+        strOutput += "loop:\n";
+        CodeFactory.write(strOutput);
         this._children.get(3).getResultVar();
-        CodeFactory.write("br label %startloop\n");
-        CodeFactory.write("endloop:\n");
+        
+        strOutput = "br label %startloop" + id + "\n";
+        strOutput += "endloop" + id + ":\n";
+        CodeFactory.write(strOutput);
         return "";
     }
     
