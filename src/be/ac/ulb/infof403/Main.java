@@ -2,7 +2,6 @@ package be.ac.ulb.infof403;
 
 import be.ac.ulb.infof403.codeGenerator.CodeFactory;
 import be.ac.ulb.infof403.grammar.Grammar;
-import be.ac.ulb.infof403.llvm.LlvmFactory;
 import be.ac.ulb.infof403.parser.Ll1;
 import be.ac.ulb.infof403.parser.UnexpectedSymbolException;
 import be.ac.ulb.infof403.scanner.ImpScanner;
@@ -61,6 +60,7 @@ public class Main {
         String latexOutputFile = DEFAULT_LATEX_FOLDER;
         boolean llvm = false;
         String llvmOutputFile = DEFAULT_LLVM_FOLDER;
+        boolean printGrammar = false;
         
         while(args.length > currentIndex) {
             switch(args[currentIndex]) {
@@ -104,6 +104,11 @@ public class Main {
                     } else {
                         latexOutputFile += getFileWithoutExtension(getFileName(impFile)) + ".tex";
                     }
+                    break;
+                    
+                case "-gram":
+                case "--grammar":
+                    printGrammar = true;
                     break;
                     
                 case "-d":
@@ -168,18 +173,21 @@ public class Main {
                 ll1.generateGojsParseTree(gojsOutputFile);
             }
             
-            System.out.println("Syntax respected !");
-            System.out.println("");
-            System.out.println("Grammar: ");
-            System.out.println(grammar);
-            System.out.println("");
-            ll1.printTransitions();
-        }
-        
-        String result = ll1.produiceCode();
-        System.out.println("Result:\n" + result);
-        if(llvm) {
-            CodeFactory.writeCodeTo(llvmOutputFile);
+            if(printGrammar) {
+                System.out.println("Syntax respected !");
+                System.out.println("");
+                System.out.println("Grammar: ");
+                System.out.println(grammar);
+                System.out.println("");
+                ll1.printTransitions();
+                System.out.println("");
+            }
+            
+            final String result = ll1.produiceCode();
+            System.out.println(result);
+            if(llvm) {
+                CodeFactory.writeCodeTo(llvmOutputFile);
+            }
         }
         
     }
@@ -269,6 +277,7 @@ public class Main {
         System.out.println("  <IMPFile>\t\t\tThe file with the IMP code (default: '" + DEFAULT_IMP_FILE + "')");
         System.out.println("  -h/--help\t\t\tPrint this text");
         System.out.println("  -o/--output\t\t\tWrite the generated llvm code into the specied file");
+        System.out.println("  -gram/--grammar\t\tPrint grammar enhance part");
         System.out.println("  -ta/--table\t\t\tPrint the action table");
         System.out.println("  -ts/--testscan [filePath]\tTest that the scanner have the good output");
         System.out.println("  -ps/--printscan\t\tPrint the scan result (like first part of this project)");
