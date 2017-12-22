@@ -1,5 +1,6 @@
 package be.ac.ulb.infof403;
 
+import be.ac.ulb.infof403.codeGenerator.CodeFactory;
 import be.ac.ulb.infof403.grammar.Grammar;
 import be.ac.ulb.infof403.llvm.LlvmFactory;
 import be.ac.ulb.infof403.parser.Ll1;
@@ -57,6 +58,8 @@ public class Main {
         String gojsOutputFile = DEFAULT_GOJS_FOLDER;
         boolean latex = false;
         String latexOutputFile = DEFAULT_LATEX_FOLDER;
+        boolean llvm = false;
+        String llvmOutputFile = "";
         
         while(args.length > currentIndex) {
             switch(args[currentIndex]) {
@@ -105,6 +108,12 @@ public class Main {
                 case "-d":
                 case "--debug":
                     _debug = true;
+                    break;
+                    
+                case "-o":
+                case "--output":
+                    llvm = true;
+                    llvmOutputFile = args[++currentIndex];
                     break;
                     
                 default:
@@ -162,10 +171,14 @@ public class Main {
             ll1.printTransitions();
         }
         
+        // TODO move the following line to <Code> ??
         String result = LlvmFactory.getReadIntMethod();
         result += LlvmFactory.getPrintMethod();
         result += ll1.produiceCode();
         System.out.println("Result:\n" + result);
+        if(llvm) {
+            CodeFactory.writeCodeTo(llvmOutputFile);
+        }
         
     }
     
@@ -253,6 +266,7 @@ public class Main {
         System.out.println("  <grammarFile>\t\t\tThe file that contains the Grammar (default: '" + DEFAULT_GRAMMAR_FILE + "')");
         System.out.println("  <IMPFile>\t\t\tThe file with the IMP code (default: '" + DEFAULT_IMP_FILE + "')");
         System.out.println("  -h/--help\t\t\tPrint this text");
+        System.out.println("  -o/--output\t\t\tWrite the generated llvm code into the specied file");
         System.out.println("  -ta/--table\t\t\tPrint the action table");
         System.out.println("  -ts/--testscan [filePath]\tTest that the scanner have the good output");
         System.out.println("  -ps/--printscan\t\tPrint the scan result (like first part of this project)");
