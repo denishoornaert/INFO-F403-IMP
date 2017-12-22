@@ -2,6 +2,7 @@ package be.ac.ulb.infof403.impVariableTypes;
 
 import be.ac.ulb.infof403.Elem;
 import be.ac.ulb.infof403.codeGenerator.CodeFactory;
+import be.ac.ulb.infof403.parser.ErrorConvertToLlvm;
 import be.ac.ulb.infof403.parser.RuleTree;
 
 public class ExprArith extends RuleTree {
@@ -11,7 +12,7 @@ public class ExprArith extends RuleTree {
     }
     
     @Override
-    public String getResultVar() {
+    public String getResultVar() throws ErrorConvertToLlvm {
         final String resultVar;
         final RuleTree exprArithV = this._children.get(1);
         final String exprArithVResult = exprArithV.getResultVar();

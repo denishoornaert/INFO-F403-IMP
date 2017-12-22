@@ -1,6 +1,7 @@
 package be.ac.ulb.infof403.impVariableTypes;
 
 import be.ac.ulb.infof403.Elem;
+import be.ac.ulb.infof403.parser.ErrorConvertToLlvm;
 import be.ac.ulb.infof403.parser.RuleTree;
 
 public class InstListBis extends RuleTree {
@@ -10,7 +11,7 @@ public class InstListBis extends RuleTree {
     }
     
     @Override
-    public String getResultVar() {
+    public String getResultVar() throws ErrorConvertToLlvm {
         if(this._children.size() > 1) { // If not epsilon rule
             this._children.get(1).getResultVar();
         }

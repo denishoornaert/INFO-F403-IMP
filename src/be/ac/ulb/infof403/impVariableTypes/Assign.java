@@ -2,6 +2,7 @@ package be.ac.ulb.infof403.impVariableTypes;
 
 import be.ac.ulb.infof403.Elem;
 import be.ac.ulb.infof403.codeGenerator.CodeFactory;
+import be.ac.ulb.infof403.parser.ErrorConvertToLlvm;
 import be.ac.ulb.infof403.parser.RuleTree;
 
 public class Assign extends RuleTree {
@@ -11,7 +12,7 @@ public class Assign extends RuleTree {
     }
     
     @Override
-    public String getResultVar() {
+    public String getResultVar() throws ErrorConvertToLlvm {
         final String resultToAsign = this._children.get(2).getResultVar();
         final String tmpOutput = "store i32 " + resultToAsign + ", i32* " + this._children.get(0).getResultVar() + "\n";
         

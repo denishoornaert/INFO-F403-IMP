@@ -50,10 +50,8 @@ public class ImpScanner {
             printResult();
         }
 
-        if(!testFileName.isEmpty()) {
-            if(!testOutput(testFileName)) {
-                throw new ImpSyntaxException("The expected output is not equals to the current output");
-            }
+        if(!testFileName.isEmpty() && !testOutput(testFileName)) {
+            throw new ImpSyntaxException("The expected output is not equals to the current output");
         }
     }
     

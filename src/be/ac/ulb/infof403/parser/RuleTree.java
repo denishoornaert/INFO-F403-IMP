@@ -5,6 +5,8 @@ import be.ac.ulb.infof403.Epsilon;
 import be.ac.ulb.infof403.grammar.GrammarVariable;
 import be.ac.ulb.infof403.grammar.Rule;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Element of the Parsing Tree
@@ -49,19 +51,25 @@ public abstract class RuleTree {
         _ruleUsed = rule.getId();
         final ArrayList<RuleTree> allRuleTree = new ArrayList();
         for(final Elem elem : rule) {
-            final RuleTree newRuleTree = RuleTreeFactory.getRuleTree(elem);
-            _children.add(newRuleTree);
-            if(!(elem instanceof Epsilon)) {
-                allRuleTree.add(newRuleTree);
+            final RuleTree newRuleTree;
+            try {
+                newRuleTree = RuleTreeFactory.getRuleTree(elem);
+                _children.add(newRuleTree);
+                
+                if(!(elem instanceof Epsilon)) {
+                    allRuleTree.add(newRuleTree);
+                }
+            } catch (UnknownElemForRuleTree ex) {
+                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, ex.getMessage());
             }
         }
         
         return allRuleTree;
     }
     
-    public String getResultVar(String param) { return ""; }
+    public String getResultVar(String param) throws ErrorConvertToLlvm { return ""; }
     
-    public String getResultVar() { return getResultVar(""); }
+    public String getResultVar() throws ErrorConvertToLlvm { return getResultVar(""); }
     
     protected static String getNextVariable() {
         return "%" + (++_varIndex);

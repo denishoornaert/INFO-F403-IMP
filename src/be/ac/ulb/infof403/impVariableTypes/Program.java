@@ -3,6 +3,7 @@ package be.ac.ulb.infof403.impVariableTypes;
 import be.ac.ulb.infof403.Elem;
 import be.ac.ulb.infof403.codeGenerator.CodeFactory;
 import be.ac.ulb.infof403.llvm.LlvmFactory;
+import be.ac.ulb.infof403.parser.ErrorConvertToLlvm;
 import be.ac.ulb.infof403.parser.RuleTree;
 
 public class Program extends RuleTree {
@@ -12,7 +13,7 @@ public class Program extends RuleTree {
     }
     
     @Override
-    public String getResultVar() {
+    public String getResultVar() throws ErrorConvertToLlvm {
         CodeFactory.write(LlvmFactory.getReadIntMethod());
         CodeFactory.write(LlvmFactory.getPrintMethod());
         CodeFactory.write("define i32 @main() {\n");

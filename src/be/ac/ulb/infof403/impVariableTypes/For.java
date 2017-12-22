@@ -2,6 +2,7 @@ package be.ac.ulb.infof403.impVariableTypes;
 
 import be.ac.ulb.infof403.Elem;
 import be.ac.ulb.infof403.codeGenerator.CodeFactory;
+import be.ac.ulb.infof403.parser.ErrorConvertToLlvm;
 import be.ac.ulb.infof403.parser.RuleTree;
 
 public class For extends RuleTree {
@@ -11,7 +12,7 @@ public class For extends RuleTree {
     }
     
     @Override
-    public String getResultVar() {
+    public String getResultVar() throws ErrorConvertToLlvm {
         final RuleTree forBis = this._children.get(4);
         final Integer id = forBis.getId();
         final String countVar = this._children.get(1).getResultVar();

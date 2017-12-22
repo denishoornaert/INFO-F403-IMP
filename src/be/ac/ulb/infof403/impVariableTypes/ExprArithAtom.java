@@ -4,6 +4,7 @@ import be.ac.ulb.infof403.Elem;
 import be.ac.ulb.infof403.LexicalUnit;
 import be.ac.ulb.infof403.Symbol;
 import be.ac.ulb.infof403.codeGenerator.CodeFactory;
+import be.ac.ulb.infof403.parser.ErrorConvertToLlvm;
 import be.ac.ulb.infof403.parser.RuleTree;
 
 public class ExprArithAtom extends RuleTree {
@@ -13,7 +14,7 @@ public class ExprArithAtom extends RuleTree {
     }
     
     @Override
-    public String getResultVar() {
+    public String getResultVar() throws ErrorConvertToLlvm {
         final String result;
         
         switch (this._children.size()) {

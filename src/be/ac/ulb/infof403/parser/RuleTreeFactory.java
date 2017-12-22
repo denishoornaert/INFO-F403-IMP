@@ -12,24 +12,22 @@ import be.ac.ulb.infof403.impVariableTypes.*;
  */
 public class RuleTreeFactory {
     
-    public static RuleTree getRuleTree(Elem elem) {
-        RuleTree result = null;
+    public static RuleTree getRuleTree(Elem elem) throws UnknownElemForRuleTree {
         final String ruleTreeName;
         if(elem instanceof GrammarVariable) {
             final GrammarVariable gramVar = (GrammarVariable) elem;
             ruleTreeName = gramVar.getValue();
             
         } else if(elem instanceof Epsilon) {
-            // TODO
             ruleTreeName = "Epsilon";
         } else if(elem instanceof Symbol) {
             elem = (Symbol) ((Symbol) elem).clone();
             ruleTreeName = "Symbol";
-            // TODO
         } else {
-            return result; // TODO ERROR unknow
+            throw new UnknownElemForRuleTree(elem);
         }
         
+        final RuleTree result;
         switch(ruleTreeName) {
             case "<Assign>":
                 result = new Assign(elem);
@@ -163,12 +161,8 @@ public class RuleTreeFactory {
                 result = new EpsilonVar(elem);
                 break;
                 
-                // TODO
-                
             default:
-                System.out.println("Unknown element: " + ruleTreeName);
-                // TODO ERROR
-                break;
+                throw new UnknownElemForRuleTree(ruleTreeName);
                 
         }
         

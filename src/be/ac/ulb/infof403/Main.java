@@ -206,9 +206,9 @@ public class Main {
             if(exec) {
                 try {
                     // Build and execute the '.bc' file
-                    ProcessBuilder pb = new ProcessBuilder(DEFAULT_LLVM_FOLDER+"compile.sh", llvmOutputFile);
+                    final ProcessBuilder pb = new ProcessBuilder(DEFAULT_LLVM_FOLDER+"compile.sh", llvmOutputFile);
                     pb.inheritIO();
-                    Process process = pb.start();
+                    final Process process = pb.start();
                     process.waitFor();
                 } catch (IOException | InterruptedException ex) {
                     Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);

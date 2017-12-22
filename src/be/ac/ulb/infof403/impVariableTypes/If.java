@@ -2,6 +2,7 @@ package be.ac.ulb.infof403.impVariableTypes;
 
 import be.ac.ulb.infof403.Elem;
 import be.ac.ulb.infof403.codeGenerator.CodeFactory;
+import be.ac.ulb.infof403.parser.ErrorConvertToLlvm;
 import be.ac.ulb.infof403.parser.RuleTree;
 
 public class If extends RuleTree {
@@ -11,7 +12,7 @@ public class If extends RuleTree {
     }
     
     @Override
-    public String getResultVar() {
+    public String getResultVar() throws ErrorConvertToLlvm {
         final Integer id = this._children.get(4).getId();
         final String varname = this._children.get(1).getResultVar();
         String strOutput = "br i1 "+varname+", label %if"+id+", label %endif"+id+"\n";

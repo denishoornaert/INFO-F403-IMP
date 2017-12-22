@@ -13,6 +13,8 @@ import be.ac.ulb.infof403.view.GenerateLaTeXParseTree;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -82,7 +84,11 @@ public class Ll1 {
     
     public void parse(final boolean debug) throws UnexpectedSymbolException {
         final GrammarVariable grammarInitialVariable = _grammar.getInitialVariable();
-        _tree = RuleTreeFactory.getRuleTree(grammarInitialVariable);
+        try {
+            _tree = RuleTreeFactory.getRuleTree(grammarInitialVariable);
+        } catch (UnknownElemForRuleTree ex) {
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, ex.getMessage());
+        }
         final ParseStack stack = new ParseStack(_tree);
         
         while (!stack.isEmpty() && _symb != null) {
@@ -108,7 +114,11 @@ public class Ll1 {
     }
     
     public String produiceCode() {
-        _tree.getResultVar();
+        try {
+            _tree.getResultVar();
+        } catch (ErrorConvertToLlvm ex) {
+            Logger.getLogger(Ll1.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return CodeFactory.getGeneralOutput();
     }
     

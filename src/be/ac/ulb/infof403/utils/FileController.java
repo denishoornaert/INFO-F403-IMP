@@ -34,7 +34,7 @@ public abstract class FileController {
         return result;
     }
     
-    public void writeFile(final String fileOutput, final String content) {
+    public static void writeFile(final String fileOutput, final String content) {
         PrintWriter writer = null;
         try {
             writer = new PrintWriter(fileOutput, "UTF-8");
