@@ -11,7 +11,6 @@ public class ExprArithMulU extends RuleTree {
     
     @Override
     public String getResultVar() {
-        System.out.println("[DEBUG] Result: ExprArithMulU");
         return this._children.get(0).getResultVar();
     }
     

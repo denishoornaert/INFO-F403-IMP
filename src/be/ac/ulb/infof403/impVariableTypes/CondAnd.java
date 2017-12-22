@@ -12,7 +12,6 @@ public class CondAnd extends RuleTree {
     
     @Override
     public String getResultVar() {
-        System.out.println("[DEBUG] Result: CondAnd");
         final String resultVar;
         final RuleTree condAndV = this._children.get(1);
         final String condAndVResult = condAndV.getResultVar();

@@ -11,7 +11,6 @@ public class Instruction extends RuleTree {
     
     @Override
     public String getResultVar() {
-        System.out.println("[DEBUG] Result: Instruction");
         this._children.get(0).getResultVar(); // Compute but not store
         return "";
     }

@@ -13,7 +13,6 @@ public class Program extends RuleTree {
     
     @Override
     public String getResultVar() {
-        System.out.println("[DEBUG] Result: Program");
         CodeFactory.write("define i32 @main() {\n");
         CodeFactory.write(LlvmFactory.getVariablesAllocation());
         this._children.get(1).getResultVar();

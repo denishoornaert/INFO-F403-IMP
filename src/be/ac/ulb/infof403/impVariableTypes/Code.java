@@ -11,9 +11,7 @@ public class Code extends RuleTree {
 
     @Override
     public String getResultVar() {
-        System.out.println("[DEBUG] Result: Code");
         if(!(this._children.get(0) instanceof EpsilonVar)) {
-            System.out.println("[DEBUG]     exec ;)");
             // <InstList> 
             this._children.get(0).getResultVar();
         }

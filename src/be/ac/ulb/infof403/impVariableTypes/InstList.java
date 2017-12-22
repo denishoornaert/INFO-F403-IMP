@@ -11,7 +11,6 @@ public class InstList extends RuleTree {
     
     @Override
     public String getResultVar() {
-        System.out.println("[DEBUG] Result: InstList");
         // Compute but no result
         this._children.get(0).getResultVar();
         this._children.get(1).getResultVar();

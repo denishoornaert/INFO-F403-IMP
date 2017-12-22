@@ -11,9 +11,7 @@ public class InstListBis extends RuleTree {
     
     @Override
     public String getResultVar() {
-        System.out.println("[DEBUG] Result: InstListBis");
         if(this._children.size() > 1) { // If not epsilon rule
-            System.out.println("[DEBUG]     exec ;)");
             this._children.get(1).getResultVar();
         }
         return "";
