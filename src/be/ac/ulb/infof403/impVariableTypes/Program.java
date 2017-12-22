@@ -13,6 +13,8 @@ public class Program extends RuleTree {
     
     @Override
     public String getResultVar() {
+        CodeFactory.write(LlvmFactory.getReadIntMethod());
+        CodeFactory.write(LlvmFactory.getPrintMethod());
         CodeFactory.write("define i32 @main() {\n");
         CodeFactory.write(LlvmFactory.getVariablesAllocation());
         this._children.get(1).getResultVar();

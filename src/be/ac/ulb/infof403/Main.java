@@ -175,10 +175,7 @@ public class Main {
             ll1.printTransitions();
         }
         
-        // TODO move the following line to <Code> ??
-        String result = LlvmFactory.getReadIntMethod();
-        result += LlvmFactory.getPrintMethod();
-        result += ll1.produiceCode();
+        String result = ll1.produiceCode();
         System.out.println("Result:\n" + result);
         if(llvm) {
             CodeFactory.writeCodeTo(llvmOutputFile);
