@@ -8,7 +8,8 @@ import be.ac.ulb.infof403.scanner.ImpScanner;
 import be.ac.ulb.infof403.scanner.ImpSyntaxException;
 import java.io.File;
 import java.io.IOException;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  * Main class
  */
@@ -60,6 +61,7 @@ public class Main {
         String latexOutputFile = DEFAULT_LATEX_FOLDER;
         boolean llvm = false;
         String llvmOutputFile = DEFAULT_LLVM_FOLDER;
+        boolean exec = false;
         boolean printGrammar = false;
         
         while(args.length > currentIndex) {
@@ -115,15 +117,20 @@ public class Main {
                 case "--debug":
                     _debug = true;
                     break;
-                    
+                
+                case "-e":
+                case "--exec":
+                    exec = true;
                 case "-o":
                 case "--output":
-                    llvm = true;
-                    if(args.length > currentIndex+1 && !args[currentIndex+1].startsWith("-")) {
-                        llvmOutputFile += args[++currentIndex];
-                    } else {
-                        llvmOutputFile += getFileWithoutExtension(getFileName(impFile)) + ".ll";
+                    if(!llvm) { // if not already set
+                        if(args.length > currentIndex+1 && !args[currentIndex+1].startsWith("-")) {
+                            llvmOutputFile += args[++currentIndex];
+                        } else {
+                            llvmOutputFile += getFileWithoutExtension(getFileName(impFile)) + ".ll";
+                        }
                     }
+                    llvm = true;
                     break;
                     
                 default:
@@ -185,8 +192,21 @@ public class Main {
             
             final String result = ll1.produiceCode();
             System.out.println(result);
+            
             if(llvm) {
                 CodeFactory.writeCodeTo(llvmOutputFile);
+            }
+            
+            if(exec) {
+                try {
+                    // Build and execute the '.bc' file
+                    ProcessBuilder pb = new ProcessBuilder(DEFAULT_LLVM_FOLDER+"compile.sh", llvmOutputFile);
+                    pb.inheritIO();
+                    Process process = pb.start();
+                    process.waitFor();
+                } catch (IOException | InterruptedException ex) {
+                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
         
