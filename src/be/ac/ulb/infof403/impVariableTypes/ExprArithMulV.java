@@ -12,7 +12,6 @@ public class ExprArithMulV extends RuleTree {
     
     @Override
     public String getResultVar() {
-        System.out.println("[DEBUG] Result: ExprArithMulV");
         final String resultVar;
         if(this._children.size() > 1) {
             final RuleTree exprArithMulV = this._children.get(2);
