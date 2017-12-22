@@ -44,15 +44,15 @@
     numberstyle=\tiny\color{codegray},
     stringstyle=\color{codepurple},
     basicstyle=\footnotesize,
-    breakatwhitespace=false,         
-    breaklines=true,                 
-    captionpos=b,                    
-    keepspaces=true,                 
-    numbers=left,                    
-    numbersep=5pt,                  
-    showspaces=false,                
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
     showstringspaces=false,
-    showtabs=false,                  
+    showtabs=false,
     tabsize=2
 }
  
@@ -264,6 +264,7 @@ token: [x]                lexical unit: VARNAME
       \end{figure}
       
   \subsection{Resulting parser generator architecture}
+    \label{sec:resulting_parser}
     After having listed the main steps, it is easier to design a full program architecture.\\
     All the mechanisms needed to transform a grammar into a LL1 are well encapsulated in an object called \verb|Grammar| (see annex \ref{fig:grammararchitecture} for the pseudo-uml). This object is also used to play the role of the action table. Thus, no \verb|ActionTable| class has been implemented. Consequently, the \verb|Grammar| object and the \verb|TokenList| are used by an object called \verb|Ll1|. Similarly to the theory, this object aims to verify the syntax, with the help of a stack, following the mechanism described in the subsection \ref{sec:syntaxchecking}. One might notice the presence of an object \verb|Stack|. In fact, the syntax checking method explicitly uses a dedicated object \verb|Stack|, which implies that the method is not recursive. In addition, \verb|Ll1| also creates a parse tree while checking the syntax. Typically, the tree is composed of a bunch of \verb|RuleTree| objects following the composite design pattern. Afterwards, this tree is manipulated by other objects (not displayed on purpose) to create a parser tree visualisation.
     \begin{figure}[h!]
@@ -387,7 +388,50 @@ Error with a token: Unknown symbol '[' (9 character at line 1)
 
   
   \subsection{How the project generates LLVM code}
+    Like mention in the section \ref{sec:resulting_parser}, the parse tree is composed by \verb|RuleTree| object. We have create a children of this class for each state of the grammer. To generate the LLVM code we just make recursive call. Indeed the first state \verb|Program| call the result of \verb|Code|.  Which call the result of the instruction, ect.\\
+    When a state compute his result he could also ``output'' LLVM code (this output is first store in varable and then output on the right support: file or terminal). In other words, children of \verb|RuleTree| have a method which return the value that represent the current state \textbf{and} output an LLVM code to compute this value.\\
+    This method work for a lot of state. There are just some problem with the addition structure. The figure \ref{fig:addition_states} show us that the state \verb|ExprArithMulV| have not all element to compute the division. To fix that there are two choice: get the missing value from the parent or compute the division on another state. We chose to implement the second option.  Thus the state \verb|ExprArithMul| will compute the result of the division and store this value on a new variable.\\
+    To make that the state \verb|ExprArithMul| will get the operator with two get: one on his second children and then directly ask to get the value of the first children. To have the value 4 (in this case), \verb|ExprArithMul| will ask at state \verb|ExprArithMulV| to compute his final value.  Then, \verb|ExprArithMul| have all element to compute the division.
     
+    \begin{figure}[h!]
+      \centering
+      \begin{tikzpicture}[tree,sibling distance=20em,level 2/.style={sibling distance=10em}]
+	\node {ExprArithMul}
+	node {ExprArithMul}
+	  child {
+	    node {ExprArithMulU}
+	      child {
+		node {ExprArithAtom}
+		  child {
+		    node {2}
+		  }
+	      }
+	  }
+	  child {
+	    node {ExprArithMulV}
+	    child {
+	      node {OpMul}
+		child {
+		  node {/}
+		}
+	    }
+	    child {
+	      node {ExprArithAtom}
+		child {
+		  node {4}
+		}
+	    }
+	    child {
+	      node {ExprArithMulV}
+		child {
+		  node {eps}
+		}
+	    }
+	  };
+      \end{tikzpicture}
+      \caption{Part of parse tree which compute Expression.}
+      \label{fig:addition_states}
+    \end{figure}
     
   \subsection{Limitations}
     \label{semantic-limitations}
