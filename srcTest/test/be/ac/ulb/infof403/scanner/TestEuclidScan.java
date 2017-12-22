@@ -1,8 +1,10 @@
 package test.be.ac.ulb.infof403.scanner;
 
+import be.ac.ulb.infof403.SymbolTable;
 import be.ac.ulb.infof403.scanner.ImpScanner;
 import be.ac.ulb.infof403.scanner.ImpSyntaxException;
 import java.io.IOException;
+import org.junit.After;
 import static org.junit.Assert.assertTrue;
 import org.junit.Rule;
 import org.junit.Test;
@@ -21,6 +23,11 @@ public class TestEuclidScan {
     
     @Rule
     public ExpectedException expected = ExpectedException.none();
+    
+    @After
+    public void afterTest() {
+        SymbolTable.reset();
+    }
     
     @Test
     public void testEuclidScan() throws IOException, ImpSyntaxException {

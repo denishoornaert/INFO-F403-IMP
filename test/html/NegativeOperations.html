@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Parse Tree</title>
+    <meta name="description" content="A collapsible tree layout with all of the leaf nodes at the same layer." />
+    <!-- Copyright 1998-2017 by Northwoods Software Corporation. -->
+    <meta charset="UTF-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gojs/1.8.2/go.js"></script>
+    <script id="code">
+        function init() {
+            if (window.goSamples) goSamples();  // init for these samples -- you don't need to call this
+            var $ = go.GraphObject.make;  // for conciseness in defining templates
+            myDiagram =
+                $(go.Diagram, "myDiagramDiv",
+                    {
+                        allowCopy: false,
+                        allowDelete: false,
+                        allowMove: false,
+                        initialContentAlignment: go.Spot.Center,
+                        initialAutoScale: go.Diagram.Uniform,
+                        layout:
+                            $(FlatTreeLayout,  // custom Layout, defined below
+                                { angle: 90,
+                                    compaction: go.TreeLayout.CompactionNone }),
+                            "undoManager.isEnabled": true
+                    });
+
+            myDiagram.nodeTemplate =
+                $(go.Node, "Vertical",
+                    { selectionObjectName: "BODY" },
+                        $(go.Panel, "Auto", { name: "BODY" },
+                            $(go.Shape, "RoundedRectangle",
+                                new go.Binding("fill"),
+                                new go.Binding("stroke")),
+                            $(go.TextBlock,
+                                { font: "bold 12pt Arial, sans-serif", margin: new go.Margin(4, 2, 2, 2) },
+                                new go.Binding("text"))
+                        ),
+                    $(go.Panel,  // this is underneath the "BODY"
+                        { height: 15 },  // always this height, even if the TreeExpanderButton is not visible
+                            $("TreeExpanderButton")
+                    )
+                );
+
+            // Add arrow or not
+            myDiagram.linkTemplate =
+                $(go.Link, $(go.Shape, { strokeWidth: 1.5 }));
+var nodeDataArray = [{ key: 1, text: "<Program>", fill: "#ccc", stroke: "black" },{ key: 2, text: "begin", fill: "#ccc", stroke: "black", parent: 1 },{ key: 3, text: "<Code>", fill: "#ccc", stroke: "black", parent: 1 },{ key: 4, text: "<InstList>", fill: "#ccc", stroke: "black", parent: 3 },{ key: 5, text: "<Instruction>", fill: "#ccc", stroke: "black", parent: 4 },{ key: 6, text: "<Read>", fill: "#ccc", stroke: "black", parent: 5 },{ key: 7, text: "read", fill: "#ccc", stroke: "black", parent: 6 },{ key: 8, text: "(", fill: "#ccc", stroke: "black", parent: 6 },{ key: 9, text: "a", fill: "#ccc", stroke: "black", parent: 6 },{ key: 10, text: ")", fill: "#ccc", stroke: "black", parent: 6 },{ key: 11, text: "<InstList'>", fill: "#ccc", stroke: "black", parent: 4 },{ key: 12, text: ";", fill: "#ccc", stroke: "black", parent: 11 },{ key: 13, text: "<InstList>", fill: "#ccc", stroke: "black", parent: 11 },{ key: 14, text: "<Instruction>", fill: "#ccc", stroke: "black", parent: 13 },{ key: 15, text: "<Print>", fill: "#ccc", stroke: "black", parent: 14 },{ key: 16, text: "print", fill: "#ccc", stroke: "black", parent: 15 },{ key: 17, text: "(", fill: "#ccc", stroke: "black", parent: 15 },{ key: 18, text: "a", fill: "#ccc", stroke: "black", parent: 15 },{ key: 19, text: ")", fill: "#ccc", stroke: "black", parent: 15 },{ key: 20, text: "<InstList'>", fill: "#ccc", stroke: "black", parent: 13 },{ key: 21, text: ";", fill: "#ccc", stroke: "black", parent: 20 },{ key: 22, text: "<InstList>", fill: "#ccc", stroke: "black", parent: 20 },{ key: 23, text: "<Instruction>", fill: "#ccc", stroke: "black", parent: 22 },{ key: 24, text: "<Assign>", fill: "#ccc", stroke: "black", parent: 23 },{ key: 25, text: "b", fill: "#ccc", stroke: "black", parent: 24 },{ key: 26, text: ":=", fill: "#ccc", stroke: "black", parent: 24 },{ key: 27, text: "<ExprArith>", fill: "#ccc", stroke: "black", parent: 24 },{ key: 28, text: "<ExprArithU>", fill: "#ccc", stroke: "black", parent: 27 },{ key: 29, text: "<ExprArithMul>", fill: "#ccc", stroke: "black", parent: 28 },{ key: 30, text: "<ExprArithMulU>", fill: "#ccc", stroke: "black", parent: 29 },{ key: 31, text: "<ExprArithAtom>", fill: "#ccc", stroke: "black", parent: 30 },{ key: 32, text: "-", fill: "#ccc", stroke: "black", parent: 31 },{ key: 33, text: "<ExprArithAtom>", fill: "#ccc", stroke: "black", parent: 31 },{ key: 34, text: "a", fill: "#ccc", stroke: "black", parent: 33 },{ key: 35, text: "<ExprArithMulV>", fill: "#ccc", stroke: "black", parent: 29 },{ key: 36, text: "eps", fill: "#ccc", stroke: "black", parent: 35 },{ key: 37, text: "<ExprArithV>", fill: "#ccc", stroke: "black", parent: 27 },{ key: 38, text: "eps", fill: "#ccc", stroke: "black", parent: 37 },{ key: 39, text: "<InstList'>", fill: "#ccc", stroke: "black", parent: 22 },{ key: 40, text: ";", fill: "#ccc", stroke: "black", parent: 39 },{ key: 41, text: "<InstList>", fill: "#ccc", stroke: "black", parent: 39 },{ key: 42, text: "<Instruction>", fill: "#ccc", stroke: "black", parent: 41 },{ key: 43, text: "<Print>", fill: "#ccc", stroke: "black", parent: 42 },{ key: 44, text: "print", fill: "#ccc", stroke: "black", parent: 43 },{ key: 45, text: "(", fill: "#ccc", stroke: "black", parent: 43 },{ key: 46, text: "b", fill: "#ccc", stroke: "black", parent: 43 },{ key: 47, text: ")", fill: "#ccc", stroke: "black", parent: 43 },{ key: 48, text: "<InstList'>", fill: "#ccc", stroke: "black", parent: 41 },{ key: 49, text: ";", fill: "#ccc", stroke: "black", parent: 48 },{ key: 50, text: "<InstList>", fill: "#ccc", stroke: "black", parent: 48 },{ key: 51, text: "<Instruction>", fill: "#ccc", stroke: "black", parent: 50 },{ key: 52, text: "<If>", fill: "#ccc", stroke: "black", parent: 51 },{ key: 53, text: "if", fill: "#ccc", stroke: "black", parent: 52 },{ key: 54, text: "<Cond>", fill: "#ccc", stroke: "black", parent: 52 },{ key: 55, text: "<CondU>", fill: "#ccc", stroke: "black", parent: 54 },{ key: 56, text: "<CondAnd>", fill: "#ccc", stroke: "black", parent: 55 },{ key: 57, text: "<CondAndU>", fill: "#ccc", stroke: "black", parent: 56 },{ key: 58, text: "<CondAtom>", fill: "#ccc", stroke: "black", parent: 57 },{ key: 59, text: "<SimpleCond>", fill: "#ccc", stroke: "black", parent: 58 },{ key: 60, text: "<ExprArith>", fill: "#ccc", stroke: "black", parent: 59 },{ key: 61, text: "<ExprArithU>", fill: "#ccc", stroke: "black", parent: 60 },{ key: 62, text: "<ExprArithMul>", fill: "#ccc", stroke: "black", parent: 61 },{ key: 63, text: "<ExprArithMulU>", fill: "#ccc", stroke: "black", parent: 62 },{ key: 64, text: "<ExprArithAtom>", fill: "#ccc", stroke: "black", parent: 63 },{ key: 65, text: "a", fill: "#ccc", stroke: "black", parent: 64 },{ key: 66, text: "<ExprArithMulV>", fill: "#ccc", stroke: "black", parent: 62 },{ key: 67, text: "eps", fill: "#ccc", stroke: "black", parent: 66 },{ key: 68, text: "<ExprArithV>", fill: "#ccc", stroke: "black", parent: 60 },{ key: 69, text: "eps", fill: "#ccc", stroke: "black", parent: 68 },{ key: 70, text: "<Comp>", fill: "#ccc", stroke: "black", parent: 59 },{ key: 71, text: "> ", fill: "#ccc", stroke: "black", parent: 70 },{ key: 72, text: "<ExprArith>", fill: "#ccc", stroke: "black", parent: 59 },{ key: 73, text: "<ExprArithU>", fill: "#ccc", stroke: "black", parent: 72 },{ key: 74, text: "<ExprArithMul>", fill: "#ccc", stroke: "black", parent: 73 },{ key: 75, text: "<ExprArithMulU>", fill: "#ccc", stroke: "black", parent: 74 },{ key: 76, text: "<ExprArithAtom>", fill: "#ccc", stroke: "black", parent: 75 },{ key: 77, text: "5", fill: "#ccc", stroke: "black", parent: 76 },{ key: 78, text: "<ExprArithMulV>", fill: "#ccc", stroke: "black", parent: 74 },{ key: 79, text: "eps", fill: "#ccc", stroke: "black", parent: 78 },{ key: 80, text: "<ExprArithV>", fill: "#ccc", stroke: "black", parent: 72 },{ key: 81, text: "eps", fill: "#ccc", stroke: "black", parent: 80 },{ key: 82, text: "<CondAndV>", fill: "#ccc", stroke: "black", parent: 56 },{ key: 83, text: "and", fill: "#ccc", stroke: "black", parent: 82 },{ key: 84, text: "<CondAtom>", fill: "#ccc", stroke: "black", parent: 82 },{ key: 85, text: "<SimpleCond>", fill: "#ccc", stroke: "black", parent: 84 },{ key: 86, text: "<ExprArith>", fill: "#ccc", stroke: "black", parent: 85 },{ key: 87, text: "<ExprArithU>", fill: "#ccc", stroke: "black", parent: 86 },{ key: 88, text: "<ExprArithMul>", fill: "#ccc", stroke: "black", parent: 87 },{ key: 89, text: "<ExprArithMulU>", fill: "#ccc", stroke: "black", parent: 88 },{ key: 90, text: "<ExprArithAtom>", fill: "#ccc", stroke: "black", parent: 89 },{ key: 91, text: "b", fill: "#ccc", stroke: "black", parent: 90 },{ key: 92, text: "<ExprArithMulV>", fill: "#ccc", stroke: "black", parent: 88 },{ key: 93, text: "eps", fill: "#ccc", stroke: "black", parent: 92 },{ key: 94, text: "<ExprArithV>", fill: "#ccc", stroke: "black", parent: 86 },{ key: 95, text: "eps", fill: "#ccc", stroke: "black", parent: 94 },{ key: 96, text: "<Comp>", fill: "#ccc", stroke: "black", parent: 85 },{ key: 97, text: "< ", fill: "#ccc", stroke: "black", parent: 96 },{ key: 98, text: "<ExprArith>", fill: "#ccc", stroke: "black", parent: 85 },{ key: 99, text: "<ExprArithU>", fill: "#ccc", stroke: "black", parent: 98 },{ key: 100, text: "<ExprArithMul>", fill: "#ccc", stroke: "black", parent: 99 },{ key: 101, text: "<ExprArithMulU>", fill: "#ccc", stroke: "black", parent: 100 },{ key: 102, text: "<ExprArithAtom>", fill: "#ccc", stroke: "black", parent: 101 },{ key: 103, text: "0", fill: "#ccc", stroke: "black", parent: 102 },{ key: 104, text: "<ExprArithMulV>", fill: "#ccc", stroke: "black", parent: 100 },{ key: 105, text: "eps", fill: "#ccc", stroke: "black", parent: 104 },{ key: 106, text: "<ExprArithV>", fill: "#ccc", stroke: "black", parent: 98 },{ key: 107, text: "eps", fill: "#ccc", stroke: "black", parent: 106 },{ key: 108, text: "<CondAndV>", fill: "#ccc", stroke: "black", parent: 82 },{ key: 109, text: "eps", fill: "#ccc", stroke: "black", parent: 108 },{ key: 110, text: "<CondV>", fill: "#ccc", stroke: "black", parent: 54 },{ key: 111, text: "eps", fill: "#ccc", stroke: "black", parent: 110 },{ key: 112, text: "then", fill: "#ccc", stroke: "black", parent: 52 },{ key: 113, text: "<Code>", fill: "#ccc", stroke: "black", parent: 52 },{ key: 114, text: "<InstList>", fill: "#ccc", stroke: "black", parent: 113 },{ key: 115, text: "<Instruction>", fill: "#ccc", stroke: "black", parent: 114 },{ key: 116, text: "<Print>", fill: "#ccc", stroke: "black", parent: 115 },{ key: 117, text: "print", fill: "#ccc", stroke: "black", parent: 116 },{ key: 118, text: "(", fill: "#ccc", stroke: "black", parent: 116 },{ key: 119, text: "a", fill: "#ccc", stroke: "black", parent: 116 },{ key: 120, text: ")", fill: "#ccc", stroke: "black", parent: 116 },{ key: 121, text: "<InstList'>", fill: "#ccc", stroke: "black", parent: 114 },{ key: 122, text: "eps", fill: "#ccc", stroke: "black", parent: 121 },{ key: 123, text: "<If'>", fill: "#ccc", stroke: "black", parent: 52 },{ key: 124, text: "endif", fill: "#ccc", stroke: "black", parent: 123 },{ key: 125, text: "<InstList'>", fill: "#ccc", stroke: "black", parent: 50 },{ key: 126, text: "eps", fill: "#ccc", stroke: "black", parent: 125 },{ key: 127, text: "end", fill: "#ccc", stroke: "black", parent: 1 },]            // create the Model with data for the tree, and assign to the Diagram
+            myDiagram.model = $(go.TreeModel, { nodeDataArray: nodeDataArray });
+        }
+
+        // Customize the TreeLayout to position all of the leaf nodes at the same vertical Y position.
+        function FlatTreeLayout() {
+            go.TreeLayout.call(this);  // call base constructor
+        }
+        go.Diagram.inherit(FlatTreeLayout, go.TreeLayout);
+
+        // This assumes the TreeLayout.angle is 90 -- growing downward
+        /** @override */
+        FlatTreeLayout.prototype.commitLayout = function() {
+            go.TreeLayout.prototype.commitLayout.call(this);  // call base method first
+            // find maximum Y position of all Nodes
+            var y = -Infinity;
+            this.network.vertexes.each(function(v) {
+                y = Math.max(y, v.node.position.y);
+            });
+            // move down all leaf nodes to that Y position, but keeping their X position
+            this.network.vertexes.each(function(v) {
+                if (v.destinationEdges.count === 0) {
+                    // shift the node down to Y
+                    v.node.position = new go.Point(v.node.position.x, y);
+                    // extend the last segment vertically
+                    v.node.toEndSegmentLength = Math.abs(v.centerY - y);
+                } else {  // restore to normal value
+                    v.node.toEndSegmentLength = 10;
+                }
+            });
+        };
+        // end FlatTreeLayout
+
+    </script>
+</head>
+<body onload="init()">
+    <div id="sample">
+        <div id="myDiagramDiv" style="width:100%; height:1000px"></div>
+    </div>
+</body>
+</html>

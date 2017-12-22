@@ -1,8 +1,10 @@
 package be.ac.ulb.infof403.parser;
 
 import be.ac.ulb.infof403.Elem;
+import be.ac.ulb.infof403.LexicalUnit;
 import be.ac.ulb.infof403.Symbol;
 import be.ac.ulb.infof403.TokenList;
+import be.ac.ulb.infof403.codeGenerator.CodeFactory;
 import be.ac.ulb.infof403.grammar.Grammar;
 import be.ac.ulb.infof403.grammar.GrammarVariable;
 import be.ac.ulb.infof403.grammar.Rule;
@@ -41,6 +43,10 @@ public class Ll1 {
             throw new IllegalArgumentException();
         }
         else {
+            if(_symb.getType().equals(LexicalUnit.VARNAME) || _symb.getType().equals(LexicalUnit.NUMBER)) {
+                ((Symbol) currentElem).setValue(_symb.getValue());
+            }
+            
             _transitions.add("M");
             if(_i.hasNext()) {
                 _symb = _i.next();
@@ -76,7 +82,7 @@ public class Ll1 {
     
     public void parse(final boolean debug) throws UnexpectedSymbolException {
         final GrammarVariable grammarInitialVariable = _grammar.getInitialVariable();
-        _tree = new RuleTree(grammarInitialVariable);
+        _tree = RuleTreeFactory.getRuleTree(grammarInitialVariable);
         final ParseStack stack = new ParseStack(_tree);
         
         while (!stack.isEmpty() && _symb != null) {
@@ -99,7 +105,11 @@ public class Ll1 {
         } else if(_i.hasNext()) { // If code is not finish
             throw new UnexpectedSymbolException(_symb, "Expected end of file"); 
         }
-        
+    }
+    
+    public String produiceCode() {
+        _tree.getResultVar();
+        return CodeFactory.getGeneralOutput();
     }
     
     public void generateGojsParseTree(final String gojsOutputFile) {

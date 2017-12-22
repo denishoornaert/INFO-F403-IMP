@@ -1,0 +1,14 @@
+begin
+    normal := 5+6*3;
+    print(normal);
+    parent := (5+6)*3;
+    print(parent);
+
+    if normal <> parent then
+        result := 1;
+        print(result)
+    else
+        result2 := 0;
+        print(result2)
+    endif
+end

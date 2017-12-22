@@ -1,5 +1,6 @@
 package be.ac.ulb.infof403;
 
+import be.ac.ulb.infof403.codeGenerator.CodeFactory;
 import be.ac.ulb.infof403.grammar.Grammar;
 import be.ac.ulb.infof403.parser.Ll1;
 import be.ac.ulb.infof403.parser.UnexpectedSymbolException;
@@ -7,7 +8,8 @@ import be.ac.ulb.infof403.scanner.ImpScanner;
 import be.ac.ulb.infof403.scanner.ImpSyntaxException;
 import java.io.File;
 import java.io.IOException;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  * Main class
  */
@@ -17,6 +19,7 @@ public class Main {
     private static final String DEFAULT_GRAMMAR_FILE = "./test/grammar/UnambiguousIMP.gram";
     private static final String DEFAULT_GOJS_FOLDER = "test/html/";
     private static final String DEFAULT_LATEX_FOLDER = "test/tex/";
+    private static final String DEFAULT_LLVM_FOLDER = "llvm/";
     
     private static boolean _debug = false;
     
@@ -56,6 +59,10 @@ public class Main {
         String gojsOutputFile = DEFAULT_GOJS_FOLDER;
         boolean latex = false;
         String latexOutputFile = DEFAULT_LATEX_FOLDER;
+        boolean llvm = false;
+        String llvmOutputFile = DEFAULT_LLVM_FOLDER;
+        boolean exec = false;
+        boolean printGrammar = false;
         
         while(args.length > currentIndex) {
             switch(args[currentIndex]) {
@@ -101,9 +108,29 @@ public class Main {
                     }
                     break;
                     
+                case "-gram":
+                case "--grammar":
+                    printGrammar = true;
+                    break;
+                    
                 case "-d":
                 case "--debug":
                     _debug = true;
+                    break;
+                
+                case "-e":
+                case "--exec":
+                    exec = true;
+                    break;
+                    
+                case "-o":
+                case "--output":
+                    if(args.length > currentIndex+1 && !args[currentIndex+1].startsWith("-")) {
+                        llvmOutputFile += args[++currentIndex];
+                    } else {
+                        llvmOutputFile += getFileWithoutExtension(getFileName(impFile)) + ".ll";
+                    }
+                    llvm = true;
                     break;
                     
                 default:
@@ -114,6 +141,12 @@ public class Main {
             
             ++currentIndex;
         }
+        
+        if(exec && !llvm) {
+            llvmOutputFile += getFileWithoutExtension(getFileName(impFile)) + ".ll";
+            llvm = true;
+        }
+        
         
         TokenList tokenList = null;
         try {
@@ -153,12 +186,34 @@ public class Main {
                 ll1.generateGojsParseTree(gojsOutputFile);
             }
             
-            System.out.println("Syntax respected !");
-            System.out.println("");
-            System.out.println("Grammar: ");
-            System.out.println(grammar);
-            System.out.println("");
-            ll1.printTransitions();
+            if(printGrammar) {
+                System.out.println("Syntax respected !");
+                System.out.println("");
+                System.out.println("Grammar: ");
+                System.out.println(grammar);
+                System.out.println("");
+                ll1.printTransitions();
+                System.out.println("");
+            }
+            
+            final String result = ll1.produiceCode();
+            System.out.println(result);
+            
+            if(llvm) {
+                CodeFactory.writeCodeTo(llvmOutputFile);
+            }
+            
+            if(exec) {
+                try {
+                    // Build and execute the '.bc' file
+                    ProcessBuilder pb = new ProcessBuilder(DEFAULT_LLVM_FOLDER+"compile.sh", llvmOutputFile);
+                    pb.inheritIO();
+                    Process process = pb.start();
+                    process.waitFor();
+                } catch (IOException | InterruptedException ex) {
+                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         }
         
     }
@@ -247,6 +302,8 @@ public class Main {
         System.out.println("  <grammarFile>\t\t\tThe file that contains the Grammar (default: '" + DEFAULT_GRAMMAR_FILE + "')");
         System.out.println("  <IMPFile>\t\t\tThe file with the IMP code (default: '" + DEFAULT_IMP_FILE + "')");
         System.out.println("  -h/--help\t\t\tPrint this text");
+        System.out.println("  -o/--output\t\t\tWrite the generated llvm code into the specied file");
+        System.out.println("  -gram/--grammar\t\tPrint grammar enhance part");
         System.out.println("  -ta/--table\t\t\tPrint the action table");
         System.out.println("  -ts/--testscan [filePath]\tTest that the scanner have the good output");
         System.out.println("  -ps/--printscan\t\tPrint the scan result (like first part of this project)");

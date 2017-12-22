@@ -1,0 +1,5 @@
+begin
+    for i from 10 by - 2 to 3 do
+        print(i)
+    done
+end
