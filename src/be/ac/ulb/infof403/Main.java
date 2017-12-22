@@ -113,7 +113,11 @@ public class Main {
                 case "-o":
                 case "--output":
                     llvm = true;
-                    llvmOutputFile = args[++currentIndex];
+                    if(args.length > currentIndex+1 && !args[currentIndex+1].startsWith("-")) {
+                        llvmOutputFile = args[++currentIndex];
+                    } else {
+                        llvmOutputFile = "default.ll";
+                    }
                     break;
                     
                 default:
