@@ -1,0 +1,53 @@
+@startuml
+'accessibilité
+skinparam classAttributeIconSize 0
+
+'pas d'ombre
+skinparam shadowing false
+
+'taille de l'image
+skinparam dpi 300 
+
+'couleurs
+skinparam class {
+  BackgroundColor AliceBlue
+  ArrowColor CornflowerBlue
+  BorderColor CornflowerBlue
+}
+skinparam stereotypeCBackgroundColor OldLace
+
+
+package parser {
+  class RuleTreeFactory {
+  }
+  
+  class RuleTree {
+  }
+  
+  class Ll1 {
+  }
+  
+}
+
+package impVariableTypes {
+  class Assign {
+  }
+  
+  class Program {
+  }
+  
+  class Code {
+  }
+}
+
+Assign --|> RuleTree
+Code --|> RuleTree
+Program --|> RuleTree
+
+RuleTreeFactory -- Assign
+RuleTreeFactory -- Program
+RuleTreeFactory -- Code
+
+
+
+@enduml
