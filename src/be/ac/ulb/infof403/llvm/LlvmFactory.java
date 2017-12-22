@@ -38,13 +38,9 @@ public class LlvmFactory {
     
     public static String getVariablesAllocation() {
         String out = "";
-        SymbolTable table = SymbolTable.getInstance();
-        for (Object object : table.keySet()) {
-            String var = (String)object;
-            out += "; --- Allocation of "+var+" ---\n";
-            out += "%tmp"+var+" = alloca i32\n";
-            out += "store i32 0, i32* %tmp"+var+"\n";
-            out += "%"+var+" = load i32, i32* %tmp"+var+"\n";
+        final SymbolTable table = SymbolTable.getInstance();
+        for (final Object object : table.keySet()) {
+            out += "%" + ((String)object) + " = alloca i32\n";
         }
         return out;
     }

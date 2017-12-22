@@ -1,0 +1,6 @@
+begin
+    read(n);
+    if not n > 12 then 
+        print(n)
+    endif
+end

@@ -1,0 +1,9 @@
+begin
+    read(a);
+    print(a);
+    b := - a;
+    print(b);
+    if a > 5 and b < 0 then
+        print(a)
+    endif
+end

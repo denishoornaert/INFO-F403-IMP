@@ -18,8 +18,8 @@ public class While extends RuleTree {
         CodeFactory.write(strOutput);
         
         final String condVar = this._children.get(1).getResultVar();
-        strOutput = "br i1 "+condVar+", label %loop, label %endloop" + id +"\n";
-        strOutput += "loop:\n";
+        strOutput = "br i1 "+condVar+", label %loop" + id + ", label %endloop" + id +"\n";
+        strOutput += "loop" + id + ":\n";
         CodeFactory.write(strOutput);
         this._children.get(3).getResultVar();
         

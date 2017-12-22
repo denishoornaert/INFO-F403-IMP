@@ -1,0 +1,8 @@
+begin
+    read(n);
+    read(p);
+    if n > 12 and p < 1 or n+p > 20 then
+        print(n);
+        print(p)
+    endif
+end
