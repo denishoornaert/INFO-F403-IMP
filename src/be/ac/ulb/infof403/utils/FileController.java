@@ -1,4 +1,4 @@
-package be.ac.ulb.infof403.Utils;
+package be.ac.ulb.infof403.utils;
 
 import be.ac.ulb.infof403.view.GenerateGojsParseTree;
 import java.io.BufferedReader;

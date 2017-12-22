@@ -1,6 +1,6 @@
 package be.ac.ulb.infof403.view;
 
-import be.ac.ulb.infof403.Utils.FileController;
+import be.ac.ulb.infof403.utils.FileController;
 
 
 /**
