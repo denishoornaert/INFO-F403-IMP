@@ -20,7 +20,7 @@ public class OpMul extends RuleTree {
                 break;
                 
             case "/":
-                result = "div";
+                result = "sdiv";
                 break;
                 
             default:

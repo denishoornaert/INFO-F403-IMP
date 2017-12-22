@@ -2,13 +2,13 @@
     Algorithm to compute Fibonacci
 *)
 begin
-    read(n) ;
-    a := 0 ;
-    b := 0 ;
+    read(n);
+    a := 0;
+    b := 1;
     for i from 0 to n do (* loop from 0 to n *)
-        tmp := b ;
-        b := a ;
-        a := tmp
-    done ;
+        tmp := a + b;
+        a := b;
+        b := tmp
+    done;
     print(b)
 end

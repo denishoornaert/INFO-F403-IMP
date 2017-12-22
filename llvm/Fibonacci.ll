@@ -20,18 +20,37 @@ define void @println(i32 %x) {
 
 declare i32 @printf(i8*, ...)
 define i32 @main() {
+%a = alloca i32
+%b = alloca i32
+%tmp = alloca i32
+%i = alloca i32
 %n = alloca i32
 %1 = call i32 @readInt()
 store i32 %1, i32* %n
+store i32 0, i32* %a
+store i32 1, i32* %b
+store i32 0, i32* %i
+br label %startloop56
+startloop56:
 %2 = load i32, i32* %n
-%3 = icmp sgt i32 %2, 12
-br i1 %3, label %if22, label %endif22
-if22:
-%4 = load i32, i32* %n
-call void @println(i32 %4)
-br label %endelse22
-endif22:
-br label %endelse22
-endelse22:
+%3 = load i32, i32* %i
+%coundRes56 = icmp slt i32 %3, %2
+br i1 %coundRes56, label %loop56, label %endloop56
+loop56:
+%4 = load i32, i32* %b
+%5 = load i32, i32* %a
+%6 = add i32 %5, %4
+store i32 %6, i32* %tmp
+%7 = load i32, i32* %b
+store i32 %7, i32* %a
+%8 = load i32, i32* %tmp
+store i32 %8, i32* %b
+%9 = load i32, i32* %i
+%inc56 = add i32 %9, 1
+store i32 %inc56, i32* %i
+br label %startloop56
+endloop56:
+%10 = load i32, i32* %b
+call void @println(i32 %10)
 ret i32 0
 }

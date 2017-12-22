@@ -18,7 +18,7 @@ public class If extends RuleTree {
         strOutput += "if"+id+":\n";
         CodeFactory.write(strOutput);
         this._children.get(3).getResultVar();
-        strOutput = "br label %endif"+id+"\n";
+        strOutput = "br label %endelse"+id+"\n";
         strOutput += "endif"+id+":\n";
         CodeFactory.write(strOutput);
         this._children.get(4).getResultVar();

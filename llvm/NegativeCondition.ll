@@ -25,13 +25,12 @@ define i32 @main() {
 store i32 %1, i32* %n
 %2 = load i32, i32* %n
 %3 = icmp sgt i32 %2, 12
-br i1 %3, label %if22, label %endif22
+%4 = add i1 %3, 1
+br i1 %4, label %if22, label %endif22
 if22:
-%4 = load i32, i32* %n
-call void @println(i32 %4)
-br label %endelse22
+%5 = load i32, i32* %n
+call void @println(i32 %5)
+br label %endif22
 endif22:
-br label %endelse22
-endelse22:
 ret i32 0
 }

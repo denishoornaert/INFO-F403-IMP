@@ -17,12 +17,12 @@ public class For extends RuleTree {
         final String countVar = this._children.get(1).getResultVar();
         
 //        String strOutput = "startfor"+id + ":\n";
-        String strOutput = "%tmpinc"+id + " = alloca i32\n";
-        CodeFactory.write(strOutput);
+//        String strOutput = "%tmpinc"+id + " = alloca i32\n";
+//        CodeFactory.write(strOutput);
         
         final String startValue = this._children.get(3).getResultVar();
         
-        strOutput = "store i32 " + startValue +", i32* %tmpinc"+id + "\n";
+        String strOutput = "store i32 " + startValue +", i32* " + countVar + "\n";
         strOutput += "br label %startloop"+id+"\n";
         strOutput += "startloop"+id+":\n";
         CodeFactory.write(strOutput);
@@ -38,8 +38,9 @@ public class For extends RuleTree {
         condVar = forBis.getChildren().get(condElem).getResultVar();
         
         // Note the "="
-        strOutput = countVar + " = load i32, i32* %tmpinc"+id+"\n";
-        strOutput += "%coundRes" + id + " = icmp slt i32 "+countVar+", " + condVar + "\n";
+        final String nextVar = getNextVariable();
+        strOutput = nextVar + " = load i32, i32* " + countVar + "\n";
+        strOutput += "%coundRes" + id + " = icmp slt i32 " + nextVar + ", " + condVar + "\n";
         strOutput += "br i1 %coundRes" + id + ", label %loop"+id+", label %endloop"+id+"\n";
         strOutput += "loop"+id+":\n";
         CodeFactory.write(strOutput);

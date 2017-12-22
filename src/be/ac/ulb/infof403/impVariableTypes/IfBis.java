@@ -12,14 +12,15 @@ public class IfBis extends RuleTree {
 
     @Override
     public String getResultVar() {
+        final Integer id = getId();
+        
         if(this._children.size() == 3) {
             // else <Code> endif
-            final Integer id = getId();
             this._children.get(1).getResultVar();
-            String strOutput = "br label %endelse"+id+"\n";
-            strOutput += "endelse"+id+":\n";
-            CodeFactory.write(strOutput);
         }
+        String strOutput = "br label %endelse"+id+"\n";
+        strOutput += "endelse"+id+":\n";
+        CodeFactory.write(strOutput);
         return "";
     }
     
