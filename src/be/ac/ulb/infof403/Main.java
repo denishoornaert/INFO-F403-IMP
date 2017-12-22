@@ -19,6 +19,7 @@ public class Main {
     private static final String DEFAULT_GRAMMAR_FILE = "./test/grammar/UnambiguousIMP.gram";
     private static final String DEFAULT_GOJS_FOLDER = "test/html/";
     private static final String DEFAULT_LATEX_FOLDER = "test/tex/";
+    private static final String DEFAULT_LLVM_FOLDER = "llvm/";
     
     private static boolean _debug = false;
     
@@ -59,7 +60,7 @@ public class Main {
         boolean latex = false;
         String latexOutputFile = DEFAULT_LATEX_FOLDER;
         boolean llvm = false;
-        String llvmOutputFile = "";
+        String llvmOutputFile = DEFAULT_LLVM_FOLDER;
         
         while(args.length > currentIndex) {
             switch(args[currentIndex]) {
@@ -114,9 +115,9 @@ public class Main {
                 case "--output":
                     llvm = true;
                     if(args.length > currentIndex+1 && !args[currentIndex+1].startsWith("-")) {
-                        llvmOutputFile = args[++currentIndex];
+                        llvmOutputFile += args[++currentIndex];
                     } else {
-                        llvmOutputFile = "default.ll";
+                        llvmOutputFile += getFileWithoutExtension(getFileName(impFile)) + ".ll";
                     }
                     break;
                     
