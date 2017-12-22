@@ -121,14 +121,14 @@ public class Main {
                 case "-e":
                 case "--exec":
                     exec = true;
+                    break;
+                    
                 case "-o":
                 case "--output":
-                    if(!llvm) { // if not already set
-                        if(args.length > currentIndex+1 && !args[currentIndex+1].startsWith("-")) {
-                            llvmOutputFile += args[++currentIndex];
-                        } else {
-                            llvmOutputFile += getFileWithoutExtension(getFileName(impFile)) + ".ll";
-                        }
+                    if(args.length > currentIndex+1 && !args[currentIndex+1].startsWith("-")) {
+                        llvmOutputFile += args[++currentIndex];
+                    } else {
+                        llvmOutputFile += getFileWithoutExtension(getFileName(impFile)) + ".ll";
                     }
                     llvm = true;
                     break;
@@ -141,6 +141,12 @@ public class Main {
             
             ++currentIndex;
         }
+        
+        if(exec && !llvm) {
+            llvmOutputFile += getFileWithoutExtension(getFileName(impFile)) + ".ll";
+            llvm = true;
+        }
+        
         
         TokenList tokenList = null;
         try {
