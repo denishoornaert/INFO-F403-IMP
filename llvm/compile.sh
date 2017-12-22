@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ $# -ne 1 ]; then
-    echo "Tu as oublié un argument gro"
+    echo "You must specified the LL code in parameter"
     exit 1
 fi
 
