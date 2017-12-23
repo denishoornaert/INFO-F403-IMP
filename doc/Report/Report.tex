@@ -451,7 +451,7 @@ Error with a token: Unknown symbol '[' (9 character at line 1)
     This issue arises because, unlike c/c++, the programmer does not have to explicitly specify the condition. Thus, the compiler has to be able to decide by itself whether a $>$ or $<$ operator should be used. This would imply that the compiler should be able to evaluate its arithmetic expressions during the \textit{compilation time} but this is not possible as mentioned above (see section \ref{semantic-limitations}). Further more, if the arithmetic expressions of the \verb|for| involve a varibale that is modified in the instruction block, no evaluation is possible. In sum, no decision over the operator to used can be taken.
   
   \subsection{Results}
-    
+    You can find the LLVM code of Euler (figure \ref{fig:finalllvmeuclid}) and of Fibonacci alorithm in annex (figure \ref{fig:finalllvmfibonacci}).
 
 \section{How to set up the project}
   In order to simplify the compilation and the support of external libraries, it has been decided to use a well known \textit{java} project manager named \textit{Maven}. Its configuration file (\verb|pom.xml|) defines the \verb|main| file, defines the source folder, manages the \textit{JFlex} library and the package that must be compiled with this library.
@@ -503,6 +503,9 @@ javadoc -d doc/javadoc/ -keywords -sourcepath src -subpackages be
     The user can see all the parameters by using the argument \verb|--help| (or the alias \verb|-h|).  If he wants to analyse a specific IMP file he \textbf{must} precise the grammar file first. There is no order for the other arguments. The user will find bellow the list of possible arguments:
     \begin{itemize}
       \item \verb|-h/--help| Displays all arguments
+      \item \verb|-o/--output| Write the generated llvm code into the specied file
+      \item \verb|-e/--exec| Perform an output (see point just above) and execute directly the generated LLVM.
+      \item \verb|-gram/--grammar| Print all informations about grammar enhance
       \item \verb|-ta/--table| Prints the action table (see point \ref{subsubsec:actionTable})
       \item \verb|-ts/--testscan| Checks that the result of the scan is the same that the expected output (see point \ref{subsec:test}).
       \item \verb|-ps/--printscan| Prints the scan result (used to compare with the ''.out`` file (if specified with previous argument)).
@@ -757,6 +760,20 @@ javadoc -d doc/javadoc/ -keywords -sourcepath src -subpackages be
     \caption{IMP action table.}
     \label{impactiontable}
   \end{sidewaystable}
-      
+  
+  \begin{figure}[h!]
+    \centering
+    \lstinputlisting{../../llvm/Euclid.ll}
+    \caption{The final LLVM code generation for Euclid.}
+    \label{fig:finalllvmeuclid}
+  \end{figure}
+  
+  \begin{figure}[h!]
+    \centering
+    \lstinputlisting{../../llvm/Fibonacci.ll}
+    \caption{The final LLVM code generation for Fibonacci.}
+    \label{fig:finalllvmfibonacci}
+  \end{figure}
+  
 
 \end{document}
