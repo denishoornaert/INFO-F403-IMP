@@ -378,9 +378,13 @@ token: [x]                lexical unit: VARNAME
 Error with a token: Unknown symbol '[' (9 character at line 1)
       \end{verbatim}
       
-\section{Implementation of the semantic analyser}
+\section{Implementation of the Code generator}
+  The last part of the project aims to translate the IMP code into an intermediate representation using both the \textit{parse tree} generated during the \textit{syntax analysis} and the \textit{symbol table} obtained during the \textit{lexical analysis} (see fig.\ref{compilation_phases}).\\
+  Typically, no \textit{semantic analysis} has been required as the IMP language only allows to manipulate integers. Hence, this phase of the compilation scheme has been skipped.\\
+  In the present project, the targeted code is \textit{LLVM}. This low-level programming language is widely used and pretty popular among language designer because it is not linked to any particular processor architecture but can be itself compiled in order to target a specific processor architecture.\\
+  For instance, this important feature would alow the project to run on both \verb|x86_64| and \verb|ARM| processors without having to deal with the fundamental hardware differences.
 
-  \subsection{Use and implementation of the compiler generator}
+  \subsection{Use and implementation of the code generator}
     \begin{figure}[h!]
       \centering
       \includegraphics[scale=0.175]{img/class_ruleTree.png}
