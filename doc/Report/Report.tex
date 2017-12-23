@@ -384,10 +384,18 @@ Error with a token: Unknown symbol '[' (9 character at line 1)
   In the present project, the targeted code is \textit{LLVM}. This low-level programming language is widely used and pretty popular among language designer because it is not linked to any particular processor architecture but can be itself compiled in order to target a specific processor architecture.\\
   For instance, this important feature would alow the project to run on both \verb|x86_64| and \verb|ARM| processors without having to deal with the fundamental hardware differences.
 
-  \subsection{Use and implementation of the code generator}
+  \subsection{Structure of the code generator}
+    The choice made is to simply create a large set of classes where each class correspond to a grammar variable of the final IMP grammar (see annex \ref{fig:finalimpgrammar}). All th classes inherit from \verb|RuleTree| so that they become fully part of the \textit{parse tree}. To enable the parser to know exactly which type of node to instanciate, a factory called \verb|RuleTreeFactory| has been introduced. The \textit{parse tree} construction mechanism is as follow~:
+    \begin{itemize}
+      \item given a grammar variable, the parser watches the look-ahead and determines the rule.
+      \item the parser sends to the \verb|RuleTreeFactory| the grammar variable just used.
+      \item the parser receives back a \verb|RuleTree| object (which is actually one of its children)
+      \item the parser adds the received object in its \textit{parse tree}
+    \end{itemize}
     \begin{figure}[h!]
       \centering
       \includegraphics[scale=0.175]{img/class_ruleTree.png}
+      \caption{Pseudo-uml of the RuleTree composite and of the Factory that builds it.}
     \end{figure}
 
   
