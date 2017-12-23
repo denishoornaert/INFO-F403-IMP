@@ -460,7 +460,7 @@ Error with a token: Unknown symbol '[' (9 character at line 1)
   
   \subsection{Results}
   After having implemented,the mechanisms and tricks explained in the subsections above, the two examples used in this report (Euclid and Fibonacci) have been translated from their IMP form to their LLVM equivalent. The results of the translation is an error less LLVM code which, once executed, produces the expected result. The result of the translation are displayed in the annex fig.\ref{fig:finalllvmeuclid} for Euclid and fig.\ref{fig:finalllvmfibonacci} for Fibonacci.\\
-  In addition, because the two examples mentioned above do not cover all the possibilities offered by the IMP grammar, several small examples located in \verb|test/imp/| have been both added and successfully tested.
+  In addition, because the two examples mentioned above do not cover all the possibilities offered by the IMP grammar, several small examples located in \verb|test/imp/| have been both added and successfully tested (note that some file are used to test the grammar and also to test that some code do not work).
 
 \section{How to set up the project}
   In order to simplify the compilation and the support of external libraries, it has been decided to use a well known \textit{java} project manager named \textit{Maven}. Its configuration file (\verb|pom.xml|) defines the \verb|main| file, defines the source folder, manages the \textit{JFlex} library and the package that must be compiled with this library.
